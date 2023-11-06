@@ -400,10 +400,31 @@ section.teams-wrapper .contain ul.member-list li .tabClose {
     width: 316px;
   }
 }
-/* Brands */
-.brand-footer-sldier .gatsby-image-wrapper {
-  height: 309px;
+/* Updated code */
+/* .member-item{
+  height: 250px !important;
+  width: 264px !important;
 }
+ul.member-list li a{
+  height: 100% !important;
+  width: 100% !important;
+}
+
+section.teams-wrapper .contain ul.member-list{
+  display: block !important;
+} */
+/* Brands */
+
+@media (min-width:768px){
+  .brand-footer-sldier .gatsby-image-wrapper {
+  height: 309px;
+  }
+}
+
+
+ .roomtypebrands .swiper-slide{
+  background-color: transparent;
+ }
 
 /* Blog detail page */
 

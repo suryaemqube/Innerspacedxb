@@ -127,6 +127,7 @@ export default function Home({ data }) {
 
   return (
     <>
+      {/* <Seo pageUrl={`${WEBSITE_URL}/`} bodyClass={`home`} title={homePage.title} description={ } imageUrl={ } imgHeight={ } imgWidth={ } imgType={ } /> */}
       <Seo pageUrl={`${WEBSITE_URL}/`} bodyClass={`home`} title={"Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai"} description={"Luxury Furniture Brand in Dubai: Redefine elegance with our complete home interior design service using premium furniture, and luxurious accessories."} />
       <Layout>
         {/* <!-- hero slider starts  --> */}
