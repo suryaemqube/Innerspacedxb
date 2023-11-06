@@ -1,0 +1,345 @@
+import React, { useEffect, useState } from "react";
+import { Link, graphql } from "gatsby";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import LightGallery from "lightgallery/react";
+
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
+
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-zoom.css";
+import "lightgallery/css/lg-thumbnail.css";
+
+import Layout from "../components/Layout";
+import Seo from "../components/SeoMeta";
+
+const Portfolio = ({ data, pageContext }) => {
+  const { numPages, currentPage } = pageContext;
+  const [totalPage, setTotalPage] = useState(0);
+  const [current, setCurrent] = useState(1);
+  const [filterData, setFilterData] = useState([]);
+
+  const [roomtypeInput, setRoomtypeInput] = useState("");
+  const [brandInput, setBrandInput] = useState("");
+
+  const NOOFPOST = 9;
+
+  const page = data?.wpPage || [];
+  const portfolio = data?.allWpPortfolio?.edges || [];
+  const brandCat = data.allWpBrandCategory.edges || [];
+  const roomCat = data.allWpRoomtypeCategory.edges || [];
+
+  const WEBSITE_URL = process.env.GATSBY_BASE_URL;
+  const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= numPages; i++) {
+      pageNumbers.push(
+        currentPage === i ? (
+          <span class="current">{currentPage}</span>
+        ) : (
+          <Link
+            to={`${i === 1 ? "/portfolio/" : `/portfolio/page/${i}/`}`}
+            class="inactive"
+          >
+            {i}
+          </Link>
+        )
+      );
+    }
+    return pageNumbers;
+  };
+  useEffect(() => {
+    setFilterData(portfolio);
+  }, []);
+
+  const handleFilter = (e) => {
+    e.preventDefault();
+
+    const filteredData = data.allWpPortfolio.edges.filter((edge) => {
+      const roomtypeMatch =
+        !roomtypeInput ||
+        (edge.node.roomtypeCategory &&
+          edge.node.roomtypeCategory.nodes.some(
+            (category) => category.slug === roomtypeInput
+          ));
+      const brandMatch =
+        !brandInput ||
+        (edge.node.brandCategory &&
+          edge.node.brandCategory.nodes.some(
+            (category) => category.slug === brandInput
+          ));
+      console.log("ok: ", roomtypeMatch, brandMatch);
+      return roomtypeMatch && brandMatch;
+    });
+
+    setFilterData(filteredData);
+  };
+  return (
+    <Layout>
+      <Seo pageUrl={`${WEBSITE_URL}/portfolio/`}></Seo>
+      <section class="header-image">
+        {page && page.featuredImage ? (
+          <div class="wrapper">
+            <div class="holder">
+              {/* <img
+                src={page.featuredImage.node.mediaItemUrl}
+                alt={page.title}
+              /> */}
+              <GatsbyImage
+                image={getImage(page.featuredImage.node)}
+                alt={page.title}
+              />
+            </div>
+          </div>
+        ) : (
+          <img
+            src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
+            alt="header image"
+          />
+        )}
+        <h1>{page.title}</h1>
+      </section>
+
+      <section class="main-content">
+        <div class="container">
+          <div class="filter-wrapper">
+            <div class="filter-title">filter by:</div>
+            <form name="filter-portfolio" onSubmit={handleFilter}>
+              <div class="filters">
+                <div class="select">
+                  <select
+                    name="filter-room"
+                    id="filter-portfolio-room"
+                    onChange={(e) => setRoomtypeInput(e.target.value)}
+                  >
+                    <option value="">by room</option>
+                    {roomCat &&
+                      roomCat.map((brand, index) => (
+                        <option key={`kf;skf` + index} value={brand.node.slug}>
+                          {brand.node.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div class="select">
+                  <select
+                    name="filter-brand"
+                    id="filter-portfolio-brands"
+                    onChange={(e) => setBrandInput(e.target.value)}
+                  >
+                    <option value="">by brand</option>
+                    {brandCat &&
+                      brandCat.map((brand, index) => (
+                        <option key={`kf;skf` + index} value={brand.node.slug}>
+                          {brand.node.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div class="portfolio-filter-wrapper">
+                  <input type="submit" value="filter" id="portfolio-filter" />
+                </div>
+              </div>
+            </form>
+          </div>
+          {filterData ? (
+            <>
+              <div class="portfolio-wrapper">
+                <ul>
+                  {filterData.map((portfolioSlide, index) => (
+                    <li>
+                      {portfolioSlide.node.portfolioGalleryLayout
+                        .portfolioGallery ? (
+                        <LightGallery
+                          plugins={[lgThumbnail, lgZoom]}
+                          loop={true}
+                          thumbnail={true}
+                          exThumbImage={"data-exthumbimage"}
+                          download={false}
+                          counter={false}
+                          selector={".item"}
+                        >
+                          <div class="design-gallery" id="Gal">
+                            {portfolioSlide.node.portfolioGalleryLayout.portfolioGallery.map(
+                              (gallerySlide, index) => (
+                                <div
+                                  className="item"
+                                  data-exthumbimage={gallerySlide.mediaItemUrl}
+                                  data-src={gallerySlide.mediaItemUrl}
+                                  data-sub-html={`<div class="lightGallery-captions"><h5>${portfolioSlide.node.title}</h5></div>`}
+                                >
+                                  {index + 1 === 1 && (
+                                    <a href="#">
+                                      <div class="img-wrap">
+                                        {portfolioSlide.node.featuredImage ? (
+                                          <GatsbyImage
+                                            image={getImage(
+                                              portfolioSlide.node.featuredImage
+                                                .node
+                                            )}
+                                            alt={portfolioSlide.node.title}
+                                          />
+                                        ) : (
+                                          <img
+                                            class="ok"
+                                            src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
+                                            alt={portfolioSlide.node.title}
+                                          />
+                                        )}
+                                      </div>
+                                      <h3>{portfolioSlide.node.title}</h3>
+                                    </a>
+                                  )}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        </LightGallery>
+                      ) : (
+                        <a href="#">
+                          <div class="img-wrap">
+                            {portfolioSlide.node.featuredImage ? (
+                              <img
+                                class="<?php echo $portfolio_images['url'][0]; ?>"
+                                src="<?php echo $main_img; ?>"
+                                alt={portfolioSlide.node.title}
+                              />
+                            ) : (
+                              <img
+                                class=""
+                                src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
+                                alt={portfolioSlide.node.title}
+                              />
+                            )}
+                          </div>
+                          <h3>{portfolioSlide.node.title}</h3>
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="pagination">
+                <span>
+                  Page {currentPage} of {numPages}&nbsp;&nbsp;&nbsp;&nbsp;
+                </span>
+                {renderPageNumbers()}
+              </div>
+            </>
+          ) : (
+            <p class="no-data-found">No data found</p>
+          )}
+          ;
+        </div>
+      </section>
+    </Layout>
+  );
+};
+export const data = graphql`
+  query MyQuery($skip: Int!, $limit: Int!) {
+    allWpBrandCategory(filter: { databaseId: { ne: 34 } }) {
+      edges {
+        node {
+          slug
+          id
+          name
+        }
+      }
+    }
+    allWpRoomtypeCategory {
+      edges {
+        node {
+          id
+          slug
+          name
+        }
+      }
+    }
+
+    wpPage(databaseId: { eq: 77 }) {
+      id
+      title
+      featuredImage {
+        node {
+          mediaItemUrl
+          altText
+          gatsbyImage(
+            height: 733
+            layout: FIXED
+            placeholder: BLURRED
+            width: 1920
+          )
+        }
+      }
+    }
+    allWpPortfolio {
+      edges {
+        node {
+          id
+          title
+          featuredImage {
+            node {
+              mediaItemUrl
+              altText
+              gatsbyImage(
+                layout: CONSTRAINED
+                placeholder: BLURRED
+                width: 910
+                height: 832
+              )
+            }
+          }
+          roomtypeCategory {
+            nodes {
+              slug
+            }
+          }
+          brandCategory {
+            nodes {
+              slug
+            }
+          }
+          portfolioGalleryLayout {
+            portfolioGallery {
+              altText
+              mediaItemUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+export default Portfolio;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [tab, setTab] = useState(new Set());
+
+
+  const handleTab = (e) => {
+    e.preventDefault();
+    const ListSelector = e.target.closest("li");
+    const dataUrl = ListSelector.getAttribute("data-url");
+    setTab((prevDataUrl) => new Set([...prevDataUrl, dataUrl]));
+  };
+  const handleTabClose = (e) => {
+    e.preventDefault();
+    const ListSelector = e.target.closest("li");
+    const dataUrl = ListSelector.getAttribute("data-url");
+    tab.delete(dataUrl);
+    setTab(new Set(tab));
+  };
