@@ -92,11 +92,11 @@ const Roomtypes = ({ pageContext, data }) => {
     } else {
     }
   }
-
+  console.log("SEO: ", WEBSITE_URL + "/" + pageSlug)
   return (
     <Layout>
       <Seo
-        pageUrl={`${WEBSITE_URL}/${pageUrl}`}
+        pageUrl={`${WEBSITE_URL}/${pageSlug}/`}
         bodyClass={`roomtypes ${pageSlug}`}
       />
       <section class="header-image room-header-slider">
@@ -186,9 +186,8 @@ const Roomtypes = ({ pageContext, data }) => {
                     <li
                       onClick={handleTabClick}
                       key={`tab-${index}`}
-                      className={`tab-link ${
-                        selectedTab === `tab-${index + 1}` ? "active" : ""
-                      }`}
+                      className={`tab-link ${selectedTab === `tab-${index + 1}` ? "active" : ""
+                        }`}
                       id={`tab-${index + 1}`}
                       data-tab={index + 1}
                     >
@@ -213,9 +212,8 @@ const Roomtypes = ({ pageContext, data }) => {
                       <div
                         key={`tab-content-${index}`}
                         id={`tab-${index + 1}`}
-                        className={`tab-content ${
-                          selectedTab === `tab-${index + 1}` ? "active" : ""
-                        }`}
+                        className={`tab-content ${selectedTab === `tab-${index + 1}` ? "active" : ""
+                          }`}
                       >
                         <div className="content">
                           <div className="gallery-wrapper">
@@ -256,11 +254,10 @@ const Roomtypes = ({ pageContext, data }) => {
                                       <GatsbyImage
                                         image={getImage(tabImgCount)}
                                         alt={tabImgCount.altText}
-                                        className={`${
-                                          tabContent.elementImage.length > 1
-                                            ? "swiper-lazy"
-                                            : ""
-                                        }`}
+                                        className={`${tabContent.elementImage.length > 1
+                                          ? "swiper-lazy"
+                                          : ""
+                                          }`}
                                       />
                                       {tabContent.elementImage.length > 1 && (
                                         <div className="swiper-lazy-preloader"></div>
@@ -387,7 +384,7 @@ const Roomtypes = ({ pageContext, data }) => {
                     loop={true}
                     spaceBetween={0}
                     initialSlide={0}
-                    className="swiper-container productBrandType testing"
+                    className="swiper-container productBrandType swiper-container-initialized"
                   >
                     {brand.map((brandslide, index) => (
                       <SwiperSlide class="swiper-slide" key={`fjdlsjf` + index}>
@@ -455,7 +452,7 @@ const Roomtypes = ({ pageContext, data }) => {
                     loop={true}
                     spaceBetween={0}
                     initialSlide={1}
-                    className="swiper-container productBrandTypeOne"
+                    className="swiper-container productBrandTypeOne "
                   >
                     {brand.map((brandslide, index) => (
                       <SwiperSlide class="swiper-slide" key={`sdfds` + index}>

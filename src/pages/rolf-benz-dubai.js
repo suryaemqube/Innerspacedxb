@@ -1,27 +1,176 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, navigate } from "gatsby";
 import { HelmetProvider } from "react-helmet-async";
-import Seo from "../components/SeoMeta";
+import { useFormik, Formik } from "formik";
+import axios from "axios";
 
 import SwiperCore, { Pagination, Navigation, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import "../assets/css/landing-page.css";
 
+import Seo from "../components/SeoMeta";
+import { getToken } from "../hooks/token";
+
 const Rolf = () => {
   SwiperCore.use([Navigation, Pagination, Autoplay]);
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
 
+  const [token, setToken] = useState("");
+  const [formFields, setFormFields] = useState([]);
+  const [captchaExpression, setCaptchaExpression] = useState("");
+  const [captchaResult, setCaptchaResult] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+
   const helmetContext = {};
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const fetchedToken = await getToken();
+        setToken(fetchedToken);
+      } catch (error) { }
+    };
+
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    const generateCaptcha = () => {
+      const operands = [
+        Math.floor(Math.random() * 10),
+        Math.floor(Math.random() * 10),
+      ];
+      const operator = "+";
+      const expression = `${operands[0]} ${operator} ${operands[1]}`;
+      setCaptchaExpression(expression);
+      const result = operands[0] + operands[1]; // Calculate the result
+      setCaptchaResult(result.toString());
+    };
+
+    generateCaptcha();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios({
+        method: "GET",
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2146/`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          setFormFields(response.data.properties.form.fields);
+          console.log("fields: ", response.data.properties.form.fields);
+        })
+        .catch((error) => console.error("Error", error));
+    }
+  }, [token]);
+
+  const validate = (values) => {
+    const errors = {};
+    if (values["your-name"] === "") {
+      errors["your-name"] = "Required";
+    }
+    if (values["your-tel"] === "") {
+      errors["your-tel"] = "Required";
+    }
+    if (!values["your-city"]) {
+      errors["your-city"] = "Required";
+    } else if (values["your-city"] === "City/Emirates") {
+      errors["your-city"] = "Required";
+    }
+
+    if (values["how-can-help"] === "") {
+      errors["how-can-help"] = "Required";
+    }
+
+    if (values["your-email"] === "") {
+      errors["your-email"] = "Required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values["your-email"])
+    ) {
+      errors["your-email"] = "Invalid email address";
+    }
+
+    if (values.captcha === "") {
+      errors.captcha = "Required";
+    } else if (values.captcha !== captchaResult) {
+      errors.captcha = "Incorrect captcha result";
+    }
+    console.log(errors);
+
+    return errors;
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      "your-name": "",
+      "your-city": "",
+      "your-email": "",
+      "your-tel": "",
+      "how-can-help": "",
+      captcha: "",
+    },
+    validate,
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: (values) => {
+      document.querySelector(".wpcf7-spinner-career").style.display =
+        "inline-flex";
+      const bodyFormData = new FormData();
+      bodyFormData.set("your-name", values["your-name"]);
+      bodyFormData.set("your-email", values["your-email"]);
+      bodyFormData.set("your-tel", values["your-tel"]);
+      bodyFormData.set("your-city", values["your-city"]);
+      bodyFormData.set("how-can-help", values["how-can-help"]);
+      // bodyFormData.set("your-subject", "Enquiry Form");
+
+      const buttonDisable = document.querySelector(".wpcf7-submit");
+      buttonDisable.setAttribute("disabled", "disabled");
+      buttonDisable.classList.add("button-disabled");
+
+      axios({
+        method: "post",
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2146/feedback`,
+        data: bodyFormData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+        .then((response) => {
+          formik.resetForm();
+          document.querySelector(".wpcf7-spinner-career").style.display =
+            "none";
+          if (response.data.status === "validation_failed") {
+            console.log("Email sent Fail:", response.data);
+            setFormMessage(response.data.message);
+            buttonDisable.removeAttribute("disabled");
+          } else if (response.data.status === "mail_sent") {
+            console.log("Email sent successfully:", response.data);
+            buttonDisable.removeAttribute("disabled");
+            setFormMessage("");
+            navigate("/enquiry-thank-you/");
+
+          }
+        })
+        .catch((error) => console.error("Error sending email:", error));
+    },
+  });
 
   return (
     <>
-      <HelmetProvider context={helmetContext}>
-        <Seo
-          pageUrl={`${WEBSITE_URL}/hulsta-dubai/`}
-          bodyClass="page-template-tp-lp"
-        ></Seo>
-      </HelmetProvider>
+
+      <Seo
+        pageUrl={`${WEBSITE_URL}/hulsta-dubai/`}
+        bodyClass="page-template-tp-lp"
+      ></Seo>
+
       <section class="header">
         <div class="holder">
           <picture>
@@ -210,6 +359,7 @@ const Rolf = () => {
             pagination={{
               el: ".swiper-pagination",
               dynamicBullets: false,
+              clickable: true
             }}
             zoom={true}
             keyboard={{
@@ -356,129 +506,426 @@ const Rolf = () => {
                   lang="en-US"
                   dir="ltr"
                 >
-                  <form
-                    class="wpcf7-form init"
-                    aria-label="Contact form"
-                    novalidate="novalidate"
-                    data-status="init"
-                  >
-                    <h6>Speak to our team​</h6>
-                    <div class="row">
-                      <span
-                        class="wpcf7-form-control-wrap"
-                        data-name="your-name"
-                      >
-                        <input
-                          size="40"
-                          class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
-                          aria-required="true"
-                          aria-invalid="false"
-                          placeholder="Name*"
-                          value=""
-                          type="text"
-                          name="your-name"
-                        />
-                      </span>
-                    </div>
-                    <div class="row">
-                      <span
-                        class="wpcf7-form-control-wrap"
-                        data-name="your-email"
-                      >
-                        <input
-                          size="40"
-                          class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email"
-                          aria-required="true"
-                          aria-invalid="false"
-                          placeholder="E-mail*"
-                          value=""
-                          type="email"
-                          name="your-email"
-                        />
-                      </span>
-                    </div>
-                    <div class="row">
-                      <span
-                        class="wpcf7-form-control-wrap"
-                        data-name="your-city"
-                      >
-                        <select
-                          class="wpcf7-form-control wpcf7-select wpcf7-validates-as-required"
-                          aria-required="true"
-                          aria-invalid="false"
-                          name="your-city"
+                  <Formik>
+                    <form
+                      class="wpcf7-form init"
+                      aria-label="Contact form"
+                      novalidate="novalidate"
+                      data-status="init"
+                      onSubmit={formik.handleSubmit}
+                    >
+                      <h6>Speak to our team​</h6>
+                      <div class="row">
+                        <span
+                          class="wpcf7-form-control-wrap"
+                          data-name="your-name"
                         >
-                          <option value="">City/Emirates</option>
-                          <option value="Dubai">Dubai</option>
-                          <option value="Abu Dhabi">Abu Dhabi</option>
-                          <option value="Sharjah">Sharjah</option>
-                          <option value="Al Ain">Al Ain</option>
-                          <option value="Ajman">Ajman</option>
-                          <option value="Ras Al Khaimah">Ras Al Khaimah</option>
-                          <option value="Fujairah">Fujairah</option>
-                          <option value="Umm al-Quwain">Umm al-Quwain</option>
-                          <option value="Dibba Al-Fujairah">
-                            Dibba Al-Fujairah
-                          </option>
-                          <option value="Khor Fakkan">Khor Fakkan</option>
-                          <option value="Kalba">Kalba</option>
-                          <option value="Jebel Ali">Jebel Ali</option>
-                          <option value="Madinat Zayed">Madinat Zayed</option>
-                          <option value="Ruwais">Ruwais</option>
-                          <option value="Liwa Oasis">Liwa Oasis</option>
-                          <option value="Dhaid">Dhaid</option>
-                          <option value="Ghayathi">Ghayathi</option>
-                          <option value="Ar-Rams">Ar-Rams</option>
-                          <option value="Dibba Al-Hisn">Dibba Al-Hisn</option>
-                          <option value="Hatta">Hatta</option>
-                          <option value="Al Madam">Al Madam</option>
-                        </select>
-                      </span>
-                    </div>
-                    <div class="row">
-                      <span
-                        class="wpcf7-form-control-wrap"
-                        data-name="your-tel"
-                      >
+                          {formFields[0] && (
+                            <input
+                              size="40"
+                              className={
+                                formik.errors[formFields[0].name]
+                                  ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                  : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                              }
+                              id={formFields[0].name}
+                              type={formFields[0].basetype}
+                              name={formFields[0].name}
+                              placeholder={formFields[0].raw_values[0]}
+                              value={formik.values[formFields[0].name]}
+                              onChange={formik.handleChange}
+                            />
+                          )}
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span
+                          class="wpcf7-form-control-wrap"
+                          data-name="your-email"
+                        >
+                          {formFields[1] && (
+                            <input
+                              size="40"
+                              className={
+                                formik.errors[formFields[1].name]
+                                  ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                  : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                              }
+                              id={formFields[1].name}
+                              type={formFields[1].basetype}
+                              name={formFields[1].name}
+                              placeholder={formFields[1].raw_values[0]}
+                              value={formik.values[formFields[1].name]}
+                              onChange={formik.handleChange}
+                            />
+                          )}
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span
+                          class="wpcf7-form-control-wrap"
+                          data-name="your-city"
+                        >
+                          {formFields[2] && (
+                            <select
+                              id={formFields[2].name}
+                              name={formFields[2].name}
+                              value={formik.values[formFields[2].name]}
+                              onChange={formik.handleChange}
+                              className={
+                                formik.errors[formFields[2].name]
+                                  ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                  : "wpcf7-form-control wpcf7-select"
+                              }
+                              aria-invalid="false"
+                            >
+                              {formFields[2].raw_values.map(
+                                (option, index) => (
+                                  <option
+                                    key={`${index}select`}
+                                    value={option}
+                                  >
+                                    {option}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          )}
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span
+                          class="wpcf7-form-control-wrap"
+                          data-name="your-tel"
+                        >
+                          {formFields[3] && (
+                            <input
+                              size="40"
+                              className={
+                                formik.errors[formFields[3].name]
+                                  ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                  : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                              }
+                              id={formFields[3].name}
+                              type={formFields[3].basetype}
+                              name={formFields[3].name}
+                              placeholder={formFields[3].raw_values[0]}
+                              value={formik.values[formFields[3].name]}
+                              onChange={formik.handleChange}
+                            />
+                          )}
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span
+                          class="wpcf7-form-control-wrap"
+                          data-name="how-can-help"
+                        >
+                          {formFields[4] && (
+                            <textarea
+                              cols="40"
+                              rows="10"
+                              className={
+                                formik.errors[formFields[4].name]
+                                  ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                  : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
+                              }
+                              aria-required="true"
+                              aria-invalid="false"
+                              placeholder={formFields[4].raw_values[0]}
+                              name={formFields[4].name}
+                              onChange={formik.handleChange}
+                            ></textarea>
+                          )}
+                        </span>
+                      </div>
+                      <div class="captcha">
+                        <table class="captcha-wrapper">
+                          <tbody><tr class="captcha_image">
+
+                            <td>
+                              {captchaExpression}
+                            </td>
+                          </tr>
+                            <tr class="captcha_text">
+                              <td><span class="wpcf7-form-control-wrap" data-name="captcha-720b">
+                                <input
+                                  className={
+                                    formik.errors.captcha
+                                      ? "c4wp_user_input_captcha wpcf7-select wpcf7-not-valid"
+                                      : "c4wp_user_input_captcha"
+                                  }
+                                  id="captcha"
+                                  type="text"
+                                  name="captcha"
+                                  placeholder="Insert Captcha Here"
+                                  value={formik.values.captcha}
+                                  onChange={formik.handleChange}
+                                /></span></td>
+                            </tr>
+                          </tbody></table>
+                      </div>
+                      <div class="row sub-btn">
                         <input
-                          size="40"
-                          class="wpcf7-form-control wpcf7-tel wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-tel"
-                          aria-required="true"
-                          aria-invalid="false"
-                          placeholder="Mobile Number*"
-                          value=""
-                          type="tel"
-                          name="your-tel"
+                          class="wpcf7-form-control wpcf7-submit has-spinner"
+                          type="submit"
+                          value="Submit"
                         />
-                      </span>
-                    </div>
-                    <div class="row">
-                      <span
-                        class="wpcf7-form-control-wrap"
-                        data-name="how-can-help"
-                      >
-                        <textarea
-                          cols="10"
-                          rows="3"
-                          class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required"
-                          aria-required="true"
-                          aria-invalid="false"
-                          placeholder="How can we help you?*"
-                          name="how-can-help"
-                        ></textarea>
-                      </span>
-                    </div>
-                    <div class="captcha"></div>
-                    <div class="row sub-btn">
-                      <input
-                        class="wpcf7-form-control wpcf7-submit has-spinner"
-                        type="submit"
-                        value="Submit"
-                      />
-                      <span class="wpcf7-spinner"></span>
-                    </div>
-                    <div class="wpcf7-response-output" aria-hidden="true"></div>
-                  </form>
+                        <span className="wpcf7-spinner-career">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="45px"
+                            height="45px"
+                            viewBox="0 0 100 100"
+                            preserveAspectRatio="xMidYMid"
+                          >
+                            <g transform="translate(80,50)">
+                              <g transform="rotate(0)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="1"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.7608695652173912s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.7608695652173912s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(71.21320343559643,71.21320343559643)">
+                              <g transform="rotate(45)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.875"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.6521739130434782s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.6521739130434782s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(50,80)">
+                              <g transform="rotate(90)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.75"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.5434782608695652s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.5434782608695652s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(28.786796564403577,71.21320343559643)">
+                              <g transform="rotate(135)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.625"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.4347826086956521s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.4347826086956521s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(20,50.00000000000001)">
+                              <g transform="rotate(180)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.5"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.3260869565217391s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.3260869565217391s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(28.78679656440357,28.786796564403577)">
+                              <g transform="rotate(225)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.375"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.21739130434782605s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.21739130434782605s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(49.99999999999999,20)">
+                              <g transform="rotate(270)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.25"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="-0.10869565217391303s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="-0.10869565217391303s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                            <g transform="translate(71.21320343559643,28.78679656440357)">
+                              <g transform="rotate(315)">
+                                <circle
+                                  cx="0"
+                                  cy="0"
+                                  r="6"
+                                  fill="#1c4595"
+                                  fill-opacity="0.125"
+                                >
+                                  <animateTransform
+                                    attributeName="transform"
+                                    type="scale"
+                                    begin="0s"
+                                    values="1.5 1.5;1 1"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                  ></animateTransform>
+                                  <animate
+                                    attributeName="fill-opacity"
+                                    keyTimes="0;1"
+                                    dur="0.8695652173913042s"
+                                    repeatCount="indefinite"
+                                    values="1;0"
+                                    begin="0s"
+                                  ></animate>
+                                </circle>
+                              </g>
+                            </g>
+                          </svg>
+                          Form is getting submitted, please wait...
+                        </span>
+                      </div>
+                      {formMessage && (
+                        <div
+                          className="wpcf7-response-output"
+                          aria-hidden="true"
+                          style={{ color: "red" }}
+                        >
+                          {formMessage}
+                        </div>
+                      )}
+                    </form>
+                  </Formik>
                 </div>
               </div>
             </div>

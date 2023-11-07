@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { graphql, Link } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import LazyLoad from "react-lazy-load";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { GatsbySeo } from "gatsby-plugin-next-seo";
+
 import SwiperCore, { Autoplay, Parallax } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.min.css"; // Swiper CSS
@@ -11,7 +14,6 @@ import "swiper/css/pagination";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import Seo from "../components/SeoMeta";
 import Layout from "../components/Layout";
 import swiperNext from "../assets/img/swiper-next.png";
 
@@ -128,7 +130,33 @@ export default function Home({ data }) {
   return (
     <>
       {/* <Seo pageUrl={`${WEBSITE_URL}/`} bodyClass={`home`} title={homePage.title} description={ } imageUrl={ } imgHeight={ } imgWidth={ } imgType={ } /> */}
-      <Seo pageUrl={`${WEBSITE_URL}/`} bodyClass={`home`} title={"Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai"} description={"Luxury Furniture Brand in Dubai: Redefine elegance with our complete home interior design service using premium furniture, and luxurious accessories."} />
+      <GatsbySeo
+        title='Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai'
+        description='As one of the top website designers and digital marketing agencies in Dubai, Emqube designs and develops corporate web sites, ecommerce sites, content creation & marketing, web application, content marketing, social media marketing, seo services, drip marketing etc in Dubai-UAE.'
+        canonical={`${WEBSITE_URL}/`}
+        openGraph={{
+          url: `${WEBSITE_URL}/`,
+          title: 'Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai',
+          description: 'As one of the top website designers and digital marketing agencies in Dubai, Emqube designs and develops corporate web sites, ecommerce sites, content creation & marketing, web application, content marketing, social media marketing, seo services, drip marketing etc in Dubai-UAE.',
+          images: [
+            {
+              url: 'https://www.innerspacedxb.com/wp-content/uploads/2022/11/logo-innerspace-black.png',
+              width: 200,
+              height: 200,
+              alt: 'Og Image Alt',
+            },
+          ],
+          site_name: 'Innerspacedxb',
+        }}
+        twitter={{
+          handle: '@handle',
+          site: '@site',
+          cardType: 'summary_large_image',
+        }}
+      />
+      <HelmetProvider>
+        <Helmet bodyAttributes={{ class: "home" }}></Helmet>
+      </HelmetProvider>
       <Layout>
         {/* <!-- hero slider starts  --> */}
         <section className="hero-slider page-wrap">

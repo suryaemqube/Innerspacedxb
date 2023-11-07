@@ -1,11 +1,9 @@
 import React, { useEffect, useContext } from "react";
 import { Slice } from "gatsby";
-import { HelmetProvider } from "react-helmet-async";
 import { PageStateContext } from "../components/context/PageStateContext";
 import Lenis from "@studio-freight/lenis";
 
 const Layout = ({ children }) => {
-  const helmetContext = {};
 
   const { pageState, setPageEntering, setPageActive, setPageExiting } =
     useContext(PageStateContext);
@@ -42,7 +40,7 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const lenis = new Lenis();
 
-    lenis.on("scroll", (e) => {});
+    lenis.on("scroll", (e) => { });
 
     function raf(time) {
       lenis.raf(time);
@@ -53,11 +51,11 @@ const Layout = ({ children }) => {
   });
 
   return (
-    <HelmetProvider context={helmetContext}>
+    <>
       <Slice alias="navigation-bar" />
       <div className={layoutClassName}>{children}</div>
       <Slice alias="footer" />
-    </HelmetProvider>
+    </>
   );
 };
 

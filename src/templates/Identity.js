@@ -6,10 +6,10 @@ import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import Layout from "../components/Layout";
 import { getToken } from "../hooks/token";
 import Seo from "../components/SeoMeta";
+import { dashCase } from '../utils';
 
 import scrubber from "../assets/img/scrubber-icon-1.svg";
 
-import iconClose from "../assets/img/icon-close.svg";
 
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
@@ -22,6 +22,8 @@ const Identity = ({ pageContext, data }) => {
   const sliderRef = useRef(null);
 
   const [tab, setTab] = useState();
+  const [teamData, setTeamData] = useState(null);
+  const teamContent = useRef(null);
 
   const [token, setToken] = useState("");
   const [careerFormFields, setCareerFormFields] = useState([]);
@@ -85,18 +87,27 @@ const Identity = ({ pageContext, data }) => {
     }, 300);
   };
 
-  const handleTab = (e) => {
+  const handleTab = (e, row) => {
     e.preventDefault();
     const ListSelector = e.target.closest("li");
+    const scrollToContent = teamContent.current;
     const dataUrl = ListSelector.getAttribute("data-url");
+
     setTab(dataUrl);
-    scrollToElement(ListSelector.children[1]);
+    setTeamData(row);
+
+
+    if (scrollToContent) {
+      console.log("ScrollUP", scrollToContent);
+      scrollToElement(scrollToContent);
+    }
   };
 
-  const handleTabClose = (e) => {
+  const handleTabClose = (e, el) => {
     e.preventDefault();
     setTab("");
-    const ListSelector = e.target.closest("li");
+    console.log("tab: ", tab)
+    const ListSelector = document.querySelector(`.${el}`);
     scrollToElement(ListSelector.children[0]);
   };
 
@@ -109,7 +120,7 @@ const Identity = ({ pageContext, data }) => {
       try {
         const fetchedToken = await getToken();
         setToken(fetchedToken);
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchToken();
@@ -353,7 +364,7 @@ const Identity = ({ pageContext, data }) => {
         .catch((error) => console.error("Error file upload on email:", error));
     }
   };
-
+  console.log("SEO: ", WEBSITE_URL + PAGELINK)
   return (
     <Layout>
       <Seo
@@ -386,10 +397,10 @@ const Identity = ({ pageContext, data }) => {
                   PAGEID === 13
                     ? identity.ourStoryLayout.topText
                     : PAGEID === 15
-                    ? ourTeam.teamTopText
-                    : PAGEID === 17
-                    ? identity.careerLayout.topCareerText
-                    : "",
+                      ? ourTeam.teamTopText
+                      : PAGEID === 17
+                        ? identity.careerLayout.topCareerText
+                        : "",
               }}
             />
           ) : (
@@ -1599,8 +1610,9 @@ const Identity = ({ pageContext, data }) => {
                         <li
                           key={`fdhdf` + index}
                           className={
+                            dashCase(row.memberName) + " " +
                             row.designation +
-                            ` ${row.memberName === tab ? "active" : ""}`
+                            ` ${row.memberName === tab ? "active1" : ""}`
                           }
                           data-url={row.memberName}
                           data-content={`#colio_c${index}`}
@@ -1608,7 +1620,7 @@ const Identity = ({ pageContext, data }) => {
                           <a
                             className="colio-link"
                             href="#"
-                            onClick={handleTab}
+                            onClick={(e) => handleTab(e, row)}
                           >
                             <p className="member-info">
                               <span className="member-name">
@@ -1628,20 +1640,18 @@ const Identity = ({ pageContext, data }) => {
                             </div>
                           </a>
 
-                          <div
-                            class={`colio ${
-                              row.memberName === tab ? "colio-expanded" : ""
-                            } `}
+                          {/* <div
+                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
+                              } `}
                             id={`hacker_member`}
                           >
                             <div class="colio-container">
                               <div
                                 id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${
-                                  row.memberName === tab
-                                    ? "tabOpen"
-                                    : "tabClose"
-                                }`}
+                                className={`colio-content colio-member-content ${row.memberName === tab
+                                  ? "tabOpen"
+                                  : "tabClose"
+                                  }`}
                               >
                                 <div className="main">
                                   <div className="left">
@@ -1660,7 +1670,7 @@ const Identity = ({ pageContext, data }) => {
                                           image={getImage(row.photo)}
                                           alt={row.photo.altText}
                                         />
-                                        {/* <img src="" alt="" /> */}
+                                       
                                       </div>
                                     </div>
                                   </div>
@@ -1681,7 +1691,7 @@ const Identity = ({ pageContext, data }) => {
                                 </a>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </li>
                       ))}
                     <li className="colio-item isotope-item"></li>
@@ -1693,8 +1703,9 @@ const Identity = ({ pageContext, data }) => {
                         <li
                           key={`dfd` + index}
                           className={
+                            dashCase(row.memberName) + " " +
                             row.designation +
-                            ` ${row.memberName === tab ? "active" : ""}`
+                            ` ${row.memberName === tab ? "active1" : ""}`
                           }
                           data-url={row.memberName}
                           data-content={`#colio_c${index}`}
@@ -1702,7 +1713,7 @@ const Identity = ({ pageContext, data }) => {
                           <a
                             className="colio-link"
                             href="#"
-                            onClick={handleTab}
+                            onClick={(e) => handleTab(e, row)}
                           >
                             <p className="member-info">
                               <span className="member-name">
@@ -1721,20 +1732,18 @@ const Identity = ({ pageContext, data }) => {
                               {/* <img src="" alt="" /> */}
                             </div>
                           </a>
-                          <div
-                            class={`colio ${
-                              row.memberName === tab ? "colio-expanded" : ""
-                            } `}
+                          {/* <div
+                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
+                              } `}
                             id={`hacker_member`}
                           >
                             <div class="colio-container">
                               <div
                                 id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content   ${
-                                  row.memberName === tab
-                                    ? "tabOpen"
-                                    : "tabClose"
-                                }`}
+                                className={`colio-content colio-member-content   ${row.memberName === tab
+                                  ? "tabOpen"
+                                  : "tabClose"
+                                  }`}
                               >
                                 <div className="main">
                                   <div className="left">
@@ -1753,7 +1762,7 @@ const Identity = ({ pageContext, data }) => {
                                           image={getImage(row.photo)}
                                           alt={row.photo.altText}
                                         />
-                                        {/* <img src="" alt="" /> */}
+                                       
                                       </div>
                                     </div>
                                   </div>
@@ -1774,7 +1783,7 @@ const Identity = ({ pageContext, data }) => {
                                 </a>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </li>
                       ))}
 
@@ -1783,8 +1792,9 @@ const Identity = ({ pageContext, data }) => {
                         <li
                           key={`hrbsd` + index}
                           className={
+                            dashCase(row.memberName) + " " +
                             row.designation +
-                            ` ${row.memberName === tab ? "active" : ""}`
+                            ` ${row.memberName === tab ? "active1" : ""}`
                           }
                           data-url={row.memberName}
                           data-content={`#colio_c${index}`}
@@ -1792,7 +1802,7 @@ const Identity = ({ pageContext, data }) => {
                           <a
                             className="colio-link"
                             href="#"
-                            onClick={handleTab}
+                            onClick={(e) => handleTab(e, row)}
                           >
                             <p className="member-info">
                               <span className="member-name">
@@ -1808,23 +1818,21 @@ const Identity = ({ pageContext, data }) => {
                                 image={getImage(row.photo)}
                                 alt={row.photo.altText}
                               />
-                              {/* <img src="" alt="" /> */}
+
                             </div>
                           </a>
-                          <div
-                            class={`colio ${
-                              row.memberName === tab ? "colio-expanded" : ""
-                            } `}
+                          {/* <div
+                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
+                              } `}
                             id="hacker_member"
                           >
                             <div class="colio-container">
                               <div
                                 id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${
-                                  row.memberName === tab
-                                    ? "tabOpen"
-                                    : "tabClose"
-                                }`}
+                                className={`colio-content colio-member-content ${row.memberName === tab
+                                  ? "tabOpen"
+                                  : "tabClose"
+                                  }`}
                               >
                                 <div className="main">
                                   <div className="left">
@@ -1843,7 +1851,7 @@ const Identity = ({ pageContext, data }) => {
                                           image={getImage(row.photo)}
                                           alt={row.photo.altText}
                                         />
-                                        {/* <img src="" alt="" /> */}
+                                        
                                       </div>
                                     </div>
                                   </div>
@@ -1864,7 +1872,7 @@ const Identity = ({ pageContext, data }) => {
                                 </a>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </li>
                       ))}
                     <li className="colio-item isotope-item"></li>
@@ -1874,8 +1882,9 @@ const Identity = ({ pageContext, data }) => {
                         <li
                           key={`dsdgf` + index}
                           className={
+                            dashCase(row.memberName) + " " +
                             row.designation +
-                            ` ${row.memberName === tab ? "active" : ""}`
+                            ` ${row.memberName === tab ? "active1" : ""}`
                           }
                           data-url={row.memberName}
                           data-content={`#colio_c${index}`}
@@ -1883,7 +1892,7 @@ const Identity = ({ pageContext, data }) => {
                           <a
                             className="colio-link"
                             href="#"
-                            onClick={handleTab}
+                            onClick={(e) => handleTab(e, row)}
                           >
                             <p className="member-info">
                               <span className="member-name">
@@ -1899,23 +1908,21 @@ const Identity = ({ pageContext, data }) => {
                                 image={getImage(row.photo)}
                                 alt={row.photo.altText}
                               />
-                              {/* <img src="" alt="" /> */}
+
                             </div>
                           </a>
-                          <div
-                            class={`colio ${
-                              row.memberName === tab ? "colio-expanded" : ""
-                            } `}
+                          {/* <div
+                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
+                              } `}
                             id="hacker_member"
                           >
                             <div class="colio-container">
                               <div
                                 id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${
-                                  row.memberName === tab
-                                    ? "tabOpen"
-                                    : "tabClose"
-                                }`}
+                                className={`colio-content colio-member-content ${row.memberName === tab
+                                  ? "tabOpen"
+                                  : "tabClose"
+                                  }`}
                               >
                                 <div className="main">
                                   <div className="left">
@@ -1934,7 +1941,7 @@ const Identity = ({ pageContext, data }) => {
                                           image={getImage(row.photo)}
                                           alt={row.photo.altText}
                                         />
-                                        {/* <img src="" alt="" /> */}
+                                        
                                       </div>
                                     </div>
                                   </div>
@@ -1955,7 +1962,7 @@ const Identity = ({ pageContext, data }) => {
                                 </a>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </li>
                       ))}
                     <li className="colio-item isotope-item"></li>
@@ -1964,8 +1971,9 @@ const Identity = ({ pageContext, data }) => {
                         <li
                           key={`mnvdg` + index}
                           className={
+                            dashCase(row.memberName) + " " +
                             row.designation +
-                            ` ${row.memberName === tab ? "active" : ""}`
+                            ` ${row.memberName === tab ? "active1" : ""}`
                           }
                           data-url={row.memberName}
                           data-content={`#colio_c${index}`}
@@ -1973,7 +1981,7 @@ const Identity = ({ pageContext, data }) => {
                           <a
                             className="colio-link"
                             href="#"
-                            onClick={handleTab}
+                            onClick={(e) => handleTab(e, row)}
                           >
                             <p className="member-info">
                               <span className="member-name">
@@ -1992,20 +2000,18 @@ const Identity = ({ pageContext, data }) => {
                               {/* <img src="" alt="" /> */}
                             </div>
                           </a>
-                          <div
-                            class={`colio ${
-                              row.memberName === tab ? "colio-expanded" : ""
-                            } `}
+                          {/* <div
+                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
+                              } `}
                             id="hacker_member"
                           >
                             <div class="colio-container">
                               <div
                                 id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${
-                                  row.memberName === tab
-                                    ? "tabOpen"
-                                    : "tabClose"
-                                }`}
+                                className={`colio-content colio-member-content ${row.memberName === tab
+                                  ? "tabOpen"
+                                  : "tabClose"
+                                  }`}
                               >
                                 <div className="main">
                                   <div className="left">
@@ -2024,7 +2030,7 @@ const Identity = ({ pageContext, data }) => {
                                           image={getImage(row.photo)}
                                           alt={row.photo.altText}
                                         />
-                                        {/* <img src="" alt="" /> */}
+                                        
                                       </div>
                                     </div>
                                   </div>
@@ -2045,14 +2051,63 @@ const Identity = ({ pageContext, data }) => {
                                 </a>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </li>
                       ))}
                   </ul>
                 </div>
               </div>
-            </section>
+            </section >
+            <section ref={teamContent}>
+              {teamData &&
 
+                <div
+                  id="team-content"
+                  className={`colio-content colio-member-content ${teamData.memberName === tab
+                    ? "tabOpen"
+                    : "tabClose"
+                    }`}
+                >
+                  <div className="main">
+                    <div className="left">
+                      <div className="img-wrap">
+                        <p className="member-info">
+                          <span className="member-name">
+                            {teamData.memberName}
+                          </span>
+                          <span className="designation">
+                            {teamData.designation}
+                          </span>
+                        </p>
+                        <div className="holder">
+                          <GatsbyImage
+                            loading={"lazy"}
+                            image={getImage(teamData.photo)}
+                            alt={teamData.photo.altText}
+                          />
+
+                        </div>
+                      </div>
+                    </div>
+                    <div className="right">
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html: removeTags(teamData.description),
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <a
+                    class="colio-close"
+                    href="#"
+                    onClick={(e) => handleTabClose(e, dashCase(teamData.memberName))}
+                  >
+                    <span>Close</span>
+                  </a>
+                </div>
+
+              }
+            </section>
             <section className="btm-team-wrapper">
               <ul className="list">
                 <li>

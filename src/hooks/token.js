@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
-console.log(WEBSITE_URL);
 
 export const getToken = async () => {
   try {

@@ -24,7 +24,7 @@ const Seo = ({ pageUrl, title, description, bodyClass, imageUrl, imgHeight, imgW
   return (
     <HelmetProvider context={headContext}>
       <Helmet htmlAttributes={{ lang: "en" }} bodyAttributes={{ class: bodyClass }}>
-        <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
+        {/* <meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
         <meta name="HandheldFriendly" content="True" />
         <meta name="MobileOptimized" content="320" />
         <title>{title ? title : head.title}</title>
@@ -52,43 +52,43 @@ const Seo = ({ pageUrl, title, description, bodyClass, imageUrl, imgHeight, imgW
         />
         <meta name="twitter:card" content={"summary_large_image"} />
         <meta name="twitter:site" content={"@site"} />
-        <meta name="twitter:creator" content="@handle" />
-        {/* <title>{head.title ? head.title : title}</title>
-      <meta
-        name="description"
-        content={head.description ? head.description : description}
-      />
-      <meta
-        name="robots"
-        content={`index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1`}
-      />
+        <meta name="twitter:creator" content="@handle" /> */}
+        <title>{head.title ? head.title : title}</title>
+        <meta
+          name="description"
+          content={head.description ? head.description : description}
+        />
+        <meta
+          name="robots"
+          content={`index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1`}
+        />
 
-      <meta name="twitter:card" content={head.twitter_card} />
-      <meta name="twitter:site" content={head.twitter_site} />
+        <meta name="twitter:card" content={head.twitter_card} />
+        <meta name="twitter:site" content={head.twitter_site} />
 
-      <meta property="og:locale" content={head.og_locale} />
-      <meta property="og:type" content={head.og_type} />
-      <meta
-        property="og:title"
-        content={head.og_title ? head.og_title : title}
-      />
-      <meta
-        property="og:description"
-        content={head.og_description ? head.og_description : description}
-      />
-      <meta property="og:url" content={head.og_url} />
-      <meta property="og:site_name" content={head.og_site_name} />
-      <meta
-        property="article:modified_time"
-        content={head.article_modified_time}
-      />
-      <meta
-        name="google-site-verification"
-        content="4KgWrYQfz8sTPAgJGMlDVKzR-OLGh6yRTd5kmLV1Xlw"
-      />
-      <link rel="canonical" href={head.canonical} />
+        <meta property="og:locale" content={head.og_locale} />
+        <meta property="og:type" content={head.og_type} />
+        <meta
+          property="og:title"
+          content={head.og_title ? head.og_title : title}
+        />
+        <meta
+          property="og:description"
+          content={head.og_description ? head.og_description : description}
+        />
+        <meta property="og:url" content={head.og_url} />
+        <meta property="og:site_name" content={head.og_site_name} />
+        <meta
+          property="article:modified_time"
+          content={head.article_modified_time}
+        />
+        <meta
+          name="google-site-verification"
+          content="4KgWrYQfz8sTPAgJGMlDVKzR-OLGh6yRTd5kmLV1Xlw"
+        />
+        <link rel="canonical" href={head.canonical} />
 
-      <script type="application/ld+json">{JSON.stringify(head.schema)}</script> */}
+        <script type="application/ld+json">{JSON.stringify(head.schema)}</script>
       </Helmet>
     </HelmetProvider>
   );

@@ -33,8 +33,10 @@ export default function Slider({ home, brand }) {
 
   const brandSwiperNext = (e) => {
     e.preventDefault();
-    swiper1.slideNext();
-    swiper2.slideNext();
+    if (typeof window !== "undefined" && window.innerWidth > 767) {
+      swiper1.slideNext();
+      swiper2.slideNext();
+    }
     swiper3.slideNext();
   };
 
@@ -100,7 +102,7 @@ export default function Slider({ home, brand }) {
                   <SwiperSlide
                     key={slide.id}
                     className="swiper-slide"
-                    // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
+                  // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
                   >
                     <GatsbyImage
                       image={getImage(slide.featuredImage.node)}
@@ -168,7 +170,7 @@ export default function Slider({ home, brand }) {
                   <SwiperSlide
                     key={slide.id}
                     className="swiper-slide"
-                    // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
+                  // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
                   >
                     <GatsbyImage
                       image={getImage(slide.featuredImage.node)}
@@ -247,7 +249,7 @@ export default function Slider({ home, brand }) {
               <SwiperSlide
                 key={slide.id}
                 className="swiper-slide"
-                // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
+              // style="background: url(<?php echo $brand_main_img_home; ?>) no-repeat center; background-size: cover;"
               >
                 <GatsbyImage
                   image={getImage(slide.featuredImage.node)}

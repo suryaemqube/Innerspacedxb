@@ -283,6 +283,11 @@ section.brands .flex div.swiper-slide a.dblock {
   z-index: 9999;
 }
 
+.main-content section.room-brands .room-brands-wrapper .container{
+  max-width: 100%;
+}
+
+
 /* Home Page CSS */
 .product-range .lg-react-element {
   height: 100%;
@@ -401,6 +406,34 @@ section.teams-wrapper .contain ul.member-list li .tabClose {
   }
 }
 /* Updated code */
+#team-content{
+  display: flex;
+}
+#team-content .gatsby-image-wrapper {
+  height: 100% !important;
+  width: 100% !important;
+}
+#team-content .holder{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+#team-content .main .left .img-wrap{
+  position: relative;
+  flex-direction: column-reverse;
+} 
+
+#team-content .main .left .img-wrap .member-info{
+  z-index: 100;
+}
+#team-content .main .left .img-wrap .member-info span{
+  display: block;
+  color: #fff;
+}
+
+.tabClose {
+  display: none !important;
+}
 /* .member-item{
   height: 250px !important;
   width: 264px !important;
@@ -415,11 +448,11 @@ section.teams-wrapper .contain ul.member-list{
 } */
 /* Brands */
 
-@media (min-width:768px){
+/* @media (min-width:821px){
   .brand-footer-sldier .gatsby-image-wrapper {
   height: 309px;
   }
-}
+} */
 
 
  .roomtypebrands .swiper-slide{
@@ -447,14 +480,10 @@ section.teams-wrapper .contain ul.member-list{
   object-fit: fill;
 }
 
-body.page-template-tp-lp .art .container .swiper .swiper-wrapper .swiper-slide,
-body.page-template-tp-lp-hulusta
-  .art
-  .container
-  .swiper
-  .swiper-wrapper
-  .swiper-slide {
+body.page-template-tp-lp-hulusta .incredible-wardrobes .container .swiper .swiper-wrapper .swiper-slide, 
+body.page-template-tp-lp .art .container .swiper .swiper-wrapper .swiper-slide {
   display: block;
+  flex-direction: column !important;
 }
 
 /* Wordpress backend code */
@@ -575,6 +604,13 @@ h6,
   .captcha-wrapper {
     flex-direction: row !important;
   }
+}
+
+.page-template-tp-lp-hulusta .captcha-wrapper,
+.page-template-tp-lp .captcha-wrapper
+{
+  display: inline-table !important;
+  align-items: center;
 }
 /* css added by pradnya for captcha - 04-11-2022 - ends */
 /* css add by shubham for Privacy Policy page 21-2-2023 start */

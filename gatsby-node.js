@@ -47,6 +47,7 @@ exports.createPages = async ({ actions, graphql }) => {
           node {
             slug
             databaseId
+            uri
           }
         }
       }
@@ -158,6 +159,7 @@ exports.createPages = async ({ actions, graphql }) => {
       context: {
         pageId: node.databaseId,
         pageSlug: node.slug,
+        pageUri: node.uri
       },
     });
   });

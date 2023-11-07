@@ -131,7 +131,7 @@ const Portfolio = ({ data }) => {
 
   return (
     <Layout>
-      <Seo pageUrl={`${WEBSITE_URL}/portfolio/`} bodyClass={`last-chance page-id-1507`}></Seo>
+      <Seo pageUrl={`${WEBSITE_URL}/last-chance/`} bodyClass={`last-chance page-id-1507`}></Seo>
 
       <section class="header-image last-chance ">
         {header ? (

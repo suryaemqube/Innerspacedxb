@@ -60,6 +60,7 @@ module.exports = {
     `gatsby-plugin-image`,
     `gatsby-plugin-netlify`,
     "gatsby-plugin-sitemap",
+    "gatsby-plugin-next-seo",
     {
       resolve: "gatsby-plugin-google-tagmanager",
       options: {
