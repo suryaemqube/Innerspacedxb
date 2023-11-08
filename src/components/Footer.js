@@ -42,7 +42,7 @@ function Footer() {
       try {
         const fetchedToken = await getToken();
         setToken(fetchedToken);
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchToken();
@@ -114,6 +114,35 @@ function Footer() {
         .catch((error) => console.error("Error sending email:", error));
     },
   });
+
+
+  useEffect(() => {
+    document.addEventListener("scroll", function () {
+      if (typeof window !== "undefined") {
+        var scrollPosition =
+          window.pageYOffset || document.documentElement.scrollTop;
+
+        var scrolltotop = document.querySelector("#scrollUp");
+
+        if (!scrolltotop) return;
+
+        if (scrollPosition > 300) {
+          scrolltotop.classList.add("show-to-top");
+        } else {
+          if (scrolltotop.classList.contains("show-to-top")) {
+            scrolltotop.classList.remove("show-to-top");
+          }
+        }
+      }
+    });
+  });
+
+  const scrollToTop = (e) => {
+    e.preventDefault();
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <>
@@ -374,6 +403,8 @@ function Footer() {
         </div>
       </footer>
       {/* <!-- FOOTER Ends --> */}
+
+      <a id="scrollUp" href="#top" title="Scroll to top" onClick={scrollToTop} style={{ "position": 'fixed', "z-index": "2147483647", "display": "none" }}>Scroll to top</a>
     </>
   );
 }

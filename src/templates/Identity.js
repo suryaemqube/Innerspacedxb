@@ -84,13 +84,14 @@ const Identity = ({ pageContext, data }) => {
   const scrollToElement = (element) => {
     setTimeout(() => {
       element.scrollIntoView({ behavior: "smooth" });
-    }, 300);
+    }, 700);
   };
 
   const handleTab = (e, row) => {
     e.preventDefault();
     const ListSelector = e.target.closest("li");
     const scrollToContent = teamContent.current;
+    scrollToContent.classList.add("colio-sec-exp")
     const dataUrl = ListSelector.getAttribute("data-url");
 
     setTab(dataUrl);
@@ -106,9 +107,14 @@ const Identity = ({ pageContext, data }) => {
   const handleTabClose = (e, el) => {
     e.preventDefault();
     setTab("");
+    const scrollToContent = teamContent.current;
+    scrollToContent.classList.remove("colio-sec-exp")
     console.log("tab: ", tab)
     const ListSelector = document.querySelector(`.${el}`);
-    scrollToElement(ListSelector.children[0]);
+    setTimeout(() => {
+      ListSelector.scrollIntoView({ behavior: "smooth" });
+    }, 2000);
+    // scrollToElement(ListSelector);
   };
 
   // useEffect(() => {
@@ -364,7 +370,6 @@ const Identity = ({ pageContext, data }) => {
         .catch((error) => console.error("Error file upload on email:", error));
     }
   };
-  console.log("SEO: ", WEBSITE_URL + PAGELINK)
   return (
     <Layout>
       <Seo
@@ -1694,9 +1699,12 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                         </li>
                       ))}
-                    <li className="colio-item isotope-item"></li>
-                    <li className="colio-item isotope-item"></li>
-                    <li className="colio-item isotope-item"></li>
+                    {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      <>
+                        <li className="colio-item isotope-item"></li>
+                        <li className="colio-item isotope-item"></li>
+                        <li className="colio-item isotope-item"></li>
+                      </>}
 
                     {ourTeam.secondRowMembers.length > 0 &&
                       ourTeam.secondRowMembers.map((row, index) => (
@@ -1875,7 +1883,9 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                         </li>
                       ))}
-                    <li className="colio-item isotope-item"></li>
+                    {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      <li className="colio-item isotope-item"></li>
+                    }
 
                     {ourTeam.fourthRowMembers.length > 0 &&
                       ourTeam.fourthRowMembers.map((row, index) => (
@@ -1965,7 +1975,9 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                         </li>
                       ))}
-                    <li className="colio-item isotope-item"></li>
+                    {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      <li className="colio-item isotope-item"></li>
+                    }
                     {ourTeam.fifthRowMembers.length > 0 &&
                       ourTeam.fifthRowMembers.map((row, index) => (
                         <li
@@ -2058,7 +2070,11 @@ const Identity = ({ pageContext, data }) => {
                 </div>
               </div>
             </section >
-            <section ref={teamContent}>
+
+
+
+            {/* <div className="container"> */}
+            <section className="colio-sec" ref={teamContent}>
               {teamData &&
 
                 <div
@@ -2108,6 +2124,12 @@ const Identity = ({ pageContext, data }) => {
 
               }
             </section>
+            {/* </div> */}
+
+
+
+
+
             <section className="btm-team-wrapper">
               <ul className="list">
                 <li>
