@@ -9,9 +9,11 @@ import lgZoom from "lightgallery/plugins/zoom";
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
+import { GatsbySeo } from "gatsby-plugin-next-seo";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import Layout from "../components/Layout";
-import Seo from "../components/SeoMeta";
+// import Seo from "../components/SeoMeta";
 
 const Portfolio = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,6 +29,7 @@ const Portfolio = ({ data }) => {
   const portfolio = data?.allWpPortfolio?.edges || [];
   const brandCat = data.allWpBrandCategory.edges || [];
   const roomCat = data.allWpRoomtypeCategory.edges || [];
+  const seo = data?.wpPage?.seo || [];
 
   const totalCount = data?.allWpPortfolio?.totalCount || [];
   const pageCount = Math.ceil(totalCount / NOOFPOST);
@@ -137,187 +140,222 @@ const Portfolio = ({ data }) => {
   const displayedData = filteredData.slice(startIndex, endIndex);
 
   return (
-    <Layout>
-      <Seo pageUrl={`${WEBSITE_URL}/portfolio/`} bodyClass={"portfolio"}></Seo>
-      <section class="header-image">
-        {page && page.featuredImage ? (
-          <div class="wrapper">
-            <div class="holder">
-              {/* <img
+    <>
+      <HelmetProvider>
+        <GatsbySeo
+          title={seo && seo.title}
+          description={seo && seo.metaDesc}
+          canonical={seo && seo.canonical}
+          openGraph={{
+            url: seo && seo.opengraphUrl,
+            title: seo && seo.opengraphTitle,
+            description: seo && seo.opengraphDescription,
+            images: [
+              {
+                url: seo && seo.opengraphImage.mediaItemUrl,
+                width: seo && seo.opengraphImage.width,
+                height: seo && seo.opengraphImage.height,
+                alt: seo && seo.opengraphTitle,
+              },
+            ],
+            site_name: seo && seo.opengraphSiteName,
+          }}
+          twitter={{
+            handle: '@handle',
+            site: '@site',
+            cardType: 'summary_large_image',
+          }}
+          nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+          noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+          article={{
+            modifiedTime: seo && seo.opengraphModifiedTime
+          }}
+        />
+        <Helmet bodyAttributes={{ class: "portfolio" }}></Helmet>
+      </HelmetProvider>
+      <Layout>
+
+        {/* <Seo pageUrl={`${WEBSITE_URL}/portfolio/`} bodyClass={"portfolio"}></Seo> */}
+        <section class="header-image">
+          {page && page.featuredImage ? (
+            <div class="wrapper">
+              <div class="holder">
+                {/* <img
                 src={page.featuredImage.node.mediaItemUrl}
                 alt={page.title}
               /> */}
-              <GatsbyImage
-                image={getImage(page.featuredImage.node)}
-                alt={page.title}
-              />
+                <GatsbyImage
+                  image={getImage(page.featuredImage.node)}
+                  alt={page.title}
+                />
+              </div>
             </div>
-          </div>
-        ) : (
-          <img
-            src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
-            alt="header image"
-          />
-        )}
-        <h1>{page.title}</h1>
-      </section>
+          ) : (
+            <img
+              src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
+              alt="header image"
+            />
+          )}
+          <h1>{page.title}</h1>
+        </section>
 
-      <section class="main-content">
-        <div class="container">
-          <div class="filter-wrapper">
-            <div class="filter-title">filter by:</div>
-            <div
-              name="filter-portfolio"
-              className="filter-portfolio"
+        <section class="main-content">
+          <div class="container">
+            <div class="filter-wrapper">
+              <div class="filter-title">filter by:</div>
+              <div
+                name="filter-portfolio"
+                className="filter-portfolio"
 
-              ref={formSelector}
-            >
-              <div class="filters">
-                <div class="select">
-                  <select
-                    name="filter-room"
-                    id="filter-portfolio-room"
-                    value={roomtypeInput}
-                    onChange={(e) => setRoomtypeInput(e.target.value)}
-                  >
-                    <option value="">by room</option>
-                    {roomCat &&
-                      roomCat.map((brand, index) => (
-                        <option
-                          key={`kf;skfhf` + index}
-                          value={brand.node.slug}
-                        >
-                          {brand.node.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div class="select">
-                  <select
-                    name="filter-brand"
-                    id="filter-portfolio-brands"
-                    value={brandInput}
-                    onChange={(e) => setBrandInput(e.target.value)}
-                  >
-                    <option value="">by brand</option>
-                    {brandCat &&
-                      brandCat.map((brand, index) => (
-                        <option key={`kf;skf` + index} value={brand.node.slug}>
-                          {brand.node.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div class="portfolio-filter-wrapper">
-                  <input type="submit" value="filter" id="portfolio-filter" onClick={handleFilter} />
+                ref={formSelector}
+              >
+                <div class="filters">
+                  <div class="select">
+                    <select
+                      name="filter-room"
+                      id="filter-portfolio-room"
+                      value={roomtypeInput}
+                      onChange={(e) => setRoomtypeInput(e.target.value)}
+                    >
+                      <option value="">by room</option>
+                      {roomCat &&
+                        roomCat.map((brand, index) => (
+                          <option
+                            key={`kf;skfhf` + index}
+                            value={brand.node.slug}
+                          >
+                            {brand.node.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div class="select">
+                    <select
+                      name="filter-brand"
+                      id="filter-portfolio-brands"
+                      value={brandInput}
+                      onChange={(e) => setBrandInput(e.target.value)}
+                    >
+                      <option value="">by brand</option>
+                      {brandCat &&
+                        brandCat.map((brand, index) => (
+                          <option key={`kf;skf` + index} value={brand.node.slug}>
+                            {brand.node.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div class="portfolio-filter-wrapper">
+                    <input type="submit" value="filter" id="portfolio-filter" onClick={handleFilter} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          {displayedData ? (
-            <>
-              {displayedData.length > 0 ? (
-                <>
-                  <div class="portfolio-wrapper">
-                    <ul>
-                      {displayedData.map((portfolioSlide, index) => (
-                        <li key={`ighfdoivh` + index}>
-                          {portfolioSlide.node.portfolioGalleryLayout
-                            .portfolioGallery ? (
-                            <LightGallery
-                              plugins={[lgThumbnail, lgZoom]}
-                              loop={true}
-                              thumbnail={true}
-                              exThumbImage={"data-exthumbimage"}
-                              download={false}
-                              counter={false}
-                              selector={".item"}
-                            >
-                              <div class="design-gallery" id="Gal">
-                                {portfolioSlide.node.portfolioGalleryLayout.portfolioGallery.map(
-                                  (gallerySlide, index) => (
-                                    <div
-                                      className="item"
-                                      data-exthumbimage={
-                                        gallerySlide.mediaItemUrl
-                                      }
-                                      data-src={gallerySlide.mediaItemUrl}
-                                      data-sub-html={`<div class="lightGallery-captions"><h5>${portfolioSlide.node.title}</h5></div>`}
-                                    >
-                                      {index + 1 === 1 && (
-                                        <a href="#">
-                                          <div class="img-wrap">
-                                            {portfolioSlide.node
-                                              .featuredImage ? (
-                                              <GatsbyImage
-                                                image={getImage(
-                                                  portfolioSlide.node
-                                                    .featuredImage.node
-                                                )}
-                                                alt={portfolioSlide.node.title}
-                                              />
-                                            ) : (
-                                              <img
-                                                class="ok"
-                                                src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
-                                                alt={portfolioSlide.node.title}
-                                              />
-                                            )}
-                                          </div>
-                                          <h3>{portfolioSlide.node.title}</h3>
-                                        </a>
-                                      )}
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            </LightGallery>
-                          ) : (
-                            <a href="#">
-                              <div class="img-wrap">
-                                {portfolioSlide.node.featuredImage ? (
-                                  <img
-                                    class="<?php echo $portfolio_images['url'][0]; ?>"
-                                    src="<?php echo $main_img; ?>"
-                                    alt={portfolioSlide.node.title}
-                                  />
-                                ) : (
-                                  <img
-                                    class=""
-                                    src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
-                                    alt={portfolioSlide.node.title}
-                                  />
-                                )}
-                              </div>
-                              <h3>{portfolioSlide.node.title}</h3>
-                            </a>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  {console.log("Page: ", displayedData.length >= NOOFPOST, currentPage >= 3, currentPage)}
-                  {(totalCount > 1) && (
-                    <div class="pagination">
-                      <span>
-                        Page {currentPage} of {pageCount}
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                      </span>
-                      {renderPageNumbers()}
+            {displayedData ? (
+              <>
+                {displayedData.length > 0 ? (
+                  <>
+                    <div class="portfolio-wrapper">
+                      <ul>
+                        {displayedData.map((portfolioSlide, index) => (
+                          <li key={`ighfdoivh` + index}>
+                            {portfolioSlide.node.portfolioGalleryLayout
+                              .portfolioGallery ? (
+                              <LightGallery
+                                plugins={[lgThumbnail, lgZoom]}
+                                loop={true}
+                                thumbnail={true}
+                                exThumbImage={"data-exthumbimage"}
+                                download={false}
+                                counter={false}
+                                selector={".item"}
+                              >
+                                <div class="design-gallery" id="Gal">
+                                  {portfolioSlide.node.portfolioGalleryLayout.portfolioGallery.map(
+                                    (gallerySlide, index) => (
+                                      <div
+                                        className="item"
+                                        data-exthumbimage={
+                                          gallerySlide.mediaItemUrl
+                                        }
+                                        data-src={gallerySlide.mediaItemUrl}
+                                        data-sub-html={`<div class="lightGallery-captions"><h5>${portfolioSlide.node.title}</h5></div>`}
+                                      >
+                                        {index + 1 === 1 && (
+                                          <a href="#">
+                                            <div class="img-wrap">
+                                              {portfolioSlide.node
+                                                .featuredImage ? (
+                                                <GatsbyImage
+                                                  image={getImage(
+                                                    portfolioSlide.node
+                                                      .featuredImage.node
+                                                  )}
+                                                  alt={portfolioSlide.node.title}
+                                                />
+                                              ) : (
+                                                <img
+                                                  class="ok"
+                                                  src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
+                                                  alt={portfolioSlide.node.title}
+                                                />
+                                              )}
+                                            </div>
+                                            <h3>{portfolioSlide.node.title}</h3>
+                                          </a>
+                                        )}
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              </LightGallery>
+                            ) : (
+                              <a href="#">
+                                <div class="img-wrap">
+                                  {portfolioSlide.node.featuredImage ? (
+                                    <img
+                                      class="<?php echo $portfolio_images['url'][0]; ?>"
+                                      src="<?php echo $main_img; ?>"
+                                      alt={portfolioSlide.node.title}
+                                    />
+                                  ) : (
+                                    <img
+                                      class=""
+                                      src={`${MEDIA_URL}/img/portfolio-placeholder.jpg`}
+                                      alt={portfolioSlide.node.title}
+                                    />
+                                  )}
+                                </div>
+                                <h3>{portfolioSlide.node.title}</h3>
+                              </a>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  )}
-                </>
-              ) : (
-                <p class="no-data-found">No data found</p>
-              )}
-            </>
-          ) : (
-            <p class="no-data-found">No data found</p>
-          )}
-          ;
-        </div>
-      </section>
-    </Layout>
+                    {console.log("Page: ", displayedData.length >= NOOFPOST, currentPage >= 3, currentPage)}
+                    {(totalCount > 1) && (
+                      <div class="pagination">
+                        <span>
+                          Page {currentPage} of {pageCount}
+                          &nbsp;&nbsp;&nbsp;&nbsp;
+                        </span>
+                        {renderPageNumbers()}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <p class="no-data-found">No data found</p>
+                )}
+              </>
+            ) : (
+              <p class="no-data-found">No data found</p>
+            )}
+            ;
+          </div>
+        </section>
+      </Layout>
+    </>
   );
 };
 export const data = graphql`
@@ -355,6 +393,26 @@ export const data = graphql`
             width: 1920
           )
         }
+      }
+      seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
       }
     }
     allWpPortfolio {

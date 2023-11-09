@@ -17,7 +17,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Layout from "../components/Layout";
 import swiperNext from "../assets/img/swiper-next.png";
 
-const WEBSITE_URL = process.env.GATSBY_BASE_URL;
+// const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
 const SliderLazy = lazy(() => import("../components/lazyload/BrandsSlider"));
 
@@ -33,6 +33,8 @@ export default function Home({ data }) {
   const homePage = data?.wpPage || [];
   const home = data?.wpPage?.homePageContent || [];
   const brand = data?.allWpBrand?.nodes || [];
+  const seo = data?.wpPage?.seo || [];
+
   const shortUrl = (fullUrl) => {
     const url = fullUrl;
     var desiredPart = "#";
@@ -129,29 +131,33 @@ export default function Home({ data }) {
 
   return (
     <>
-      {/* <Seo pageUrl={`${WEBSITE_URL}/`} bodyClass={`home`} title={homePage.title} description={ } imageUrl={ } imgHeight={ } imgWidth={ } imgType={ } /> */}
       <GatsbySeo
-        title='Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai'
-        description='As one of the top website designers and digital marketing agencies in Dubai, Emqube designs and develops corporate web sites, ecommerce sites, content creation & marketing, web application, content marketing, social media marketing, seo services, drip marketing etc in Dubai-UAE.'
-        canonical={`${WEBSITE_URL}/`}
+        title={seo && seo.title}
+        description={seo && seo.metaDesc}
+        canonical={seo && seo.canonical}
         openGraph={{
-          url: `${WEBSITE_URL}/`,
-          title: 'Luxury Furniture Brand in Dubai | Kitchen Showroom Dubai',
-          description: 'As one of the top website designers and digital marketing agencies in Dubai, Emqube designs and develops corporate web sites, ecommerce sites, content creation & marketing, web application, content marketing, social media marketing, seo services, drip marketing etc in Dubai-UAE.',
+          url: seo && seo.opengraphUrl,
+          title: seo && seo.opengraphTitle,
+          description: seo && seo.opengraphDescription,
           images: [
             {
-              url: 'https://www.innerspacedxb.com/wp-content/uploads/2022/11/logo-innerspace-black.png',
-              width: 200,
-              height: 200,
-              alt: 'Og Image Alt',
+              url: seo && seo.opengraphImage.mediaItemUrl,
+              width: seo && seo.opengraphImage.width,
+              height: seo && seo.opengraphImage.height,
+              alt: seo && seo.opengraphTitle,
             },
           ],
-          site_name: 'Innerspacedxb',
+          site_name: seo && seo.opengraphSiteName,
         }}
         twitter={{
           handle: '@handle',
           site: '@site',
           cardType: 'summary_large_image',
+        }}
+        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+        article={{
+          modifiedTime: seo && seo.opengraphModifiedTime
         }}
       />
       <HelmetProvider>
@@ -374,7 +380,26 @@ export const data = graphql`
   query MyQuery {
     wpPage(databaseId: { eq: 7 }) {
       title
-
+      seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
+      }
       homePageContent {
         brandsIntroduction
         designByRoomIntroduction

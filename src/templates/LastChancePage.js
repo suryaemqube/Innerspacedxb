@@ -27,6 +27,7 @@ const Portfolio = ({ data, pageContext }) => {
   const header = data?.wpPage?.lastChanceMainPageLayout || [];
   const lastChance = data?.wpLastChance || [];
   const lastChanceAcf = data?.wpLastChance.lastChanceSingularPage || [];
+  const seo = data?.wpLastChance?.seo || [];
 
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
@@ -204,35 +205,39 @@ const Portfolio = ({ data, pageContext }) => {
   }
 
   return (
-    <>
+    <> <HelmetProvider>
       <GatsbySeo
-        title={lastChance.title}
-        description={removeTags(lastChance.content)}
-        canonical={`${WEBSITE_URL}${pageUri}`}
+        title={seo && seo.title}
+        description={seo && seo.metaDesc}
+        canonical={seo && seo.canonical}
         openGraph={{
-          url: `${WEBSITE_URL}${pageUri}`
-          ,
-          title: lastChance.title,
-          description: removeTags(lastChance.content),
+          url: seo && seo.opengraphUrl,
+          title: seo && seo.opengraphTitle,
+          description: seo && seo.opengraphDescription,
           images: [
             {
-              url: lastChanceAcf.lastChancePostGallery[0].mediaItemUrl,
-              width: lastChanceAcf.lastChancePostGallery[0].width,
-              height: lastChanceAcf.lastChancePostGallery[0].height,
-              alt: 'Og Image Alt',
+              url: seo && seo.opengraphImage.mediaItemUrl,
+              width: seo && seo.opengraphImage.width,
+              height: seo && seo.opengraphImage.height,
+              alt: seo && seo.opengraphTitle,
             },
           ],
-          site_name: 'Innerspacedxb',
+          site_name: seo && seo.opengraphSiteName,
         }}
         twitter={{
           handle: '@handle',
           site: '@site',
           cardType: 'summary_large_image',
         }}
+        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+        article={{
+          modifiedTime: seo && seo.opengraphModifiedTime
+        }}
       />
-      <HelmetProvider>
-        <Helmet bodyAttributes={{ class: "last-chance-detail" }}></Helmet>
-      </HelmetProvider>
+
+      <Helmet bodyAttributes={{ class: "last-chance-detail" }}></Helmet>
+    </HelmetProvider>
       <Layout>
         {/* <Seo
           pageUrl={`${WEBSITE_URL}${pageUri}`}
@@ -911,6 +916,26 @@ export const data = graphql`
           height
           width
         }
+      }
+      seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
       }
     }
   }

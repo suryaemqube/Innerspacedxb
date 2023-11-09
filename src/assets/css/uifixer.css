@@ -296,11 +296,17 @@ section.brands .flex div.swiper-slide a.dblock {
 }
 
 /* Teams Page */
-
 .teams-wrapper .team-members-list ul.member-list li a .gatsby-image-wrapper {
-  width: 296px !important;
+  width: 385px !important;
   /* height: 375px !important; */
   height: 100% !important;
+}
+@media (max-width:1680px) {
+  .teams-wrapper .team-members-list ul.member-list li a .gatsby-image-wrapper {
+    width: 315px !important;
+    /* height: 375px !important; */
+    height: 100% !important;
+  }
 }
 .teams-wrapper
   .team-members-list
@@ -322,7 +328,7 @@ section.brands .flex div.swiper-slide a.dblock {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .teams-wrapper .team-members-list ul.member-list {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -330,8 +336,6 @@ section.brands .flex div.swiper-slide a.dblock {
 
 section.teams-wrapper .contain ul.member-list li {
   width: auto;
-  /* height: auto; */
-  /* changed by leena */
   height: 395px;
   display: flex;
   flex-direction: column;
@@ -362,10 +366,16 @@ section.teams-wrapper .contain ul.member-list li {
     height: 300px;
   }
 }
+@media (max-width:768px) {
+  section.teams-wrapper .contain ul.member-list li {
+    padding: 1px !important ;
+ }
+}
 @media (max-width:767px) {
   section.teams-wrapper .contain ul.member-list li {
     height: 400px;
     width: 100%;
+    padding: 10px !important;
   }
 }
 
@@ -373,11 +383,17 @@ section.teams-wrapper .contain ul.member-list li.active {
   height: 1000px;
   width: 316px;
 }
-
 section.teams-wrapper .contain ul.member-list li a {
   /* height: 375px; */
   height: 100%;
-  width: 297px;
+  width: 385px;
+}
+@media (max-width:1680px) {
+  section.teams-wrapper .contain ul.member-list li a {
+    /* height: 375px; */
+    height: 100%;
+    width: 315px;
+  }
 }
 
 @media (max-width:1440px) {
@@ -912,34 +928,38 @@ padding-right: 0;
   padding: 40px;
   transition: all 1s;
   transition-delay: 1s;
+  position: relative;
 }
 .colio-sec.colio-sec-exp{
   position: relative;
-  height: 550px;
+  /* height: 550px; */
+  height: 100%;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  margin-bottom: 30px;
 }
 @media (max-width:1366px) {
   
   .colio-sec.colio-sec-exp{
     position: relative;
-    height: 420px;
+    /* height: 420px; */
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    
   }
 }
 @media(max-width: 1152px){
  .colio-sec.colio-sec-exp{
-  height: 345px;
+  /* height: 345px; */
 }
 }
 
 @media (max-width:820px){
   .colio-sec.colio-sec-exp{
-    height: 500px;
+    /* height: 500px; */
   }
   }
   @media (max-width:767px){
     .colio-sec.colio-sec-exp{
-      height: 850px;
+      /* height: 850px; */
     }
     }
 .colio-content .main .left .img-wrap{

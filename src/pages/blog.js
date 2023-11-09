@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Layout from "../components/Layout";
 import { Link, graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-import Seo from "../components/SeoMeta";
-
+// import Seo from "../components/SeoMeta";
+import { GatsbySeo } from "gatsby-plugin-next-seo";
 
 const Blog = ({ data }) => {
   const initialPerPage = 4;
@@ -11,15 +11,10 @@ const Blog = ({ data }) => {
 
   const blogpost = data?.allWpPost?.edges || [];
   const blogPage = data?.wpPage || [];
-
+  const seo = data?.wpPage?.seo || [];
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
 
-  function removeTags(str) {
-    if (str === null || str === "") return false;
-    else str = str.toString();
-    return str.replace(/(<([^>]+)>)/gi, "");
-  }
   const loadMore = (e) => {
     e.preventDefault();
     setPerPage((prevPerPage) => prevPerPage + initialPerPage);
@@ -27,7 +22,36 @@ const Blog = ({ data }) => {
 
   return (
     <>
-      <Seo pageUrl={`${WEBSITE_URL}/blog/`} title={"Ideas to Design Living Spaces Beautifully | Innerspace Dubai"} description={"Explore our blogs section & get intelligent ideas about kitchen renovation & luxuriously limitless home interior designs. Visit Innerspace Dubai for more."} imageUrl={blogPage.featuredImage.node.mediaItemUrl} imgHeight={blogPage.featuredImage.node.height} imgWidth={blogPage.featuredImage.node.width} imgType={blogPage.featuredImage.node.mediaType} />
+      <GatsbySeo
+        title={seo && seo.title}
+        description={seo && seo.metaDesc}
+        canonical={seo && seo.canonical}
+        openGraph={{
+          url: seo && seo.opengraphUrl,
+          title: seo && seo.opengraphTitle,
+          description: seo && seo.opengraphDescription,
+          images: [
+            {
+              url: seo && seo.opengraphImage.mediaItemUrl,
+              width: seo && seo.opengraphImage.width,
+              height: seo && seo.opengraphImage.height,
+              alt: seo && seo.opengraphTitle,
+            },
+          ],
+          site_name: seo && seo.opengraphSiteName,
+        }}
+        twitter={{
+          handle: '@handle',
+          site: '@site',
+          cardType: 'summary_large_image',
+        }}
+        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+        article={{
+          modifiedTime: seo && seo.opengraphModifiedTime
+        }}
+      />
+      {/* <Seo pageUrl={`${WEBSITE_URL}/blog/`} title={"Ideas to Design Living Spaces Beautifully | Innerspace Dubai"} description={"Explore our blogs section & get intelligent ideas about kitchen renovation & luxuriously limitless home interior designs. Visit Innerspace Dubai for more."} imageUrl={blogPage.featuredImage.node.mediaItemUrl} imgHeight={blogPage.featuredImage.node.height} imgWidth={blogPage.featuredImage.node.width} imgType={blogPage.featuredImage.node.mediaType} /> */}
       <Layout>
 
         <section class="header-image">
@@ -137,6 +161,26 @@ export const query = graphql`
             width: 1920
           )
         }
+      }
+      seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
       }
     }
    allWpPost(sort: {date: DESC}) {

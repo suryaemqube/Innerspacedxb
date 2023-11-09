@@ -1,47 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Layout from "../components/Layout";
 import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { Link, graphql } from "gatsby";
+import { graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 const BlogDetail = ({ data, pageContext }) => {
-  const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
-  const { pageUri } = pageContext;
 
   const blogpost = data?.wpPost || [];
-
-  function removeTags(str) {
-    if (str === null || str === "") return false;
-    else str = str.toString();
-    return str.replace(/(<([^>]+)>)/gi, "");
-  }
+  const seo = data?.wpPost?.seo || [];
 
   return (
     <>
       <GatsbySeo
-        title={blogpost.title}
-        description={removeTags(blogpost.content.split(" ").slice(0, 60).join(" "))}
-        canonical={`${WEBSITE_URL}${pageUri}`}
+        title={seo && seo.title}
+        description={seo && seo.metaDesc}
+        canonical={seo && seo.canonical}
         openGraph={{
-          url: `${WEBSITE_URL}${pageUri}`
-          ,
-          title: blogpost.title,
-          description: removeTags(blogpost.content.split(" ").slice(0, 30).join(" ")),
+          url: seo && seo.opengraphUrl,
+          title: seo && seo.opengraphTitle,
+          description: seo && seo.opengraphDescription,
           images: [
             {
-              url: blogpost.featuredImage.node.mediaItemUrl,
-              width: blogpost.featuredImage.node.width,
-              height: blogpost.featuredImage.node.height,
-              alt: 'Og Image Alt',
+              url: seo && seo.opengraphImage.mediaItemUrl,
+              width: seo && seo.opengraphImage.width,
+              height: seo && seo.opengraphImage.height,
+              alt: seo && seo.opengraphTitle,
             },
           ],
-          site_name: 'Innerspacedxb',
+          site_name: seo && seo.opengraphSiteName,
         }}
         twitter={{
           handle: '@handle',
           site: '@site',
           cardType: 'summary_large_image',
+        }}
+        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+        article={{
+          modifiedTime: seo && seo.opengraphModifiedTime
         }}
       />
 
@@ -104,6 +101,26 @@ export const query = graphql`
             width: 1700
           )
         }
+      }
+      seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
       }
     }
   }
