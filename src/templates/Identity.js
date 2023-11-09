@@ -89,7 +89,7 @@ const Identity = ({ pageContext, data }) => {
   const scrollToElement = (element) => {
     setTimeout(() => {
       element.scrollIntoView({ behavior: "smooth" });
-    }, 700);
+    }, 200);
   };
 
   const handleTab = (e, row) => {

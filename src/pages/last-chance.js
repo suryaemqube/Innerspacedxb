@@ -109,6 +109,7 @@ const Portfolio = ({ data }) => {
 
   const handleFilter = (e) => {
     e.preventDefault();
+    setCurrentPage(1);
 
     const filterData = lastChance.filter((edge) => {
       const conditionMatch =

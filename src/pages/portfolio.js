@@ -101,6 +101,7 @@ const Portfolio = ({ data }) => {
   }, []);
 
   const handleFilter = () => {
+    setCurrentPage(1);
     // e.preventDefault();
     const filteredData = data.allWpPortfolio.edges.filter((edge) => {
       console.log("inputdata:", roomtypeInput, brandInput);
@@ -132,13 +133,13 @@ const Portfolio = ({ data }) => {
     navigate(`/portfolio/?${queryParams.toString()}`);
 
     setFilteredData(filteredData);
-    console.log("ok: ", filteredData, displayedData.length);
+    console.log("ok: ", filteredData);
   };
 
   const startIndex = (currentPage - 1) * NOOFPOST;
   const endIndex = startIndex + NOOFPOST;
   const displayedData = filteredData.slice(startIndex, endIndex);
-
+  console.log("TestData:", startIndex, endIndex)
   return (
     <>
       <HelmetProvider>
@@ -333,16 +334,17 @@ const Portfolio = ({ data }) => {
                         ))}
                       </ul>
                     </div>
-                    {console.log("Page: ", displayedData.length >= NOOFPOST, currentPage >= 3, currentPage)}
-                    {(totalCount > 1) && (
-                      <div class="pagination">
-                        <span>
-                          Page {currentPage} of {pageCount}
-                          &nbsp;&nbsp;&nbsp;&nbsp;
-                        </span>
-                        {renderPageNumbers()}
-                      </div>
-                    )}
+                    {/* {console.log("Page: ", displayedData.length >= NOOFPOST, currentPage >= 3, currentPage)} */}
+                    {(pageCount > 1) &&
+                      displayedData.length >= NOOFPOST && (
+                        <div class="pagination">
+                          <span>
+                            Page {currentPage} of {pageCount}
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                          </span>
+                          {renderPageNumbers()}
+                        </div>
+                      )}
                   </>
                 ) : (
                   <p class="no-data-found">No data found</p>
@@ -351,7 +353,6 @@ const Portfolio = ({ data }) => {
             ) : (
               <p class="no-data-found">No data found</p>
             )}
-            ;
           </div>
         </section>
       </Layout>

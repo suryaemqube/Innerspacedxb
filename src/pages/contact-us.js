@@ -4,10 +4,8 @@ import { useFormik, Formik } from "formik";
 import axios from "axios";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { HelmetProvider } from "react-helmet-async";
 import Layout from "../components/Layout";
-// import Seo from "../components/SeoMeta";
-import Breadcrumb from "../components/Breadcrumbs";
+
 import { getToken } from "../hooks/token";
 
 const Contact = ({ data }) => {
@@ -19,8 +17,6 @@ const Contact = ({ data }) => {
   const [captchaExpression, setCaptchaExpression] = useState("");
   const [captchaResult, setCaptchaResult] = useState("");
   const [formMessage, setFormMessage] = useState("");
-
-  const isBrowser = typeof window !== "undefined";
 
   const page = data?.wpPage || [];
   const pageAcf = data?.wpPage?.contactUsLayout || [];
@@ -296,6 +292,39 @@ const Contact = ({ data }) => {
                                       </span>
                                     </div>
                                   );
+                                } else if (field.basetype === "select") {
+                                  inputElement = (
+                                    <div className="row">
+                                      <span
+                                        className="wpcf7-form-control-wrap"
+                                        data-name="menu-710"
+                                        key={`${index}select`}
+                                      >
+                                        <select
+                                          id={field.name}
+                                          name={field.name}
+                                          value={formik.values[field.name]}
+                                          onChange={formik.handleChange}
+                                          className={
+                                            formik.errors[field.name]
+                                              ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                              : "wpcf7-form-control wpcf7-select"
+                                          }
+                                        >
+                                          {field.raw_values.map(
+                                            (option, index) => (
+                                              <option
+                                                key={`${index}${option}`}
+                                                value={option}
+                                              >
+                                                {option}
+                                              </option>
+                                            )
+                                          )}
+                                        </select>
+                                      </span>
+                                    </div>
+                                  );
                                 }
 
                                 return inputElement;
@@ -327,39 +356,7 @@ const Contact = ({ data }) => {
                                         </span>
                                       </div>
                                     );
-                                  case "select":
-                                    return (
-                                      <div className="row">
-                                        <span
-                                          className="wpcf7-form-control-wrap"
-                                          data-name="menu-710"
-                                          key={`${index}select`}
-                                        >
-                                          <select
-                                            id={field.name}
-                                            name={field.name}
-                                            value={formik.values[field.name]}
-                                            onChange={formik.handleChange}
-                                            className={
-                                              formik.errors[field.name]
-                                                ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
-                                                : "wpcf7-form-control wpcf7-select"
-                                            }
-                                          >
-                                            {field.raw_values.map(
-                                              (option, index) => (
-                                                <option
-                                                  key={`${index}${option}`}
-                                                  value={option}
-                                                >
-                                                  {option}
-                                                </option>
-                                              )
-                                            )}
-                                          </select>
-                                        </span>
-                                      </div>
-                                    );
+
                                   case "acceptance":
                                     return (
                                       <div
