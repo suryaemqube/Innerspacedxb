@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, navigate } from "gatsby";
+import { Link, navigate, graphql } from "gatsby";
 import { useFormik, Formik } from "formik";
 import axios from "axios";
-import { HelmetProvider } from "react-helmet-async";
+import { GatsbySeo } from "gatsby-plugin-next-seo";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import Seo from "../components/SeoMeta";
 import { getToken } from "../hooks/token";
@@ -11,7 +12,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/bundle";
 import "../assets/css/lp-hulsta.css"
 
-const Hulsta = () => {
+const Hulsta = ({ data }) => {
     SwiperCore.use([Navigation]);
     const WEBSITE_URL = process.env.GATSBY_BASE_URL;
     const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
@@ -22,7 +23,7 @@ const Hulsta = () => {
     const [captchaResult, setCaptchaResult] = useState("");
     const [formMessage, setFormMessage] = useState("");
 
-    const helmetContext = {};
+    const seo = data?.wpPage?.seo || [];
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -165,8 +166,38 @@ const Hulsta = () => {
 
     return (
         <>
-
-            <Seo pageUrl={`${WEBSITE_URL}/hulsta-dubai/`} bodyClass="page-template-tp-lp-hulusta"></Seo>
+            <HelmetProvider >
+                <GatsbySeo
+                    title={seo && seo.title}
+                    description={seo && seo.metaDesc}
+                    canonical={seo && seo.canonical}
+                    openGraph={{
+                        url: seo && seo.opengraphUrl,
+                        title: seo && seo.opengraphTitle,
+                        description: seo && seo.opengraphDescription,
+                        images: [
+                            {
+                                url: seo && seo.opengraphImage.mediaItemUrl,
+                                width: seo && seo.opengraphImage.width,
+                                height: seo && seo.opengraphImage.height,
+                                alt: seo && seo.opengraphTitle,
+                            },
+                        ],
+                        site_name: seo && seo.opengraphSiteName,
+                    }}
+                    twitter={{
+                        handle: '@handle',
+                        site: '@site',
+                        cardType: 'summary_large_image',
+                    }}
+                    nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+                    noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+                    article={{
+                        modifiedTime: seo && seo.opengraphModifiedTime
+                    }}
+                />
+                <Helmet bodyAttributes={{ class: "page-template-tp-lp-hulusta" }}></Helmet>
+            </HelmetProvider>
 
             <section class="header">
                 <div class="holder">
@@ -828,7 +859,7 @@ const Hulsta = () => {
                 <div class="container">
                     <div class="left-col">
                         <div class="footer-logo-wrapper">
-                            <a href="https://www.innerspacedxb.com/" class="footer-logo">
+                            <a href="/" class="footer-logo">
                                 <img src="https://www.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
                                     alt="Innserspace" />
                             </a>
@@ -866,3 +897,30 @@ const Hulsta = () => {
     );
 };
 export default Hulsta;
+export const data = graphql`
+query MyQuery {
+  wpPage(databaseId: {eq: 1128}) {
+    id
+    seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
+      }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+    }
+  }
+}
+`;

@@ -1734,7 +1734,7 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      {typeof window !== "undefined" && window.innerWidth > 769 &&
                         <>
                           <li className="colio-item isotope-item"></li>
                           <li className="colio-item isotope-item"></li>
@@ -1918,7 +1918,7 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      {typeof window !== "undefined" && window.innerWidth > 769 &&
                         <li className="colio-item isotope-item"></li>
                       }
 
@@ -2010,7 +2010,7 @@ const Identity = ({ pageContext, data }) => {
                           </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 768 &&
+                      {typeof window !== "undefined" && window.innerWidth > 769 &&
                         <li className="colio-item isotope-item"></li>
                       }
                       {ourTeam.fifthRowMembers.length > 0 &&

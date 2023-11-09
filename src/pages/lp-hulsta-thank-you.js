@@ -1,7 +1,7 @@
 import React from "react";
 import { graphql } from "gatsby";
-import { HelmetProvider } from "react-helmet-async";
-import Seo from "../components/SeoMeta";
+import { GatsbySeo } from "gatsby-plugin-next-seo";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 
 import "swiper/css/bundle";
@@ -10,15 +10,44 @@ import "../assets/css/landing-page.css"
 const HuslstaThankyou = ({ data }) => {
     const WEBSITE_URL = process.env.GATSBY_BASE_URL;
     const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
+    const seo = data?.wpPage?.seo || []
 
-    const helmetContext = {};
 
     return (
         <>
-            <HelmetProvider context={helmetContext}>
-                <Seo pageUrl={`${WEBSITE_URL}/hulsta-dubai/`} bodyClass="page-template-tp-lp-rolf-thankyou"></Seo>
-            </HelmetProvider>
 
+            <HelmetProvider>
+                <GatsbySeo
+                    title={seo && seo.title}
+                    description={seo && seo.metaDesc}
+                    canonical={seo && seo.canonical}
+                    openGraph={{
+                        url: seo && seo.opengraphUrl,
+                        title: seo && seo.opengraphTitle,
+                        description: seo && seo.opengraphDescription,
+                        images: [
+                            {
+                                url: seo && seo.opengraphImage.mediaItemUrl,
+                                width: seo && seo.opengraphImage.width,
+                                height: seo && seo.opengraphImage.height,
+                                alt: seo && seo.opengraphTitle,
+                            },
+                        ],
+                        site_name: seo && seo.opengraphSiteName,
+                    }}
+                    twitter={{
+                        handle: '@handle',
+                        site: '@site',
+                        cardType: 'summary_large_image',
+                    }}
+                    nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
+                    noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
+                    article={{
+                        modifiedTime: seo && seo.opengraphModifiedTime
+                    }}
+                />
+                <Helmet bodyAttributes={{ class: "page-template-tp-lp-rolf-thankyou" }}></Helmet>
+            </HelmetProvider>
 
             <section class="header">
                 <div class="holder">
@@ -94,6 +123,26 @@ query MyQuery {
     id
     title
     content
+    seo {
+        canonical
+        opengraphDescription
+            opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
+      }
   }
 }
 `;

@@ -474,85 +474,88 @@ const Roomtypes = ({ pageContext, data }) => {
                     </Swiper>
 
                     {brand && brand.length > 1 &&
-                      <Swiper
-                        onSwiper={(s) => {
-                          setSwiper2(s);
-                        }}
-                        speed={1200}
-                        pagination={false}
-                        nextButton={".swiper-button-nxt-brand"}
-                        slidesPerView={1}
-                        navigation={false}
-                        allowTouchMove={false}
-                        loop={true}
-                        spaceBetween={0}
-                        initialSlide={1}
-                        className="swiper-container productBrandTypeOne "
-                      >
-                        {brand.map((brandslide, index) => (
-                          <SwiperSlide class="swiper-slide" key={`sdfds` + index}>
-                            <div class="img-wrapper">
-                              <Link
-                                to={
-                                  brandslide.node.brands.brandRelationshipField.uri
-                                }
-                              >
-                                {brandslide.node.brands.brandLogo ? (
-                                  <img
-                                    class={`brand-logo ${brandslide.node.title}`}
-                                    src={
-                                      brandslide.node.brands.brandLogo.mediaItemUrl
-                                    }
-                                    alt={brandslide.node.title}
-                                  />
-                                ) : (
-                                  <img
-                                    class={`brand-logo ${brandslide.node.title}`}
-                                    src={`${MEDIA_URL}/img/brand-logo.jpg`}
-                                    alt={brandslide.node.title}
-                                  />
-                                )}
-                                {brandslide.node.featuredImage ? (
-                                  //   <img
-                                  //     src={
-                                  //       brandslide.node.featuredImage.node
-                                  //         .mediaItemUrl
-                                  //     }
-                                  //     alt={brandslide.node.title}
-                                  //   />
+                      <>
+                        <Swiper
+                          onSwiper={(s) => {
+                            setSwiper2(s);
+                          }}
+                          speed={1200}
+                          pagination={false}
+                          nextButton={".swiper-button-nxt-brand"}
+                          slidesPerView={1}
+                          navigation={false}
+                          allowTouchMove={false}
+                          loop={true}
+                          spaceBetween={0}
+                          initialSlide={1}
+                          className="swiper-container productBrandTypeOne "
+                        >
+                          {brand.map((brandslide, index) => (
+                            <SwiperSlide class="swiper-slide" key={`sdfds` + index}>
+                              <div class="img-wrapper">
+                                <Link
+                                  to={
+                                    brandslide.node.brands.brandRelationshipField.uri
+                                  }
+                                >
+                                  {brandslide.node.brands.brandLogo ? (
+                                    <img
+                                      class={`brand-logo ${brandslide.node.title}`}
+                                      src={
+                                        brandslide.node.brands.brandLogo.mediaItemUrl
+                                      }
+                                      alt={brandslide.node.title}
+                                    />
+                                  ) : (
+                                    <img
+                                      class={`brand-logo ${brandslide.node.title}`}
+                                      src={`${MEDIA_URL}/img/brand-logo.jpg`}
+                                      alt={brandslide.node.title}
+                                    />
+                                  )}
+                                  {brandslide.node.featuredImage ? (
+                                    //   <img
+                                    //     src={
+                                    //       brandslide.node.featuredImage.node
+                                    //         .mediaItemUrl
+                                    //     }
+                                    //     alt={brandslide.node.title}
+                                    //   />
 
-                                  <GatsbyImage
-                                    image={getImage(
-                                      brandslide.node.featuredImage.node
-                                    )}
-                                    alt={brandslide.node.title}
-                                  />
-                                ) : (
-                                  <img
-                                    src={`${MEDIA_URL}/img/single-product.jpg`}
-                                    alt={brandslide.node.title}
-                                  />
-                                )}
-                              </Link>
-                            </div>
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: removeTags(brandslide.node.content),
-                              }}
-                            />
-                          </SwiperSlide>
-                        ))}
-                      </Swiper>
+                                    <GatsbyImage
+                                      image={getImage(
+                                        brandslide.node.featuredImage.node
+                                      )}
+                                      alt={brandslide.node.title}
+                                    />
+                                  ) : (
+                                    <img
+                                      src={`${MEDIA_URL}/img/single-product.jpg`}
+                                      alt={brandslide.node.title}
+                                    />
+                                  )}
+                                </Link>
+                              </div>
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: removeTags(brandslide.node.content),
+                                }}
+                              />
+                            </SwiperSlide>
+                          ))}
+                        </Swiper>
+
+
+                        <div
+                          class="swiper-button-nxt-brand"
+                          id="brandRangeSwiperNext"
+                        >
+                          <a href="#" onClick={handleProductRange}>
+                            <img src={swiperNext} alt="" />
+                          </a>
+                        </div>
+                      </>
                     }
-
-                    <div
-                      class="swiper-button-nxt-brand"
-                      id="brandRangeSwiperNext"
-                    >
-                      <a href="#" onClick={handleProductRange}>
-                        <img src={swiperNext} alt="" />
-                      </a>
-                    </div>
                   </>
                 )}
               </div>
