@@ -14,7 +14,7 @@ require("dotenv").config({
 
 module.exports = {
   siteMetadata: {
-    siteUrl: "https://www.innerspacedxb.com/",
+    siteUrl: "https://app.innerspacedxb.com/",
   },
   plugins: [
     {
@@ -22,7 +22,7 @@ module.exports = {
       options: {
         url:
           process.env.GATSBY_WPGRAPHQL_URL ||
-          `https://innerspacedxb.com/graphql`,
+          `https://app.innerspacedxb.com/graphql`,
         // schema: {
         //   timeout: 10000,
         // },

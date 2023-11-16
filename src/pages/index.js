@@ -295,7 +295,7 @@ export default function Home({ data }) {
                           )}
 
                         {typeof window !== "undefined" &&
-                          window.innerWidth < 767 && (
+                          window.innerWidth <= 767 && (
                             <GatsbyImage
                               image={getImage(slide.mobileSliderImage)}
                               alt={slide.sliderImage.altText}
@@ -316,7 +316,7 @@ export default function Home({ data }) {
                           />
                           <a
                             className="view-more"
-                            href={shortUrl(slide.viewMoreLink)}
+                          // href={shortUrl(slide.viewMoreLink)}
                           >
                             View More
                           </a>

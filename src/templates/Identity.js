@@ -163,7 +163,7 @@ const Identity = ({ pageContext, data }) => {
     if (token) {
       axios({
         method: "GET",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2143/`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/286/`,
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -2114,10 +2114,7 @@ const Identity = ({ pageContext, data }) => {
 
                   <div
                     id="team-content"
-                    className={`colio-content colio-member-content ${teamData.memberName === tab
-                      ? "tabOpen"
-                      : "tabClose"
-                      }`}
+                    className={`colio-content colio-member-content`}
                   >
                     <div className="main">
                       <div className="left">
@@ -2169,14 +2166,14 @@ const Identity = ({ pageContext, data }) => {
                 <ul className="list">
                   <li>
                     <img
-                      src="https://www.innerspacedxb.com/wp-content/uploads/2022/08/warehouse-team.jpg"
+                      src="https://app.innerspacedxb.com/wp-content/uploads/2022/08/warehouse-team.jpg"
                       alt="Warehouse team"
                     />
                     <p>Logistics Team</p>
                   </li>
                   <li>
                     <img
-                      src="https://www.innerspacedxb.com/wp-content/uploads/2022/08/innerspace-installation-team.jpg"
+                      src="https://app.innerspacedxb.com/wp-content/uploads/2022/08/innerspace-installation-team.jpg"
                       alt="Installation team"
                     />
                     <p>Installation Team</p>

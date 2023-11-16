@@ -54,7 +54,7 @@ const Contact = ({ data }) => {
     if (token) {
       axios({
         method: "GET",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2142/`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/317/`,
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -137,7 +137,7 @@ const Contact = ({ data }) => {
 
       axios({
         method: "post",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2142/feedback`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/317/feedback`,
         data: bodyFormData,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -251,7 +251,7 @@ const Contact = ({ data }) => {
                     <div className="form">
                       <div
                         className="wpcf7 no-js"
-                        id="wpcf7-f2142-o1"
+                        id="wpcf7-f317-o1"
                         lang="en-US"
                         dir="ltr"
                       >

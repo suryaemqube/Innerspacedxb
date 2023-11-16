@@ -293,6 +293,9 @@ section.brands .flex div.swiper-slide a.dblock {
 
 
 /* Home Page CSS */
+.home .page-wrap .gatsby-image-wrapper img{
+  height: 100% !important;
+}
 .product-range .lg-react-element {
   height: 100%;
   width: 100%;
@@ -1100,3 +1103,4 @@ a.colio-close span {
   }
 }
 /* team page css added by leena */
+

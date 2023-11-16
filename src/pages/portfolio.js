@@ -133,13 +133,13 @@ const Portfolio = ({ data }) => {
     navigate(`/portfolio/?${queryParams.toString()}`);
 
     setFilteredData(filteredData);
-    console.log("ok: ", filteredData);
+    // console.log("ok: ", filteredData);
   };
 
   const startIndex = (currentPage - 1) * NOOFPOST;
   const endIndex = startIndex + NOOFPOST;
   const displayedData = filteredData.slice(startIndex, endIndex);
-  console.log("TestData:", startIndex, endIndex)
+  // console.log("TestData:", startIndex, endIndex)
   return (
     <>
       <HelmetProvider>

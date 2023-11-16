@@ -31,7 +31,7 @@ const Error = () => {
             <h1 class="entry-title">Oops! That page can’t be found.</h1>
 
             <div class="intro-text"><p>This page either doesn't exist, or it moved somewhere else.</p></div>
-            <div class="back-to-home-btn btn-wrapp"><a href="https://www.innerspacedxb.com" class="btn">Go To Home</a></div>
+            <div class="back-to-home-btn btn-wrapp"><a href="/" class="btn">Go To Home</a></div>
           </div>
         </section>
       </Layout>

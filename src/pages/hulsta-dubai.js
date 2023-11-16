@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, navigate, graphql } from "gatsby";
+import { StaticImage } from "gatsby-plugin-image"
 import { useFormik, Formik } from "formik";
 import axios from "axios";
 import { GatsbySeo } from "gatsby-plugin-next-seo";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
-import Seo from "../components/SeoMeta";
 import { getToken } from "../hooks/token";
 import SwiperCore, { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -56,7 +56,7 @@ const Hulsta = ({ data }) => {
         if (token) {
             axios({
                 method: "GET",
-                url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2145/`,
+                url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/1286/`,
                 headers: {
                     Authorization: `Bearer ${token}`,
                     Accept: "application/json",
@@ -136,7 +136,7 @@ const Hulsta = ({ data }) => {
 
             axios({
                 method: "post",
-                url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2145/feedback`,
+                url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/1286/feedback`,
                 data: bodyFormData,
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -860,7 +860,7 @@ const Hulsta = ({ data }) => {
                     <div class="left-col">
                         <div class="footer-logo-wrapper">
                             <a href="/" class="footer-logo">
-                                <img src="https://www.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
+                                <img src="https://app.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
                                     alt="Innserspace" />
                             </a>
                             <p>A Collective of Luxury<br />German Kitchen & Interior Brands</p>

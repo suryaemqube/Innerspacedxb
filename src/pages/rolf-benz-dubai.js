@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, graphql, navigate } from "gatsby";
+import { StaticImage } from "gatsby-plugin-image";
 import { GatsbySeo } from "gatsby-plugin-next-seo";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useFormik, Formik } from "formik";
@@ -15,7 +16,7 @@ import { getToken } from "../hooks/token";
 const Rolf = ({ data }) => {
   SwiperCore.use([Navigation, Pagination, Autoplay]);
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
-  const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
+  const MEDIA_URL = "https://app.innerspacedxb.com/wp-content/themes/Innerspacechild";
 
   const [token, setToken] = useState("");
   const [formFields, setFormFields] = useState([]);
@@ -56,7 +57,7 @@ const Rolf = ({ data }) => {
     if (token) {
       axios({
         method: "GET",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2146/`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/1131/`,
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -136,7 +137,7 @@ const Rolf = ({ data }) => {
 
       axios({
         method: "post",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2146/feedback`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/1131/feedback`,
         data: bodyFormData,
         headers: {
           Authorization: `Bearer ${token}`,
@@ -201,6 +202,14 @@ const Rolf = ({ data }) => {
 
       <section class="header">
         <div class="holder">
+          {/* <StaticImage
+            src={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
+            alt="A dinosaur"
+            placeholder="blurred"
+            layout="fixed"
+            width={1920}
+            height={825}
+          /> */}
           <picture>
             <source
               srcset={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
@@ -214,7 +223,7 @@ const Rolf = ({ data }) => {
         </div>
         <div class="header-content">
           <div class="logo">
-            <a href="https://www.innerspacedxb.com/">
+            <a href="https://app.innerspacedxb.com/">
               <img src={`${MEDIA_URL}/img/rolf-benz.svg`} alt="Relf Benz" />
             </a>
           </div>
@@ -966,7 +975,7 @@ const Rolf = ({ data }) => {
             <div class="footer-logo-wrapper">
               <a href="/" class="footer-logo">
                 <img
-                  src="https://www.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
+                  src="https://app.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
                   alt="Innserspace"
                 />
               </a>

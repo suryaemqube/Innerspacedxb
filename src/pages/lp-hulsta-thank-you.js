@@ -60,7 +60,7 @@ const HuslstaThankyou = ({ data }) => {
                 </div>
                 <div class="header-content">
                     <div class="logo">
-                        <a href="https://www.innerspacedxb.com/">
+                        <a href="https://app.innerspacedxb.com/">
                             <img src={`${MEDIA_URL}/img/hulsta-was-awarded.svg`} alt="Relf Benz" />
                         </a>
                     </div>
@@ -79,8 +79,8 @@ const HuslstaThankyou = ({ data }) => {
                 <div class="container">
                     <div class="left-col">
                         <div class="footer-logo-wrapper">
-                            <a href="https://www.innerspacedxb.com/" class="footer-logo">
-                                <img src="https://www.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
+                            <a href="/" class="footer-logo">
+                                <img src="https://app.innerspacedxb.com/wp-content/uploads/2021/10/logo-innerspace-black.svg"
                                     alt="Innserspace" />
                             </a>
                             <p>A Collective of Luxury<br />German Kitchen & Interior Brands</p>

@@ -4,7 +4,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
-const Seo = ({ pageUrl, title, description, bodyClass, imageUrl, imgHeight, imgWidth, imgType }) => {
+const Seo = ({ pageUrl, title, description, bodyClass }) => {
   const [head, setHead] = useState("");
   useEffect(() => {
     axios({
