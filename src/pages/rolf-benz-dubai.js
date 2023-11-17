@@ -202,15 +202,15 @@ const Rolf = ({ data }) => {
 
       <section class="header">
         <div class="holder">
-          {/* <StaticImage
+          <StaticImage
             src={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
             alt="A dinosaur"
             placeholder="blurred"
             layout="fixed"
             width={1920}
             height={825}
-          /> */}
-          <picture>
+          />
+          {/* <picture>
             <source
               srcset={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
               media="(max-width: 767px)"
@@ -219,7 +219,7 @@ const Rolf = ({ data }) => {
               src={`${MEDIA_URL}/img/Nouthing-but-wunderbar.jpg `}
               alt="Nouthing But Wunderbar"
             />
-          </picture>
+          </picture> */}
         </div>
         <div class="header-content">
           <div class="logo">
