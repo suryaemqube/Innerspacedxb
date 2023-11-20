@@ -355,12 +355,12 @@ const Rolf = ({ data }) => {
           {typeof window !== "undefined" &&
             window.innerWidth > 767 && (
               <StaticImage
-                src={`${MEDIA_URL}/img/design-the-wardrobe.jpg`}
+                src={`${MEDIA_URL}/img/about-rolf-benz.jpg`}
                 alt="A dinosaur"
                 placeholder="blurred"
                 layout="fixed"
-                width={"1920px"}
-                height={"502px"}
+                width={1920}
+                height={502}
               />
             )}
 
@@ -371,12 +371,12 @@ const Rolf = ({ data }) => {
                 alt="A dinosaur"
                 placeholder="blurred"
                 layout="fixed"
-                width={"767px"}
-                height={"318px"}
+                width={767}
+                height={318}
               />
             )}
 
-          <picture>
+          {/* <picture>
             <source
               srcset={`${MEDIA_URL}/img/about-rolf-benz-mobile.jpg`}
               media="(max-width: 767px)"
@@ -385,7 +385,7 @@ const Rolf = ({ data }) => {
               src={`${MEDIA_URL}/img/about-rolf-benz.jpg`}
               alt="About Rolf Benz"
             />
-          </picture>
+          </picture> */}
         </div>
       </section>
 
