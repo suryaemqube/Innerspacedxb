@@ -1104,3 +1104,13 @@ a.colio-close span {
 }
 /* team page css added by leena */
 
+/* Landing Page */
+.page-template-tp-lp .gatsby-image-wrapper, .page-template-tp-lp .gatsby-image-wrapper img, 
+.page-template-tp-lp-hulusta .gatsby-image-wrapper, .page-template-tp-lp-hulusta .gatsby-image-wrapper img{
+  height: 100% !important;
+  width: 100% !important;
+}
+.page-template-tp-lp .gatsby-image-wrapper picture img,
+.page-template-tp-lp-hulusta .gatsby-image-wrapper picture img{
+  height: 100% !important;
+}

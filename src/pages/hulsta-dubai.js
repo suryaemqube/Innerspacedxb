@@ -15,7 +15,7 @@ import "../assets/css/lp-hulsta.css"
 const Hulsta = ({ data }) => {
     SwiperCore.use([Navigation]);
     const WEBSITE_URL = process.env.GATSBY_BASE_URL;
-    const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
+    const MEDIA_URL = "https://app.innerspacedxb.com/wp-content/themes/Innerspacechild";
 
     const [token, setToken] = useState("");
     const [formFields, setFormFields] = useState([]);
@@ -201,11 +201,33 @@ const Hulsta = ({ data }) => {
 
             <section class="header">
                 <div class="holder">
+                    {typeof window !== "undefined" &&
+                        window.innerWidth > 767 && (
+                            <StaticImage
+                                src={`${MEDIA_URL}/img/design-the-wardrobe.jpg`}
+                                alt="A dinosaur"
+                                placeholder="blurred"
+                                layout="fixed"
+                                width={1920}
+                                height={825}
+                            />
+                        )}
 
-                    <picture>
+                    {typeof window !== "undefined" &&
+                        window.innerWidth <= 767 && (
+                            <StaticImage
+                                src={`${MEDIA_URL}/img/design-the-wardrobe-mobile.jpg`}
+                                alt="A dinosaur"
+                                placeholder="blurred"
+                                layout="fixed"
+                                width={768}
+                                height={800}
+                            />
+                        )}
+                    {/* <picture>
                         <source srcset={`${MEDIA_URL}/img/design-the-wardrobe-mobile.jpg`} media="(max-width: 767px)" />
                         <img src={`${MEDIA_URL}/img/design-the-wardrobe.jpg`} alt="Bespoke Wardrobes Designed in Dubai and Made in Germany" />
-                    </picture>
+                    </picture> */}
                 </div>
                 <div class="header-content">
                     <div class="logo">

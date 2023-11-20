@@ -202,15 +202,30 @@ const Rolf = ({ data }) => {
 
       <section class="header">
         <div class="holder">
-          {/* <StaticImage
-            src={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
-            alt="A dinosaur"
-            placeholder="blurred"
-            layout="fixed"
-            width={1920}
-            height={825}
-          /> */}
-          <picture>
+          {typeof window !== "undefined" &&
+            window.innerWidth > 767 && (
+              <StaticImage
+                src={`${MEDIA_URL}/img/Nouthing-but-wunderbar.jpg`}
+                alt="A dinosaur"
+                placeholder="blurred"
+                layout="fixed"
+                width={1920}
+                height={825}
+              />
+            )}
+
+          {typeof window !== "undefined" &&
+            window.innerWidth <= 767 && (
+              <StaticImage
+                src={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
+                alt="A dinosaur"
+                placeholder="blurred"
+                layout="fixed"
+                width={768}
+                height={800}
+              />
+            )}
+          {/* <picture>
             <source
               srcset={`${MEDIA_URL}/img/Nouthing-but-wunderbar-mobile.jpg`}
               media="(max-width: 767px)"
@@ -219,7 +234,7 @@ const Rolf = ({ data }) => {
               src={`${MEDIA_URL}/img/Nouthing-but-wunderbar.jpg `}
               alt="Nouthing But Wunderbar"
             />
-          </picture>
+          </picture> */}
         </div>
         <div class="header-content">
           <div class="logo">
@@ -336,6 +351,31 @@ const Rolf = ({ data }) => {
           </p>
         </div>
         <div class="about-rolf-benz-img">
+
+          {typeof window !== "undefined" &&
+            window.innerWidth > 767 && (
+              <StaticImage
+                src={`${MEDIA_URL}/img/design-the-wardrobe.jpg`}
+                alt="A dinosaur"
+                placeholder="blurred"
+                layout="fixed"
+                width={"1920px"}
+                height={"502px"}
+              />
+            )}
+
+          {typeof window !== "undefined" &&
+            window.innerWidth <= 767 && (
+              <StaticImage
+                src={`https://app.innerspacedxb.com/wp-content/uploads/2023/11/about-rolf-benz-lp-mob.jpg`}
+                alt="A dinosaur"
+                placeholder="blurred"
+                layout="fixed"
+                width={"767px"}
+                height={"318px"}
+              />
+            )}
+
           <picture>
             <source
               srcset={`${MEDIA_URL}/img/about-rolf-benz-mobile.jpg`}
