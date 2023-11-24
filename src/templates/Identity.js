@@ -258,6 +258,7 @@ const Identity = ({ pageContext, data }) => {
       employers: "",
       "cover-letter": "",
       "curriculum-vite": "",
+      "your-subject": "",
       captcha: "",
     },
     validate: careerValidate,
@@ -281,6 +282,7 @@ const Identity = ({ pageContext, data }) => {
       bodyFormData.set("menu-56", values["menu-56"]);
       bodyFormData.set("text-887", values["text-887"]);
       bodyFormData.set("employers", values["employers"]);
+      bodyFormData.set("your-subject", "Career Form");
 
       bodyFormData.append("cover-letter", fileUrl ? short(fileUrl) : null);
       bodyFormData.append("curriculum-vite", fileUrl2 ? short(fileUrl2) : null);

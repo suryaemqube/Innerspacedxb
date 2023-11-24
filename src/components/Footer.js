@@ -52,7 +52,7 @@ function Footer() {
     if (token) {
       axios({
         method: "GET",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2006/`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/`,
         headers: {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
@@ -95,7 +95,7 @@ function Footer() {
 
       axios({
         method: "POST",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/2006/feedback`,
+        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/feedback`,
         data: bodyFormData,
         headers: {
           Authorization: `Bearer ${token}`,

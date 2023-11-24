@@ -701,7 +701,7 @@ const Rolf = ({ data }) => {
                           {formFields[4] && (
                             <textarea
                               cols="40"
-                              rows="10"
+                              rows="3"
                               className={
                                 formik.errors[formFields[4].name]
                                   ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
