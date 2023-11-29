@@ -180,6 +180,14 @@ section.sitemap {
 section.sitemap a{
   color: #000;
 }
+
+/* section.sitemap ul li.menu-item-has-children ul li {
+    padding: 0 23px !important;
+} */
+.sitemap-wrapper > ul {
+    display: flex;
+    flex-wrap: wrap;
+}
 .sitemap-wrapper {
   display: flex;
   justify-content: center;

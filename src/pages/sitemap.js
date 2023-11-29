@@ -84,17 +84,12 @@ const Sitemap = () => {
                     </Link>
                   </li>
                 ))}
-            </ul>
-
-
-            {primaryMenu && primaryMenu.items.length > 0 && (
-              <ul>
-                {primaryMenu.items.map((item, index) => (
+              {primaryMenu && primaryMenu.items.length > 0 && (
+                primaryMenu.items.map((item, index) => (
                   <MenuItem item={item} key={`${index}menu2`} />
-                ))}
-              </ul>
-            )}
-
+                ))
+              )}
+            </ul>
           </div>
         </div>
       </section>
