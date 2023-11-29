@@ -188,6 +188,14 @@ section.sitemap a{
     display: flex;
     flex-wrap: wrap;
 }
+.sitemap-wrapper>ul >li.menu-item-has-children>ul li {
+    padding-left: 10px;
+}
+
+.sitemap-wrapper>ul>li {
+    margin: 0 20px;
+}
+
 .sitemap-wrapper {
   display: flex;
   justify-content: center;
