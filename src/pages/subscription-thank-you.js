@@ -9,11 +9,6 @@ const SubscribeThankyou = ({ data }) => {
   const thankyou = data?.wpPage || [];
   return (
     <Layout>
-      <Seo
-        pageUrl={`${WEBSITE_URL}/subscribe-thank-you/`}
-        bodyClass={`page-template-tp-thankyou`}
-      ></Seo>
-
       <section class="main-content">
         <div class="container first-paragraph">
           <h1>{thankyou && thankyou.title}</h1>
@@ -24,12 +19,39 @@ const SubscribeThankyou = ({ data }) => {
     </Layout>
   );
 };
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery {
     wpPage(databaseId: { eq: 553 }) {
       id
       title
       content
+      seo {
+    canonical
+    opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
+    }
+    opengraphSiteName
+    opengraphTitle
+    metaRobotsNofollow
+    metaRobotsNoindex
+    opengraphUrl
+    opengraphModifiedTime
+    opengraphType
+    title
+    metaDesc
+      schema {
+        raw
+    }
+}
     }
   }
 `;

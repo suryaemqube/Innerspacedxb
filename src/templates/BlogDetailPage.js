@@ -1,47 +1,15 @@
 import React from "react";
 import Layout from "../components/Layout";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
+import Seo from "../components/SeoMeta";
 import { graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 const BlogDetail = ({ data, pageContext }) => {
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
-
   const blogpost = data?.wpPost || [];
-  const seo = data?.wpPost?.seo || [];
 
   return (
     <>
-      <GatsbySeo
-        title={seo && seo.title}
-        description={seo && seo.metaDesc}
-        canonical={seo && seo.canonical}
-        openGraph={{
-          url: seo && seo.opengraphUrl,
-          title: seo && seo.opengraphTitle,
-          description: seo && seo.opengraphDescription,
-          images: [
-            {
-              url: seo && seo.opengraphImage.mediaItemUrl,
-              width: seo && seo.opengraphImage.width,
-              height: seo && seo.opengraphImage.height,
-              alt: seo && seo.opengraphTitle,
-            },
-          ],
-          site_name: seo && seo.opengraphSiteName,
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image',
-        }}
-        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-        article={{
-          modifiedTime: seo && seo.opengraphModifiedTime
-        }}
-      />
-
       <Layout>
         <section class="header-image blog-thumbnail">
           {blogpost.featuredImage ? (
@@ -82,6 +50,12 @@ const BlogDetail = ({ data, pageContext }) => {
     </>
   );
 };
+
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPost?.seo || []}>
+  </Seo>
+)
+
 export const query = graphql`
   query MyQuery($pageId: Int!) {
     wpPost(databaseId: { eq: $pageId }) {
@@ -102,26 +76,29 @@ export const query = graphql`
           )
         }
       }
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
     }
   }
 `;

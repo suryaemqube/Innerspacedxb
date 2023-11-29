@@ -176,6 +176,10 @@ section.sitemap {
   padding-bottom: 30px;
   border-bottom: 1px solid #000;
 }
+
+section.sitemap a{
+  color: #000;
+}
 .sitemap-wrapper {
   display: flex;
   justify-content: center;

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import Seo from "../components/SeoMeta";
 import Layout from "../components/Layout";
 
-// import Seo from "../components/SeoMeta";
 import Breadcrumb from "../components/Breadcrumbs";
 import SwiperCore, { Pagination, Autoplay } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -134,285 +132,260 @@ const Portfolio = ({ data }) => {
   const displayedData = filteredData.slice(startIndex, endIndex);
 
   return (
-    <>
-      <HelmetProvider>
-        <GatsbySeo
-          title={seo && seo.title}
-          description={seo && seo.metaDesc}
-          canonical={seo && seo.canonical}
-          openGraph={{
-            url: seo && seo.opengraphUrl,
-            title: seo && seo.opengraphTitle,
-            description: seo && seo.opengraphDescription,
-            images: [
-              {
-                url: seo && seo.opengraphImage.mediaItemUrl,
-                width: seo && seo.opengraphImage.width,
-                height: seo && seo.opengraphImage.height,
-                alt: seo && seo.opengraphTitle,
-              },
-            ],
-            site_name: seo && seo.opengraphSiteName,
-          }}
-          twitter={{
-            handle: '@handle',
-            site: '@site',
-            cardType: 'summary_large_image',
-          }}
-          nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-          noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-          article={{
-            modifiedTime: seo && seo.opengraphModifiedTime
-          }}
-        />
-        <Helmet bodyAttributes={{ class: `last-chance page-id-1507` }}></Helmet>
-      </HelmetProvider>
-      <Layout>
 
-        <section class="header-image last-chance ">
-          {header ? (
-            <>
-              <div class="wrapper last-chance-wrapper">
-                <Swiper
-                  modules={[Pagination, Autoplay]}
-                  spaceBetween={30}
-                  centeredSlides={true}
-                  autoplay={{
-                    delay: 2500,
-                    disableOnInteraction: false,
-                  }}
-                  pagination={{
-                    el: ".swiper-pagination",
-                    clickable: true,
-                  }}
-                  className="holder swiper-container"
-                  id="luxury-slider"
-                >
-                  {header.lastChanceImageGallery.map((slide, index) => (
-                    <SwiperSlide class="swiper-slide" key={`kgiodds` + index}>
-                      {/* <img src={slide.mediaItemUrl} alt={slide.altText} /> */}
-                      <GatsbyImage image={getImage(slide)} altText={slide.altText} />
-                    </SwiperSlide>
-                  ))}
-                  <div class="swiper-pagination"></div>
-                </Swiper>
-              </div>
-              <div class="header-title">
-                <div class="text-wrap">
-                  <h2>Last Chance Luxury</h2>
-                  <p>Gorgeous pieces priced at a steal</p>
-                  {data && data.wpPage.databaseId && (
-                    <div
-                      className="breadcrumbs"
-                      vocab="http://schema.org/"
-                      typeof="BreadcrumbList"
-                    >
-                      <Breadcrumb postId={data.wpPage.databaseId} />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <img src={`${MEDIA_URL}/images/featureimage2.jpg`} />
-          )}
-        </section>
+    <Layout>
 
-        <section class="main-content">
-          <div class="container first-paragraph">
-            <div class="top-para-room">
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: removeTags(header.lastChanceContent),
+      <section class="header-image last-chance ">
+        {header ? (
+          <>
+            <div class="wrapper last-chance-wrapper">
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                spaceBetween={30}
+                centeredSlides={true}
+                autoplay={{
+                  delay: 2500,
+                  disableOnInteraction: false,
                 }}
-              />
+                pagination={{
+                  el: ".swiper-pagination",
+                  clickable: true,
+                }}
+                className="holder swiper-container"
+                id="luxury-slider"
+              >
+                {header.lastChanceImageGallery.map((slide, index) => (
+                  <SwiperSlide class="swiper-slide" key={`kgiodds` + index}>
+                    {/* <img src={slide.mediaItemUrl} alt={slide.altText} /> */}
+                    <GatsbyImage image={getImage(slide)} altText={slide.altText} />
+                  </SwiperSlide>
+                ))}
+                <div class="swiper-pagination"></div>
+              </Swiper>
             </div>
-          </div>
-          <div class="container">
-            <div class="filter-wrapper">
-              <div class="filter-title">Filter by:</div>
-
-              <div class="filters">
-                <div class="select">
-                  <select
-                    name="filter-post"
-                    id="last-chance-filter-category"
-                    onChange={(e) => setCategory(e.target.value)}
+            <div class="header-title">
+              <div class="text-wrap">
+                <h2>Last Chance Luxury</h2>
+                <p>Gorgeous pieces priced at a steal</p>
+                {data && data.wpPage.databaseId && (
+                  <div
+                    className="breadcrumbs"
+                    vocab="http://schema.org/"
+                    typeof="BreadcrumbList"
                   >
-                    <option value="">by Category</option>
-                    {lastCat &&
-                      lastCat.map((cat, index) => (
-                        <option value={cat.node.slug} key={`fjds;j` + index}>
-                          {cat.node.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div class="select">
-                  <select
-                    name="filter-condition"
-                    id="last-chance-filter-condition"
-                    onChange={(e) => setCondtion(e.target.value)}
-                  >
-                    <option value="">by Condition</option>
-                    {allCondtionObject &&
-                      allCondtionObject.map((item, index) => (
-                        <option value={item} key={`gsfdg;j` + index}>
-                          {item}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div class="portfolio-filter-wrapper" onClick={handleFilter}>
-                  <input
-                    type="submit"
-                    value="filter"
-                    id="last-chance-filter-button"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div class="portfolio-wrapper">
-              {displayedData &&
-                displayedData.length > 0 ? (
-                <ul id="last-chance-post">
-                  {displayedData.map((last) => (
-                    <li>
-                      <a href={last.node.uri}>
-                        <div class="prod-media">
-                          <div class="wrapper">
-                            <div class="holder">
-                              <img
-                                src={
-                                  last.node.lastChanceSingularPage
-                                    .lastChancePostGallery[0].mediaItemUrl
-                                }
-                                alt={
-                                  last.node.lastChanceSingularPage
-                                    .lastChancePostGallery[0].altText
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </a>
-                      <div class="prod-price">
-                        <h3>{last.node.title}</h3>
-                        <span class="disc-price">
-                          AED{" "}
-                          {nf.format(
-                            last.node.lastChanceSingularPage
-                              .lastChanceDiscountPrice
-                          )}
-                        </span>
-                        <span class="og-price">
-                          AED{" "}
-                          {nf.format(
-                            last.node.lastChanceSingularPage
-                              .lastChanceOriginalPrice
-                          )}
-                        </span>
-                        <span class="pct-disc">
-                          {percentOff(
-                            last.node.lastChanceSingularPage
-                              .lastChanceOriginalPrice,
-                            last.node.lastChanceSingularPage
-                              .lastChanceDiscountPrice
-                          )}
-                          % OFF
-                        </span>
-                      </div>
-                      <a class="enquire" href={last.node.uri}>
-                        INQUIRE
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p class="no-data-found">No data found</p>
-              )}
-            </div>
-            {displayedData.length >= NOOFPOST && (
-              <div id="pagination">
-                {totalCount > 1 && (
-                  <div class="pagination">
-                    <span>
-                      Page {currentPage} of {pageCount} &nbsp;&nbsp;&nbsp;&nbsp;
-                    </span>
-                    {currentPage > 1 && (
-                      <a href="#" onClick={handlePrevPage}>
-                        « Previous
-                      </a>
-                    )}
-                    {renderPageNumbers()}
-                    {currentPage !== pageCount && (
-                      <a href="#" onClick={handleNextPage}>
-                        Next ›
-                      </a>
-                    )}
+                    <Breadcrumb postId={data.wpPage.databaseId} />
                   </div>
                 )}
               </div>
+            </div>
+          </>
+        ) : (
+          <img src={`${MEDIA_URL}/images/featureimage2.jpg`} />
+        )}
+      </section>
+
+      <section class="main-content">
+        <div class="container first-paragraph">
+          <div class="top-para-room">
+            <p
+              dangerouslySetInnerHTML={{
+                __html: removeTags(header.lastChanceContent),
+              }}
+            />
+          </div>
+        </div>
+        <div class="container">
+          <div class="filter-wrapper">
+            <div class="filter-title">Filter by:</div>
+
+            <div class="filters">
+              <div class="select">
+                <select
+                  name="filter-post"
+                  id="last-chance-filter-category"
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="">by Category</option>
+                  {lastCat &&
+                    lastCat.map((cat, index) => (
+                      <option value={cat.node.slug} key={`fjds;j` + index}>
+                        {cat.node.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div class="select">
+                <select
+                  name="filter-condition"
+                  id="last-chance-filter-condition"
+                  onChange={(e) => setCondtion(e.target.value)}
+                >
+                  <option value="">by Condition</option>
+                  {allCondtionObject &&
+                    allCondtionObject.map((item, index) => (
+                      <option value={item} key={`gsfdg;j` + index}>
+                        {item}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div class="portfolio-filter-wrapper" onClick={handleFilter}>
+                <input
+                  type="submit"
+                  value="filter"
+                  id="last-chance-filter-button"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="portfolio-wrapper">
+            {displayedData &&
+              displayedData.length > 0 ? (
+              <ul id="last-chance-post">
+                {displayedData.map((last) => (
+                  <li>
+                    <a href={last.node.uri}>
+                      <div class="prod-media">
+                        <div class="wrapper">
+                          <div class="holder">
+                            <img
+                              src={
+                                last.node.lastChanceSingularPage
+                                  .lastChancePostGallery[0].mediaItemUrl
+                              }
+                              alt={
+                                last.node.lastChanceSingularPage
+                                  .lastChancePostGallery[0].altText
+                              }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    <div class="prod-price">
+                      <h3>{last.node.title}</h3>
+                      <span class="disc-price">
+                        AED{" "}
+                        {nf.format(
+                          last.node.lastChanceSingularPage
+                            .lastChanceDiscountPrice
+                        )}
+                      </span>
+                      <span class="og-price">
+                        AED{" "}
+                        {nf.format(
+                          last.node.lastChanceSingularPage
+                            .lastChanceOriginalPrice
+                        )}
+                      </span>
+                      <span class="pct-disc">
+                        {percentOff(
+                          last.node.lastChanceSingularPage
+                            .lastChanceOriginalPrice,
+                          last.node.lastChanceSingularPage
+                            .lastChanceDiscountPrice
+                        )}
+                        % OFF
+                      </span>
+                    </div>
+                    <a class="enquire" href={last.node.uri}>
+                      INQUIRE
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p class="no-data-found">No data found</p>
             )}
           </div>
-        </section>
-      </Layout>
-    </>
+          {displayedData.length >= NOOFPOST && (
+            <div id="pagination">
+              {totalCount > 1 && (
+                <div class="pagination">
+                  <span>
+                    Page {currentPage} of {pageCount} &nbsp;&nbsp;&nbsp;&nbsp;
+                  </span>
+                  {currentPage > 1 && (
+                    <a href="#" onClick={handlePrevPage}>
+                      « Previous
+                    </a>
+                  )}
+                  {renderPageNumbers()}
+                  {currentPage !== pageCount && (
+                    <a href="#" onClick={handleNextPage}>
+                      Next ›
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </section>
+    </Layout>
+
   );
 };
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"last-chance page-id-1507"}>
+  </Seo>
+)
 export const data = graphql`
-        query MyQuery {
-          allWpLastChanceCategory {
-          edges {
-          node {
-          id
-          slug
-        name
+    query MyQuery {
+      allWpLastChanceCategory {
+      edges {
+      node {
+      id
+      slug
+      name
         }
       }
     }
-        wp {
-          allCondtionObject
-        }
-        wpPage(databaseId: {eq: 1507 }) {
-          id
-          title
-          databaseId
+    wp {
+      allCondtionObject
+    }
+    wpPage(databaseId: {eq: 1507 }) {
+      id
+      title
+      databaseId
           seo {
-            canonical
-            opengraphDescription
-                opengraphImage {
-              altText
-              mediaItemUrl
-              height
-              width
-              mediaType
-            }
-            opengraphSiteName
-            opengraphTitle
-            metaRobotsNofollow
-            metaRobotsNoindex
-            opengraphUrl
-            opengraphModifiedTime
-            opengraphType
-            title
-            metaDesc
-          }
-          lastChanceMainPageLayout {
-            lastChanceContent
-            lastChanceImageGallery {
-              id
-              mediaItemUrl
-              altText
-              gatsbyImage(
-                height: 733
-                placeholder: BLURRED
-                layout: CONSTRAINED
-                width: 1920
-              )
-            }
-          }
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
+      }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
+      lastChanceMainPageLayout {
+        lastChanceContent
+        lastChanceImageGallery {
+          id
+          mediaItemUrl
+          altText
+          gatsbyImage(
+            height: 733
+            placeholder: BLURRED
+            layout: CONSTRAINED
+            width: 1920
+          )
+        }
+      }
         }
         allWpLastChance(
         filter: {

@@ -14,7 +14,7 @@ require("dotenv").config({
 
 module.exports = {
   siteMetadata: {
-    siteUrl: "https://app.innerspacedxb.com/",
+    siteUrl: "https://innerspacedxb.com/",
   },
   plugins: [
     {
@@ -60,7 +60,6 @@ module.exports = {
     `gatsby-plugin-image`,
     `gatsby-plugin-netlify`,
     "gatsby-plugin-sitemap",
-    "gatsby-plugin-next-seo",
     {
       resolve: "gatsby-plugin-google-tagmanager",
       options: {

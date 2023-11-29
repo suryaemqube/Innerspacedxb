@@ -9,8 +9,7 @@ import lgZoom from "lightgallery/plugins/zoom";
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import Seo from "../components/SeoMeta";
 
 import Layout from "../components/Layout";
 // import Seo from "../components/SeoMeta";
@@ -142,38 +141,6 @@ const Portfolio = ({ data }) => {
   // console.log("TestData:", startIndex, endIndex)
   return (
     <>
-      <HelmetProvider>
-        <GatsbySeo
-          title={seo && seo.title}
-          description={seo && seo.metaDesc}
-          canonical={seo && seo.canonical}
-          openGraph={{
-            url: seo && seo.opengraphUrl,
-            title: seo && seo.opengraphTitle,
-            description: seo && seo.opengraphDescription,
-            images: [
-              {
-                url: seo && seo.opengraphImage.mediaItemUrl,
-                width: seo && seo.opengraphImage.width,
-                height: seo && seo.opengraphImage.height,
-                alt: seo && seo.opengraphTitle,
-              },
-            ],
-            site_name: seo && seo.opengraphSiteName,
-          }}
-          twitter={{
-            handle: '@handle',
-            site: '@site',
-            cardType: 'summary_large_image',
-          }}
-          nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-          noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-          article={{
-            modifiedTime: seo && seo.opengraphModifiedTime
-          }}
-        />
-        <Helmet bodyAttributes={{ class: "portfolio" }}></Helmet>
-      </HelmetProvider>
       <Layout>
 
         {/* <Seo pageUrl={`${WEBSITE_URL}/portfolio/`} bodyClass={"portfolio"}></Seo> */}
@@ -359,6 +326,10 @@ const Portfolio = ({ data }) => {
     </>
   );
 };
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"portfolio"}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery {
     allWpBrandCategory(filter: { databaseId: { ne: 34 } }) {
@@ -395,26 +366,29 @@ export const data = graphql`
           )
         }
       }
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
     }
     allWpPortfolio {
       edges {

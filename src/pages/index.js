@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from "react";
-import { graphql, Link } from "gatsby";
+import { graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import LazyLoad from "react-lazy-load";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
-
+import Seo from "../components/SeoMeta";
 import SwiperCore, { Autoplay, Parallax } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.min.css"; // Swiper CSS
@@ -30,7 +28,6 @@ export default function Home({ data }) {
   const designBy = useRef();
   const portfolioElem = useRef();
 
-  const homePage = data?.wpPage || [];
   const home = data?.wpPage?.homePageContent || [];
   const brand = data?.allWpBrand?.nodes || [];
   const seo = data?.wpPage?.seo || [];
@@ -130,276 +127,249 @@ export default function Home({ data }) {
   }, []);
 
   return (
-    <>
-      <GatsbySeo
-        title={seo && seo.title}
-        description={seo && seo.metaDesc}
-        canonical={seo && seo.canonical}
-        openGraph={{
-          url: seo && seo.opengraphUrl,
-          title: seo && seo.opengraphTitle,
-          description: seo && seo.opengraphDescription,
-          images: [
-            {
-              url: seo && seo.opengraphImage.mediaItemUrl,
-              width: seo && seo.opengraphImage.width,
-              height: seo && seo.opengraphImage.height,
-              alt: seo && seo.opengraphTitle,
-            },
-          ],
-          site_name: seo && seo.opengraphSiteName,
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image',
-        }}
-        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-        article={{
-          modifiedTime: seo && seo.opengraphModifiedTime
-        }}
-      />
-      <HelmetProvider>
-        <Helmet bodyAttributes={{ class: "home" }}></Helmet>
-      </HelmetProvider>
-      <Layout>
-        {/* <!-- hero slider starts  --> */}
-        <section className="hero-slider page-wrap">
-          <div id="home-slider">
-            <Swiper
-              speed={2000}
-              pagination={false}
-              modules={[Pagination, Navigation, Autoplay]}
-              slidesPerView={1}
-              autoplay={{
-                delay: 4500,
-              }}
-              navigation={{
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-              }}
-              preloadImages={false}
-              lazy={{
-                loadPrevNext: false,
-                loadOnTransitionStart: true,
-              }}
-              parallax={true}
-              effect="slide"
-              loop={true}
-              className="swiper-container vertical-swpier"
-            >
-              {home &&
-                home.heroSlider.map((slide, index) => (
-                  <SwiperSlide
-                    className={`swiper-slide swiper-slide-${index + 1}`}
-                  >
-                    <div className="swiper-image" data-swiper-parallax-x="35%">
-                      <div
-                        className="swiper-image-inner swiper-image-right"
-                      // style={{
-                      //   backgroundImage: `url(${slide.sliderImage.mediaItemUrl})`,
-                      // }}
-                      >
-                        <div className="img-wrap">
-                          {typeof window !== "undefined" &&
-                            window.innerWidth > 767 && (
-                              <GatsbyImage
-                                image={getImage(slide.sliderImage)}
-                                alt={slide.sliderImage.altText}
-                                loading="lazy"
-                                className="swiper-image-inner swiper-lazy swiper-image-right"
-                              />
-                            )}
-                          {typeof window !== "undefined" &&
-                            window.innerWidth < 767 && (
-                              <GatsbyImage
-                                image={getImage(slide.mobileSliderImage)}
-                                alt={slide.sliderImage.altText}
-                                loading="lazy"
-                                className="swiper-image-inner swiper-lazy swiper-image-right test"
-                              />
-                            )}
-                          {/* <div className="swiper-lazy-preloader"></div> */}
-                        </div>
-                        <div
-                          className="contain"
-                          dangerouslySetInnerHTML={{
-                            __html: slide.sliderContent,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                ))}
-
-              <div className="swiper-button-prev swiper-button-white"></div>
-              <div className="swiper-button-next swiper-button-white"></div>
-            </Swiper>
-          </div>
-        </section>
-        {/* <!-- hero slider ends  --> */}
-        {/* <!-- design by room starts  --> */}
-        <section className="design-by-room" ref={designBy}>
-          {home && (
-            <div
-              className="container"
-              dangerouslySetInnerHTML={{
-                __html: home.designByRoomIntroduction,
-              }}
-            />
-          )}
-
-          <div className="design-swiper">
-            <Swiper
-              speed={2000}
-              pagination={false}
-              modules={[Pagination, Navigation, Autoplay]}
-              slidesPerView={1}
-              autoplay={{
-                delay: 4500,
-              }}
-              navigation={{
-                nextEl: ".swiper-button-nxt",
-                prevEl: ".swiper-button-prev",
-              }}
-              preloadImages={false}
-              lazy={{
-                loadPrevNext: false,
-                loadOnTransitionStart: true,
-              }}
-              grabCursor={true}
-              loop={true}
-              className="swiper-container design-container"
-              id="designSwiper"
-            >
-              {home &&
-                home.designByRoomSlider.map((slide, index) => (
-                  <SwiperSlide
-                    className="swiper-slide"
-                  // style="background: url(<?php echo get_sub_field('slider_image')['url']; ?>) no-repeat center; background-size: cover;"
-                  >
-                    <div className="img-wrap">
-                      <div className="img-design">
-                        {/* <img className="swiper-lazy" height="728" width="1920" src="" data-src="<?php echo get_sub_field('slider_image')['url']; ?>" alt="" /> */}
+    <Layout>
+      {/* <!-- hero slider starts  --> */}
+      <section className="hero-slider page-wrap">
+        <div id="home-slider">
+          <Swiper
+            speed={2000}
+            pagination={false}
+            modules={[Pagination, Navigation, Autoplay]}
+            slidesPerView={1}
+            autoplay={{
+              delay: 4500,
+            }}
+            navigation={{
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            }}
+            preloadImages={false}
+            lazy={{
+              loadPrevNext: false,
+              loadOnTransitionStart: true,
+            }}
+            parallax={true}
+            effect="slide"
+            loop={true}
+            className="swiper-container vertical-swpier"
+          >
+            {home &&
+              home.heroSlider.map((slide, index) => (
+                <SwiperSlide
+                  className={`swiper-slide swiper-slide-${index + 1}`}
+                >
+                  <div className="swiper-image" data-swiper-parallax-x="35%">
+                    <div
+                      className="swiper-image-inner swiper-image-right"
+                    // style={{
+                    //   backgroundImage: `url(${slide.sliderImage.mediaItemUrl})`,
+                    // }}
+                    >
+                      <div className="img-wrap">
                         {typeof window !== "undefined" &&
                           window.innerWidth > 767 && (
                             <GatsbyImage
                               image={getImage(slide.sliderImage)}
                               alt={slide.sliderImage.altText}
-                              width="1920"
-                              height="728"
                               loading="lazy"
                               className="swiper-image-inner swiper-lazy swiper-image-right"
                             />
                           )}
-
                         {typeof window !== "undefined" &&
-                          window.innerWidth <= 767 && (
+                          window.innerWidth < 767 && (
                             <GatsbyImage
                               image={getImage(slide.mobileSliderImage)}
                               alt={slide.sliderImage.altText}
-                              width="1920"
-                              height="728"
                               loading="lazy"
                               className="swiper-image-inner swiper-lazy swiper-image-right test"
                             />
                           )}
                         {/* <div className="swiper-lazy-preloader"></div> */}
                       </div>
-                      <div className="cta-text">
-                        <div className="cta">
-                          <h3
-                            dangerouslySetInnerHTML={{
-                              __html: slide.title,
-                            }}
-                          />
-                          <a
-                            className="view-more"
-                          // href={shortUrl(slide.viewMoreLink)}
-                          >
-                            View More
-                          </a>
-                        </div>
+                      <div
+                        className="contain"
+                        dangerouslySetInnerHTML={{
+                          __html: slide.sliderContent,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
 
-                        <div className="content">
-                          <p>{slide && slide.shortDescription}</p>
-                        </div>
+            <div className="swiper-button-prev swiper-button-white"></div>
+            <div className="swiper-button-next swiper-button-white"></div>
+          </Swiper>
+        </div>
+      </section>
+      {/* <!-- hero slider ends  --> */}
+      {/* <!-- design by room starts  --> */}
+      <section className="design-by-room" ref={designBy}>
+        {home && (
+          <div
+            className="container"
+            dangerouslySetInnerHTML={{
+              __html: home.designByRoomIntroduction,
+            }}
+          />
+        )}
+
+        <div className="design-swiper">
+          <Swiper
+            speed={2000}
+            pagination={false}
+            modules={[Pagination, Navigation, Autoplay]}
+            slidesPerView={1}
+            autoplay={{
+              delay: 4500,
+            }}
+            navigation={{
+              nextEl: ".swiper-button-nxt",
+              prevEl: ".swiper-button-prev",
+            }}
+            preloadImages={false}
+            lazy={{
+              loadPrevNext: false,
+              loadOnTransitionStart: true,
+            }}
+            grabCursor={true}
+            loop={true}
+            className="swiper-container design-container"
+            id="designSwiper"
+          >
+            {home &&
+              home.designByRoomSlider.map((slide, index) => (
+                <SwiperSlide
+                  className="swiper-slide"
+                // style="background: url(<?php echo get_sub_field('slider_image')['url']; ?>) no-repeat center; background-size: cover;"
+                >
+                  <div className="img-wrap">
+                    <div className="img-design">
+                      {/* <img className="swiper-lazy" height="728" width="1920" src="" data-src="<?php echo get_sub_field('slider_image')['url']; ?>" alt="" /> */}
+                      {typeof window !== "undefined" &&
+                        window.innerWidth > 767 && (
+                          <GatsbyImage
+                            image={getImage(slide.sliderImage)}
+                            alt={slide.sliderImage.altText}
+                            width="1920"
+                            height="728"
+                            loading="lazy"
+                            className="swiper-image-inner swiper-lazy swiper-image-right"
+                          />
+                        )}
+
+                      {typeof window !== "undefined" &&
+                        window.innerWidth <= 767 && (
+                          <GatsbyImage
+                            image={getImage(slide.mobileSliderImage)}
+                            alt={slide.sliderImage.altText}
+                            width="1920"
+                            height="728"
+                            loading="lazy"
+                            className="swiper-image-inner swiper-lazy swiper-image-right test"
+                          />
+                        )}
+                      {/* <div className="swiper-lazy-preloader"></div> */}
+                    </div>
+                    <div className="cta-text">
+                      <div className="cta">
+                        <h3
+                          dangerouslySetInnerHTML={{
+                            __html: slide.title,
+                          }}
+                        />
+                        <a
+                          className="view-more"
+                        // href={shortUrl(slide.viewMoreLink)}
+                        >
+                          View More
+                        </a>
+                      </div>
+
+                      <div className="content">
+                        <p>{slide && slide.shortDescription}</p>
                       </div>
                     </div>
-                  </SwiperSlide>
-                ))}
-            </Swiper>
+                  </div>
+                </SwiperSlide>
+              ))}
+          </Swiper>
 
-            <div className="swiper-button-nxt" id="designSwiperNext">
-              <a href="#">
-                <img
-                  loading="lazy"
-                  height="63"
-                  width="62"
-                  src={swiperNext}
-                  alt=""
-                />
-              </a>
-            </div>
+          <div className="swiper-button-nxt" id="designSwiperNext">
+            <a href="#">
+              <img
+                loading="lazy"
+                height="63"
+                width="62"
+                src={swiperNext}
+                alt=""
+              />
+            </a>
           </div>
-        </section>
-        {/* <!-- design by room ends  --> */}
+        </div>
+      </section>
+      {/* <!-- design by room ends  --> */}
 
-        {/* <!-- brands starts --> */}
-        {!isLoaded && <div>Loading...</div>}
-        <LazyLoad offset={100} onContentVisible={() => setIsLoaded(true)}>
-          <Suspense
-            fallback={() => {
-              setIsLoaded(true);
+      {/* <!-- brands starts --> */}
+      {!isLoaded && <div>Loading...</div>}
+      <LazyLoad offset={100} onContentVisible={() => setIsLoaded(true)}>
+        <Suspense
+          fallback={() => {
+            setIsLoaded(true);
+          }}
+        >
+          <SliderLazy home={home} brand={brand} />
+        </Suspense>
+      </LazyLoad>
+      {/* <!-- brands ends --> */}
+
+      {/* <!-- portfolio identity starts --> */}
+      <section className="portfolio-identity testing" ref={portfolioElem}>
+        {home && (
+          <div
+            className="container testing"
+            dangerouslySetInnerHTML={{
+              __html: home.portfolioAndIdentityContent,
             }}
-          >
-            <SliderLazy home={home} brand={brand} />
-          </Suspense>
-        </LazyLoad>
-        {/* <!-- brands ends --> */}
-
-        {/* <!-- portfolio identity starts --> */}
-        <section className="portfolio-identity testing" ref={portfolioElem}>
-          {home && (
-            <div
-              className="container testing"
-              dangerouslySetInnerHTML={{
-                __html: home.portfolioAndIdentityContent,
-              }}
-            />
-          )}
-        </section>
-        {/* <!-- portfolio identity starts --> */}
-      </Layout>
-    </>
+          />
+        )}
+      </section>
+      {/* <!-- portfolio identity starts --> */}
+    </Layout>
   );
 }
 
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"home"}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery {
     wpPage(databaseId: { eq: 7 }) {
       title
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
       homePageContent {
         brandsIntroduction
         designByRoomIntroduction

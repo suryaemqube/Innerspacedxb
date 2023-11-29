@@ -33,44 +33,41 @@ const Sitemap = () => {
     fetchSecondaryMenu();
   }, []);
 
-  const MenuItem = ({ item, show }) => (
+  const MenuItem = ({ item }) => (
     <li
-      className={`menu-item menu-item-type-post_type menu-item-object-page ${item.classes.join(
-        " "
-      )} ${item.child_items ? "menu-item-has-children" : ""} ${show
-        ? "current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor"
-        : ""
-        }`}
+      className={`menu-item menu-item-type-post_type menu-item-object-page  ${item.child_items ? "menu-item-has-children" : ""}`}
     >
       <Link
         to={shortUrl(item.url)}
         dangerouslySetInnerHTML={{ __html: item.title }}
       />
       {item.child_items && item.child_items.length > 0 && (
-        <SubMenu items={item.child_items} show={show} />
+        <SubMenu items={item.child_items} />
       )}
     </li>
   );
 
-  const SubMenu = ({ items, show }) => (
-    <ul className="sub-menu">
+  const SubMenu = ({ items }) => (
+    <ul>
       {items.map((item, index) => (
-        <MenuItem item={item} show={show} key={`${index}submenu2`} />
+        <MenuItem item={item} key={`${index}submenu2`} />
       ))}
     </ul>
   );
 
   const shortUrl = (fullUrl) => {
     const url = fullUrl;
-    const urlObject = new URL(url);
-    const desiredPart = urlObject.pathname;
+    var desiredPart = "#";
+    if (url) {
+      const urlObject = new URL(url);
+      desiredPart = urlObject.pathname;
+    }
     return desiredPart;
   };
 
   return (
     <Layout>
-      <Seo pageUrl={`${WEBSITE_URL}/sitemap/`} title={"Sitemap"} />
-      {/* <section className="sitemap">
+      <section className="sitemap">
         <div className="container">
           <div className="static-txt-wrapper sitemap-wrapper">
             <ul>
@@ -93,16 +90,20 @@ const Sitemap = () => {
             {primaryMenu && primaryMenu.items.length > 0 && (
               <ul>
                 {primaryMenu.items.map((item, index) => (
-                  <MenuItem item={item} show={show} key={`${index}menu2`} />
+                  <MenuItem item={item} key={`${index}menu2`} />
                 ))}
               </ul>
             )}
 
           </div>
         </div>
-      </section> */}
+      </section>
     </Layout>
   );
 };
 
 export default Sitemap;
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"} title={"Sitemap - Innerspacedxb"} description={"Sitemap - Innerspacecdxb"}>
+  </Seo>
+)

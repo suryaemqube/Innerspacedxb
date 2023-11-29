@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, graphql, navigate } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import Seo from "../components/SeoMeta";
 import SwiperCore, { Pagination, Autoplay } from "swiper";
 import axios from "axios";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -205,39 +204,7 @@ const Portfolio = ({ data, pageContext }) => {
   }
 
   return (
-    <> <HelmetProvider>
-      <GatsbySeo
-        title={seo && seo.title}
-        description={seo && seo.metaDesc}
-        canonical={seo && seo.canonical}
-        openGraph={{
-          url: seo && seo.opengraphUrl,
-          title: seo && seo.opengraphTitle,
-          description: seo && seo.opengraphDescription,
-          images: [
-            {
-              url: seo && seo.opengraphImage.mediaItemUrl,
-              width: seo && seo.opengraphImage.width,
-              height: seo && seo.opengraphImage.height,
-              alt: seo && seo.opengraphTitle,
-            },
-          ],
-          site_name: seo && seo.opengraphSiteName,
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image',
-        }}
-        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-        article={{
-          modifiedTime: seo && seo.opengraphModifiedTime
-        }}
-      />
-
-      <Helmet bodyAttributes={{ class: "last-chance-detail" }}></Helmet>
-    </HelmetProvider>
+    <>
       <Layout>
         {/* <Seo
           pageUrl={`${WEBSITE_URL}${pageUri}`}
@@ -880,6 +847,10 @@ const Portfolio = ({ data, pageContext }) => {
     </>
   );
 };
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpLastChance?.seo || []} bodyClass={"last-chance-detail"}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery($pageId: Int!) {
     wpPage(databaseId: { eq: 1507 }) {
@@ -917,26 +888,29 @@ export const data = graphql`
           width
         }
       }
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
     }
   }
 `;

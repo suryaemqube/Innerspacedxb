@@ -17,15 +17,15 @@ import lgZoom from "lightgallery/plugins/zoom";
 import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
+
 // import { HelmetProvider } from "react-helmet-async";
 import Layout from "../components/Layout";
-// import Seo from "../components/SeoMeta";
+import Seo from "../components/SeoMeta";
 
 import swiperNext from "../assets/img/swiper-next.png";
 import arrowLeft from "../assets/img/arrow-left-solid.svg";
 import arrowRight from "../assets/img/arrow-right-solid.svg";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+
 
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
@@ -98,38 +98,6 @@ const Roomtypes = ({ pageContext, data }) => {
 
   return (
     <>
-      <HelmetProvider>
-        <GatsbySeo
-          title={seo && seo.title}
-          description={seo && seo.metaDesc}
-          canonical={seo && seo.canonical}
-          openGraph={{
-            url: seo && seo.opengraphUrl,
-            title: seo && seo.opengraphTitle,
-            description: seo && seo.opengraphDescription,
-            images: [
-              {
-                url: seo && seo.opengraphImage.mediaItemUrl,
-                width: seo && seo.opengraphImage.width,
-                height: seo && seo.opengraphImage.height,
-                alt: seo && seo.opengraphTitle,
-              },
-            ],
-            site_name: seo && seo.opengraphSiteName,
-          }}
-          twitter={{
-            handle: '@handle',
-            site: '@site',
-            cardType: 'summary_large_image',
-          }}
-          nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-          noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-          article={{
-            modifiedTime: seo && seo.opengraphModifiedTime
-          }}
-        />
-        <Helmet bodyAttributes={{ class: `roomtypes ${pageSlug}` }}></Helmet>
-      </HelmetProvider>
       <Layout>
         <section class="header-image room-header-slider">
           {roomAcf && roomAcf.roomSlider && (
@@ -733,11 +701,16 @@ const Roomtypes = ({ pageContext, data }) => {
   );
 };
 export default Roomtypes;
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={`roomtypes ${data?.wpPage?.slug}`}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery($pageId: Int!, $pageSlug: String!) {
     wpPage(databaseId: { eq: $pageId }) {
       id
       title
+      slug
       featuredImage {
         node {
           altText
@@ -750,26 +723,29 @@ export const data = graphql`
           )
         }
       }
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
       roomsContent {
         topContent
         roomSlider {

@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import Layout from "../components/Layout";
 import { Link, graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-// import Seo from "../components/SeoMeta";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
+import Seo from "../components/SeoMeta";
+
 
 const Blog = ({ data }) => {
   const initialPerPage = 4;
@@ -11,7 +11,6 @@ const Blog = ({ data }) => {
 
   const blogpost = data?.allWpPost?.edges || [];
   const blogPage = data?.wpPage || [];
-  const seo = data?.wpPage?.seo || [];
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
 
@@ -21,126 +20,99 @@ const Blog = ({ data }) => {
   };
 
   return (
-    <>
-      <GatsbySeo
-        title={seo && seo.title}
-        description={seo && seo.metaDesc}
-        canonical={seo && seo.canonical}
-        openGraph={{
-          url: seo && seo.opengraphUrl,
-          title: seo && seo.opengraphTitle,
-          description: seo && seo.opengraphDescription,
-          images: [
-            {
-              url: seo && seo.opengraphImage.mediaItemUrl,
-              width: seo && seo.opengraphImage.width,
-              height: seo && seo.opengraphImage.height,
-              alt: seo && seo.opengraphTitle,
-            },
-          ],
-          site_name: seo && seo.opengraphSiteName,
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image',
-        }}
-        nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-        noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-        article={{
-          modifiedTime: seo && seo.opengraphModifiedTime
-        }}
-      />
-      {/* <Seo pageUrl={`${WEBSITE_URL}/blog/`} title={"Ideas to Design Living Spaces Beautifully | Innerspace Dubai"} description={"Explore our blogs section & get intelligent ideas about kitchen renovation & luxuriously limitless home interior designs. Visit Innerspace Dubai for more."} imageUrl={blogPage.featuredImage.node.mediaItemUrl} imgHeight={blogPage.featuredImage.node.height} imgWidth={blogPage.featuredImage.node.width} imgType={blogPage.featuredImage.node.mediaType} /> */}
-      <Layout>
+    <Layout>
 
-        <section class="header-image">
-          {blogPage.featuredImage ? (
-            <div class="wrapper">
-              <div class="holder">
-                <GatsbyImage
-                  image={getImage(blogPage.featuredImage.node)}
-                  alt={blogPage.title}
-                />
-              </div>
+      <section class="header-image">
+        {blogPage.featuredImage ? (
+          <div class="wrapper">
+            <div class="holder">
+              <GatsbyImage
+                image={getImage(blogPage.featuredImage.node)}
+                alt={blogPage.title}
+              />
             </div>
-          ) : (
-            <img
-              src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
-              alt={blogPage.title}
-            />
-          )}
-          <h1>{blogPage.title}</h1>
-        </section>
+          </div>
+        ) : (
+          <img
+            src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
+            alt={blogPage.title}
+          />
+        )}
+        <h1>{blogPage.title}</h1>
+      </section>
 
-        {blogpost ? (
-          <section class="main-content">
-            <div class="container">
-              <div class="blog-wrapper">
-                <ul>
-                  {blogpost &&
-                    blogpost.slice(0, perPage).map((post, index) => (
-                      <li key={`ffdsfa` + index}>
-                        <div class="blog-media">
-                          <div class="wrapper">
-                            <div class="holder">
-                              <Link to={post.node.uri}>
-                                {/* <img src={post.featuredImage.node.mediaItemUrl} alt="<?php echo $recent_alt_text ; ?>"
+      {blogpost ? (
+        <section class="main-content">
+          <div class="container">
+            <div class="blog-wrapper">
+              <ul>
+                {blogpost &&
+                  blogpost.slice(0, perPage).map((post, index) => (
+                    <li key={`ffdsfa` + index}>
+                      <div class="blog-media">
+                        <div class="wrapper">
+                          <div class="holder">
+                            <Link to={post.node.uri}>
+                              {/* <img src={post.featuredImage.node.mediaItemUrl} alt="<?php echo $recent_alt_text ; ?>"
                             alt="every kitchen tells a story" /> */}
-                                {post.node.featuredImage ? (
-                                  <GatsbyImage
-                                    image={getImage(post.node.featuredImage.node)}
-                                    alt={post.node.featuredImage.node.altText}
-                                  />
-                                ) : (
-                                  <img
-                                    src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
-                                    alt=""
-                                  />
-                                )}
-                              </Link>
-                            </div>
+                              {post.node.featuredImage ? (
+                                <GatsbyImage
+                                  image={getImage(post.node.featuredImage.node)}
+                                  alt={post.node.featuredImage.node.altText}
+                                />
+                              ) : (
+                                <img
+                                  src={`${MEDIA_URL}/img/room-type-header-img.jpg`}
+                                  alt=""
+                                />
+                              )}
+                            </Link>
                           </div>
                         </div>
-                        <h3
-                          dangerouslySetInnerHTML={{ __html: post.node.title }}
-                        />
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html:
-                              post.node.content
-                                .split(" ")
-                                .slice(0, 20)
-                                .join(" ") + "...",
-                          }}
-                        />
-                        <Link class="more" to={post.node.uri}>
-                          read more
-                        </Link>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-              {blogpost.length > perPage && (
-                <div class="load-more" onClick={loadMore}>
-                  <a
-                    href="javascript: void(0);"
-                    class="load-more-button"
-                    id="load-blog"
-                  >
-                    load more
-                  </a>
-                </div>
-              )}
+                      </div>
+                      <h3
+                        dangerouslySetInnerHTML={{ __html: post.node.title }}
+                      />
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            post.node.content
+                              .split(" ")
+                              .slice(0, 20)
+                              .join(" ") + "...",
+                        }}
+                      />
+                      <Link class="more" to={post.node.uri}>
+                        read more
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
             </div>
-          </section>
-        ) : (
-          <p class="no-more-list">Currently blogs not available...</p>
-        )}
-      </Layout>
-    </>
+            {blogpost.length > perPage && (
+              <div class="load-more" onClick={loadMore}>
+                <a
+                  href="javascript: void(0);"
+                  class="load-more-button"
+                  id="load-blog"
+                >
+                  load more
+                </a>
+              </div>
+            )}
+          </div>
+        </section>
+      ) : (
+        <p class="no-more-list">Currently blogs not available...</p>
+      )}
+    </Layout>
   );
 };
+
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []}>
+  </Seo>
+)
 
 export const query = graphql`
   query MyQuery {
@@ -162,26 +134,29 @@ export const query = graphql`
           )
         }
       }
-      seo {
-        canonical
-        opengraphDescription
-            opengraphImage {
-          altText
-          mediaItemUrl
-          height
-          width
-          mediaType
-        }
-        opengraphSiteName
-        opengraphTitle
-        metaRobotsNofollow
-        metaRobotsNoindex
-        opengraphUrl
-        opengraphModifiedTime
-        opengraphType
-        title
-        metaDesc
+          seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
       }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
+    }
     }
    allWpPost(sort: {date: DESC}) {
       edges {

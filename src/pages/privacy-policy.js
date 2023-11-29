@@ -11,7 +11,6 @@ const PrivacyPolicy = ({ data }) => {
     return (
         <>
             <Layout>
-                <Seo pageUrl={`${WEBSITE_URL}/privacy-policy/`} bodyClass={`privacy-policy`} />
                 <section class="header-image">
                     <h1>{page && page.title}</h1>
                 </section>
@@ -23,12 +22,15 @@ const PrivacyPolicy = ({ data }) => {
 
                 </section>
             </Layout>
-
         </>
     );
 };
 
 export default PrivacyPolicy;
+export const Head = ({ data }) => (
+    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"privacy-policy"}>
+    </Seo>
+)
 export const data = graphql`
 query MyQuery {
   wpPage(databaseId: {eq: 3 }) {
@@ -37,6 +39,29 @@ query MyQuery {
     content
     privacyPolicy{
         topText
+    }
+    seo {
+      canonical
+      opengraphDescription
+      opengraphImage {
+        altText
+        mediaItemUrl
+        height
+        width
+        mediaType
+      }
+      opengraphSiteName
+      opengraphTitle
+      metaRobotsNofollow
+      metaRobotsNoindex
+      opengraphUrl
+      opengraphModifiedTime
+      opengraphType
+      title
+      metaDesc
+      schema {
+        raw
+      }
     }
   }
 }

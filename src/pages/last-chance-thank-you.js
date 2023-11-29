@@ -9,11 +9,6 @@ const LastThankyou = ({ data }) => {
   const thankyou = data?.wpPage || [];
   return (
     <Layout>
-      <Seo
-        pageUrl={`${WEBSITE_URL}/last-chance-thank-you/`}
-        bodyClass={`last-chance-ty`}
-      ></Seo>
-
       <section class="header">
         <div class="holder">
           <picture>
@@ -45,6 +40,10 @@ const LastThankyou = ({ data }) => {
     </Layout>
   );
 };
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"last-chance-ty"}>
+  </Seo>
+)
 export const data = graphql`
   query MyQuery {
     wpPage(databaseId: { eq: 1561 }) {

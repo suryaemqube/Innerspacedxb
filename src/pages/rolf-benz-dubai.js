@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, graphql, navigate } from "gatsby";
 import { StaticImage } from "gatsby-plugin-image";
-import { GatsbySeo } from "gatsby-plugin-next-seo";
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import Seo from "../components/SeoMeta";
 import { useFormik, Formik } from "formik";
 import axios from "axios";
 
@@ -166,40 +165,6 @@ const Rolf = ({ data }) => {
 
   return (
     <>
-      <HelmetProvider >
-        <GatsbySeo
-          title={seo && seo.title}
-          description={seo && seo.metaDesc}
-          canonical={seo && seo.canonical}
-          openGraph={{
-            url: seo && seo.opengraphUrl,
-            title: seo && seo.opengraphTitle,
-            description: seo && seo.opengraphDescription,
-            images: [
-              {
-                url: seo && seo.opengraphImage.mediaItemUrl,
-                width: seo && seo.opengraphImage.width,
-                height: seo && seo.opengraphImage.height,
-                alt: seo && seo.opengraphTitle,
-              },
-            ],
-            site_name: seo && seo.opengraphSiteName,
-          }}
-          twitter={{
-            handle: '@handle',
-            site: '@site',
-            cardType: 'summary_large_image',
-          }}
-          nofollow={seo && seo.metaRobotsNofollow === "follow" ? true : false}
-          noindex={seo && seo.metaRobotsNoindex === "index" ? true : false}
-          article={{
-            modifiedTime: seo && seo.opengraphModifiedTime
-          }}
-        />
-        <Helmet bodyAttributes={{ class: "page-template-tp-lp" }}></Helmet>
-      </HelmetProvider>
-
-
       <section class="header">
         <div class="holder">
           {typeof window !== "undefined" &&
@@ -1078,30 +1043,37 @@ const Rolf = ({ data }) => {
 };
 
 export default Rolf;
+export const Head = ({ data }) => (
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp"}>
+  </Seo>
+)
 export const data = graphql`
 query MyQuery {
   wpPage(databaseId: {eq: 1128}) {
     id
     seo {
-      canonical
-      opengraphDescription
+    canonical
+    opengraphDescription
       opengraphImage {
         altText
         mediaItemUrl
         height
         width
         mediaType
-      }
-      opengraphSiteName
-      opengraphTitle
-      metaRobotsNofollow
-      metaRobotsNoindex
-      opengraphUrl
-      opengraphModifiedTime
-      opengraphType
-      title
-      metaDesc
     }
+    opengraphSiteName
+    opengraphTitle
+    metaRobotsNofollow
+    metaRobotsNoindex
+    opengraphUrl
+    opengraphModifiedTime
+    opengraphType
+    title
+    metaDesc
+      schema {
+        raw
+    }
+}
   }
 }
 `;
