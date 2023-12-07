@@ -125,9 +125,10 @@ object-fit: cover;
 }
 #Gal .wrapper .holder img,
 #last-chance-post .wrapper .holder img {
-    object-fit: contain;
+    object-fit: contain !important;
     border: 1px solid #eaecee;
 }
+
 
 .header-image {
 

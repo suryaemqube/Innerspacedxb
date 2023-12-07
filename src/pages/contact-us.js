@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { graphql, navigate } from "gatsby";
 import { useFormik, Formik } from "formik";
 import axios from "axios";
+import LazyLoad from "react-lazy-load";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import Seo from "../components/SeoMeta";
 import Layout from "../components/Layout";
 
 import { getToken } from "../hooks/token";
 
+const Map = lazy(() => import("../components/lazyload/ContactMap"))
 const Contact = ({ data }) => {
   const WEBSITE_URL = process.env.GATSBY_BASE_URL;
   const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
-
+  const [isLoaded, setIsLoaded] = useState(false);
   const [token, setToken] = useState("");
   const [formFields, setFormFields] = useState([]);
   const [captchaExpression, setCaptchaExpression] = useState("");
@@ -166,14 +168,22 @@ const Contact = ({ data }) => {
         {page && page.featuredImage.node ? (
           <div className="wrapper">
             <div className="holder">
-              <img
-                src="<?php echo $featured_img_url ; ?>"
-                alt="<?php the_title(); ?>"
-              />
-              <GatsbyImage
-                image={getImage(page.featuredImage.node)}
-                alt={page.featuredImage.node}
-              />
+              {typeof window !== "undefined" &&
+                window.innerWidth > 767 && (
+                  <GatsbyImage
+                    image={getImage(page.featuredImage.node)}
+                    alt={page.featuredImage.node}
+                  />
+                )}
+
+              {typeof window !== "undefined" &&
+                window.innerWidth < 767 && (
+                  <GatsbyImage
+                    image={getImage(page.mobileImages.mobileHeaderImage)}
+                    alt={page.mobileImages.mobileHeaderImage.altText}
+                  />
+                )}
+
             </div>
           </div>
         ) : (
@@ -203,11 +213,16 @@ const Contact = ({ data }) => {
           )}
         </div>
 
-        {pageAcf && pageAcf.mapHtml && (
-          <section className="innerspace-google-map">
-            <span dangerouslySetInnerHTML={{ __html: pageAcf.mapHtml }} />
-          </section>
-        )}
+        {!isLoaded && <div>Loading...</div>}
+        <LazyLoad offset={100} onContentVisible={() => setIsLoaded(true)}>
+          <Suspense
+            fallback={() => {
+              setIsLoaded(true);
+            }}
+          >
+            <Map pageAcf={pageAcf} />
+          </Suspense>
+        </LazyLoad>
 
         <section className="form-address">
           <div className="container">
@@ -483,6 +498,18 @@ export const data = graphql`
         contactPageTopText
         mapHtml
         showroomTitle
+      }
+      mobileImages{
+        mobileHeaderImage{
+          mediaItemUrl
+          altText
+          gatsbyImage(
+            height: 400
+            layout: CONSTRAINED
+            placeholder: BLURRED
+            width: 767
+          )
+        }
       }
     }
   }

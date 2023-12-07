@@ -6,6 +6,7 @@ import { getSecondaryMenu } from "../hooks/menu";
 import { getOptionData } from "../hooks/optionpage";
 import { getToken } from "../hooks/token";
 
+import defaultlogo from "../assets/img/logo-innerspace.svg";
 import iconInsta from "../assets/img/icon-insta.svg";
 import iconPinterest from "../assets/img/icon-pinterest.svg";
 import iconFb from "../assets/img/icon-fb.svg";
@@ -151,16 +152,14 @@ function Footer() {
         <div className="container">
           <div className="col1">
             <div className="footer-logo-wrapper">
-              {options && options.main_logo && (
-                <a href="/" className="footer-logo">
-                  <img
-                    width="201"
-                    height="99"
-                    src={options.main_logo.url}
-                    alt="Innserspace"
-                  />
-                </a>
-              )}
+              <a href="/" className="footer-logo">
+                <img
+                  width="201"
+                  height="99"
+                  src={defaultlogo}
+                  alt="Innserspace"
+                />
+              </a>
 
               <p className="baseline">
                 {options && options.german_kitchen_text}

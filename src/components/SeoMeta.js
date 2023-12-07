@@ -21,12 +21,12 @@ const Seo = ({ bodyClass, title, description, seoData, children }) => {
       <meta name="description" content={seoData.metaDesc ? seoData.metaDesc : description} />
       <meta name="robots" content={`${seoData.metaRobotsNoindex}, ${seoData.metaRobotsNofollow}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
 
-      <link rel="canonical" href={seoData.canonical ? seoData.canonical : "/"}></link>
+      <link rel="canonical" href={seoData.canonical ? "https://innerspacedxb.com" + seoData.canonical : "/"}></link>
       <meta property="og:locale" content={"en_US"} />
       <meta property="og:type" content={"Website"} />
       <meta property="og:title" content={seoData.title ? seoData.title : title} />
       <meta property="og:description" content={seoData.metaDesc ? seoData.metaDesc : description} />
-      <meta property="og:url" content={seoData.opengraphUrl ? seoData.opengraphUrl : "https://innerspacedxb.com/"} />
+      <meta property="og:url" content={seoData.opengraphUrl ? "https://innerspacedxb.com" + seoData.opengraphUrl : "https://innerspacedxb.com/"} />
       <meta property="og:site_name" content={seoData.opengraphSiteName ? seoData.opengraphSiteName : "Innerspacedxb"} />
 
       <meta property="og:image" content={seoData.opengraphImage ? seoData.opengraphImage.mediaItemUrl : "https://app.innerspacedxb.com/wp-content/uploads/2022/11/logo-innerspace-black.png"} />

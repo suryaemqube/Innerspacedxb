@@ -152,10 +152,21 @@ const Portfolio = ({ data }) => {
                 src={page.featuredImage.node.mediaItemUrl}
                 alt={page.title}
               /> */}
-                <GatsbyImage
-                  image={getImage(page.featuredImage.node)}
-                  alt={page.title}
-                />
+                {typeof window !== "undefined" &&
+                  window.innerWidth > 767 && (
+                    <GatsbyImage
+                      image={getImage(page.featuredImage.node)}
+                      alt={page.title}
+                    />
+                  )}
+
+                {typeof window !== "undefined" &&
+                  window.innerWidth < 767 && (
+                    <GatsbyImage
+                      image={getImage(page.mobileImages.mobileHeaderImage)}
+                      alt={page.mobileImages.mobileHeaderImage.altText}
+                    />
+                  )}
               </div>
             </div>
           ) : (
@@ -363,6 +374,18 @@ export const data = graphql`
             layout: FIXED
             placeholder: BLURRED
             width: 1920
+          )
+        }
+      }
+      mobileImages{
+        mobileHeaderImage{
+          mediaItemUrl
+          altText
+          gatsbyImage(
+            height: 400
+            layout: CONSTRAINED
+            placeholder: BLURRED
+            width: 767
           )
         }
       }

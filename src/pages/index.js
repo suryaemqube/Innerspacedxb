@@ -30,7 +30,6 @@ export default function Home({ data }) {
 
   const home = data?.wpPage?.homePageContent || [];
   const brand = data?.allWpBrand?.nodes || [];
-  const seo = data?.wpPage?.seo || [];
 
   const shortUrl = (fullUrl) => {
     const url = fullUrl;
@@ -240,6 +239,7 @@ export default function Home({ data }) {
             {home &&
               home.designByRoomSlider.map((slide, index) => (
                 <SwiperSlide
+                  key={`g;dsfjgj` + index}
                   className="swiper-slide"
                 // style="background: url(<?php echo get_sub_field('slider_image')['url']; ?>) no-repeat center; background-size: cover;"
                 >
@@ -280,7 +280,7 @@ export default function Home({ data }) {
                         />
                         <a
                           className="view-more"
-                        // href={shortUrl(slide.viewMoreLink)}
+                          href={slide.viewMoreLink}
                         >
                           View More
                         </a>
@@ -326,12 +326,50 @@ export default function Home({ data }) {
       {/* <!-- portfolio identity starts --> */}
       <section className="portfolio-identity testing" ref={portfolioElem}>
         {home && (
-          <div
-            className="container testing"
-            dangerouslySetInnerHTML={{
-              __html: home.portfolioAndIdentityContent,
-            }}
-          />
+          <div className="container testing">
+            <ul class="portfolio-wrappe">
+              <li>
+                <div class="port-wrapper">
+                  <div class="cta-wrap">
+                    <h3>immerse yourself<br />
+                      in our design portfolio...</h3>
+                    <a class="view-more" href="/portfolio/">view more..</a>
+
+                  </div>
+                  <div class="wrapper">
+                    <div class="holder">
+                      <GatsbyImage
+                        image={getImage(home.homePortfolioImage)}
+                        alt={home.homePortfolioImage.altText}
+                        className="alignnone size-full wp-image-175"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <h4>Portfolio</h4>
+              </li>
+              <li>
+                <div class="port-wrapper">
+                  <div class="cta-wrap">
+                    <h3>every brand has a story behind it,<br />
+                      here's our tale</h3>
+                    <a class="view-more" href="/identity/">view more</a>
+
+                  </div>
+                  <div class="wrapper">
+                    <div class="holder">
+                      <GatsbyImage
+                        image={getImage(home.homeIdentityImage)}
+                        alt={home.homeIdentityImage.altText}
+                        className="alignnone size-full wp-image-176"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <h4>Identity</h4>
+              </li>
+            </ul>
+          </div>
         )}
       </section>
       {/* <!-- portfolio identity starts --> */}
@@ -396,7 +434,25 @@ export const data = graphql`
             )
           }
         }
-        portfolioAndIdentityContent
+        homeIdentityImage{
+          altText
+            gatsbyImage(
+              height: 800
+              width: 800
+              placeholder: BLURRED
+              layout: CONSTRAINED
+            )
+        }
+        homePortfolioImage{
+          altText
+            gatsbyImage(
+              height: 800
+              width: 800
+              placeholder: BLURRED
+              layout: CONSTRAINED
+            )
+        }
+        
         heroSlider {
           sliderContent
           sliderImage {

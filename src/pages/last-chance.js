@@ -26,7 +26,6 @@ const Portfolio = ({ data }) => {
   const lastCat = data?.allWpLastChanceCategory?.edges || [];
   const allCondtionObject = data?.wp?.allCondtionObject || [];
   const totalCount = data?.allWpLastChance?.totalCount || [];
-  const seo = data?.wpPage.seo || [];
 
   const pageCount = Math.ceil(totalCount / NOOFPOST);
 
@@ -154,12 +153,25 @@ const Portfolio = ({ data }) => {
                 className="holder swiper-container"
                 id="luxury-slider"
               >
-                {header.lastChanceImageGallery.map((slide, index) => (
-                  <SwiperSlide class="swiper-slide" key={`kgiodds` + index}>
-                    {/* <img src={slide.mediaItemUrl} alt={slide.altText} /> */}
-                    <GatsbyImage image={getImage(slide)} altText={slide.altText} />
-                  </SwiperSlide>
-                ))}
+                {typeof window !== "undefined" &&
+                  window.innerWidth > 767 && header.lastChanceImageGallery.map((slide, index) => (
+                    <SwiperSlide class="swiper-slide" key={`kgiodds` + index}>
+                      <GatsbyImage
+                        image={getImage(slide)}
+                        alt={slide.altText}
+                      />
+                    </SwiperSlide>
+                  ))}
+
+                {typeof window !== "undefined" &&
+                  window.innerWidth < 768 && header.mobileLastChanceImageGallery.map((slide, index) => (
+                    <SwiperSlide class="swiper-slide" key={`kgiodds5` + index}>
+                      <GatsbyImage
+                        image={getImage(slide)}
+                        alt={slide.altText}
+                      />
+                    </SwiperSlide>
+                  ))}
                 <div class="swiper-pagination"></div>
               </Swiper>
             </div>
@@ -249,7 +261,7 @@ const Portfolio = ({ data }) => {
                       <div class="prod-media">
                         <div class="wrapper">
                           <div class="holder">
-                            <img
+                            {/* <img
                               src={
                                 last.node.lastChanceSingularPage
                                   .lastChancePostGallery[0].mediaItemUrl
@@ -258,6 +270,13 @@ const Portfolio = ({ data }) => {
                                 last.node.lastChanceSingularPage
                                   .lastChancePostGallery[0].altText
                               }
+                            /> */}
+
+                            <GatsbyImage
+                              image={getImage(last.node.lastChanceSingularPage
+                                .lastChancePostGallery[0])}
+                              alt={last.node.lastChanceSingularPage
+                                .lastChancePostGallery[0].altText}
                             />
                           </div>
                         </div>
@@ -333,23 +352,23 @@ export const Head = ({ data }) => (
 )
 export const data = graphql`
     query MyQuery {
-      allWpLastChanceCategory {
-      edges {
+  allWpLastChanceCategory {
+    edges {
       node {
-      id
-      slug
-      name
-        }
+        id
+        slug
+        name
       }
     }
-    wp {
-      allCondtionObject
-    }
-    wpPage(databaseId: {eq: 1507 }) {
-      id
-      title
-      databaseId
-          seo {
+  }
+  wp {
+    allCondtionObject
+  }
+  wpPage(databaseId: {eq: 1507}) {
+    id
+    title
+    databaseId
+    seo {
       canonical
       opengraphDescription
       opengraphImage {
@@ -372,51 +391,51 @@ export const data = graphql`
         raw
       }
     }
-      lastChanceMainPageLayout {
-        lastChanceContent
-        lastChanceImageGallery {
-          id
-          mediaItemUrl
-          altText
-          gatsbyImage(
-            height: 733
-            placeholder: BLURRED
-            layout: CONSTRAINED
-            width: 1920
-          )
-        }
+    lastChanceMainPageLayout {
+      lastChanceContent
+      lastChanceImageGallery {
+        id
+        mediaItemUrl
+        altText
+        gatsbyImage(height: 733, placeholder: BLURRED, layout: CONSTRAINED, width: 1920)
       }
-        }
-        allWpLastChance(
-        filter: {
-          lastChanceSingularPage: {lastChanceSoldOutSelect: {ne: "sold" } }
+      mobileLastChanceImageGallery {
+        id
+        mediaItemUrl
+        altText
+        gatsbyImage(height: 400, placeholder: BLURRED, layout: CONSTRAINED, width: 767)
       }
-        ) {
-          edges {
-          node {
-          id
-          title
+    }
+  }
+  allWpLastChance(
+    filter: {lastChanceSingularPage: {lastChanceSoldOutSelect: {ne: "sold"}}}
+  ) {
+    edges {
+      node {
+        id
+        title
         uri
         lastChanceSingularPage {
           lastChanceCondition
-            lastChanceDiscountPrice
-        lastChanceOriginalPrice
-        lastChanceSoldOutSelect
-        lastChancePostGallery {
-          altText
-              mediaItemUrl
-            }
+          lastChanceDiscountPrice
+          lastChanceOriginalPrice
+          lastChanceSoldOutSelect
+          lastChancePostGallery {
+            altText
+            mediaItemUrl
+             gatsbyImage(width:563, placeholder: BLURRED, layout: CONSTRAINED)
           }
+        }
         lastChanceCategories {
           nodes {
-          slug
-              name
-            }
+            slug
+            name
           }
         }
       }
-        totalCount
     }
+    totalCount
   }
-        `;
+}
+`;
 export default Portfolio;
