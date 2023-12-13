@@ -1,7 +1,6 @@
 import React from "react";
 import Seo from "../components/SeoMeta";
 import Layout from "../components/Layout";
-const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 const Error = () => {
   return (
     <Layout>

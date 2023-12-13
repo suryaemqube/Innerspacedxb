@@ -152,14 +152,16 @@ function Footer() {
         <div className="container">
           <div className="col1">
             <div className="footer-logo-wrapper">
-              <a href="/" className="footer-logo">
-                <img
-                  width="201"
-                  height="99"
-                  src={defaultlogo}
-                  alt="Innserspace"
-                />
-              </a>
+            {options && options.main_logo && (
+                <a href="/" className="footer-logo">
+                  <img
+                    width="201"
+                    height="99"
+                    src={options.main_logo.url}
+                    alt="Innserspace"
+                  />
+                </a>
+              )}
 
               <p className="baseline">
                 {options && options.german_kitchen_text}
