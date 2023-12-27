@@ -3,18 +3,17 @@ import { graphql, navigate } from "gatsby";
 import { useFormik, Formik } from "formik";
 import axios from "axios";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
+import Isotope from "isotope-layout";
 
 import Layout from "../components/Layout";
 import { getToken } from "../hooks/token";
-import Seo from "../components/SeoMeta";
-import { dashCase } from '../utils';
+import { dashCase } from "../utils";
 
 import scrubber from "../assets/img/scrubber-icon-1.svg";
 
-
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
-const Identity = ({ pageContext, data }) => {
+const Identity = ({ pageContext, data, location }) => {
   const post = pageContext;
 
   const [isDown, setIsDown] = useState(false);
@@ -22,9 +21,14 @@ const Identity = ({ pageContext, data }) => {
   const [scrollLeft, setScrollLeft] = useState(null);
   const sliderRef = useRef(null);
 
+  const isotope = useRef();
+  const teamMain = useRef(null);
+  const teamContent = useRef(null);
+  const teamContainer = useRef(null);
   const [tab, setTab] = useState();
   const [teamData, setTeamData] = useState(null);
-  const teamContent = useRef(null);
+  const [prevClickedTab, setPrevClickedTab] = useState({});
+  const [PrevHeight, setPrevHeight] = useState(null);
 
   const [token, setToken] = useState("");
   const [careerFormFields, setCareerFormFields] = useState([]);
@@ -40,9 +44,6 @@ const Identity = ({ pageContext, data }) => {
 
   const identity = data?.ourstory || [];
   const ourTeam = data?.ourstory?.ourTeamLayout || [];
-
-  const seo = data?.ourstory?.seo || [];
-
 
   const PAGELINK = post.pageUri;
   const PAGEID = post.pageId;
@@ -82,55 +83,263 @@ const Identity = ({ pageContext, data }) => {
     const x = e.clientX - sliderRect.left;
     const walk = (x - startX) * 3; // scroll-fast
     slider.scrollLeft = scrollLeft - walk;
-    console.log(walk);
   };
+
+  useEffect(() => {
+    if (PAGEID !== 15) return;
+    if (typeof window !== undefined) {
+      isotope.current = new Isotope(".member-list", {
+        itemSelector: ".isotope-item",
+        layoutMode: "fitRows",
+      });
+    }
+    return () => isotope.current.destroy();
+  }, []);
+
+  useEffect(() => {
+    if (PAGEID !== 15) return;
+    const queryString =
+      typeof window !== "undefined" ? window.location.search : "";
+    const params = new URLSearchParams(queryString);
+    const partner = params.get("partner") || "";
+
+    if (partner) {
+      const timeoutId = setTimeout(() => {
+        var clickingElem = document.querySelector(`.${partner}`);
+        clickingElem.children[0].click();
+      }, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
 
   const scrollToElement = (element) => {
     setTimeout(() => {
-      element.scrollIntoView({ behavior: "smooth" });
+      const scrollToContent = teamContent.current;
+      scrollToContent.classList.add("colio-sec-exp");
     }, 200);
+
+    setTimeout(() => {
+      element.scrollIntoView({ behavior: "smooth" });
+    }, 500);
   };
+
+  const updateQueryStringParameter = (key, value) => {
+    const baseUrl = [location.protocol, "//", location.host, location.pathname].join("");
+    const urlQueryString = document.location.search;
+    const newParam = key + "=" + value;
+    const params = urlQueryString
+      ? urlQueryString.replace(new RegExp("([?&])" + key + "[^&]*"), "$1" + newParam)
+      : "?" + newParam;
+  
+    window.history.replaceState({}, "", baseUrl + (params === "?" ? "" : params));
+  };
+
+  function animateProperty(
+    targetElement,
+    property,
+    startValue,
+    targetValue,
+    duration
+  ) {
+    var startTime = null;
+    var start = parseFloat(startValue, 10);
+    var target = parseFloat(targetValue, 10);
+    function animationStep(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = (timestamp - startTime) / duration;
+      var percentage = Math.min(progress, 1);
+      const newValue = start + (target - start) * percentage;
+      targetElement.style[property] = `${newValue}px`;
+      if (percentage < 1) requestAnimationFrame(animationStep);
+    }
+    requestAnimationFrame(animationStep);
+  }
 
   const handleTab = (e, row) => {
     e.preventDefault();
-    const ListSelector = e.target.closest("li");
-    const scrollToContent = teamContent.current;
-    scrollToContent.classList.add("colio-sec-exp")
-    const dataUrl = ListSelector.getAttribute("data-url");
-
-    setTab(dataUrl);
     setTeamData(row);
 
+    const ulElem = e.target.closest("ul");
+    const liElem = e.target.closest("li");
+    const scrollToContent = teamContent.current;
+    const teamContained = teamContainer.current;
+    scrollToContent.classList.add("colio-sec-exp");
 
-    if (scrollToContent) {
-      console.log("ScrollUP", scrollToContent);
-      scrollToElement(scrollToContent);
-    }
+    const interval = setInterval(() => {
+      if (teamContent.current !== null && teamMain.current !== null) {
+        const ulDiem = ulElem.getBoundingClientRect();
+        var teamMainHeight = teamMain.current.getBoundingClientRect().height;
+        var contentHeight = teamMainHeight + teamMain.current.offsetTop * 2;
+        setPrevHeight(contentHeight);
+        clearInterval(interval);
+
+        const teamContainerDiem = teamContained.getBoundingClientRect();
+        const bodyScrollTop = teamContainerDiem.top;
+
+        const liDiem = liElem.getBoundingClientRect();
+        const cols = parseInt(ulDiem.width / liDiem.width);
+
+        const clickedLi = Array.from(ulElem.children).indexOf(liElem);
+        const clickedRow = parseInt(clickedLi / cols) + 1;
+
+        const lastIndexInRow = clickedRow * cols;
+
+        scrollToContent.style.visibility = "hidden";
+        scrollToContent.style.height = "0px";
+        scrollToContent.style.top = "0px";
+        scrollToContent.style.transition = "unset";
+        scrollToContent.classList.remove("colio-sec-exp");
+        var valCorrection = contentHeight - PrevHeight;
+        if (!ulElem.classList.contains("has-activated")) {
+          ulElem.style.height = ulDiem.height + contentHeight + "px";
+        } else {
+          ulElem.style.height = ulDiem.height + valCorrection + "px";
+        }
+
+        Array.from(ulElem.children).forEach((element, index) => {
+          const isLastElemInRow = lastIndexInRow >= index + 1;
+          var elTopValue = parseFloat(element.style.top, 10);
+          if (
+            !ulElem.classList.contains("has-activated") &&
+            prevClickedTab.clickedRow !== clickedRow
+          ) {
+            element.style.top = isLastElemInRow
+              ? element.style.top
+              : elTopValue + contentHeight + "px";
+             
+          } else {
+            if (
+              prevClickedTab.clickedRow < clickedRow &&
+              index + 1 > prevClickedTab.clickedRow * cols &&
+              index + 1 <= lastIndexInRow
+            ) {
+              element.style.top =
+                elTopValue - contentHeight + valCorrection + "px";
+                animateProperty(
+                  element,
+                  "top",
+                  elTopValue,
+                  elTopValue - contentHeight + valCorrection,
+                300
+                );
+            } else if (
+              prevClickedTab.clickedRow > clickedRow &&
+              index + 1 > lastIndexInRow &&
+              index + 1 <= prevClickedTab.clickedRow * cols
+            ) {
+              element.style.top = elTopValue + contentHeight + "px";
+              animateProperty(
+                element,
+                "top",
+                elTopValue,
+                elTopValue + contentHeight,
+              300
+              );
+            } else if (index + 1 > lastIndexInRow) {
+              element.style.top = elTopValue + valCorrection + "px";
+            }
+
+            if (prevClickedTab.clickedRow === clickedRow) {
+              scrollToContent.style.transition = "all 1s";
+              scrollToContent.style.opacity = 0;
+              setTimeout(function () {
+                scrollToContent.style.opacity = 1;
+              }, 400);
+            }
+          }
+
+          if (index + 1 === clickedLi + 1) {
+            const elementPos = element.getBoundingClientRect();
+            const bodyTop = bodyScrollTop - elementPos.top - elementPos.height;
+            console.log(bodyScrollTop, elementPos.top, elementPos.height)
+            scrollToContent.style.top = Math.abs(bodyTop) - ((window.innerWidth < 767) ? 0:0 )+ "px";
+          }
+        });
+        setTimeout(() => {
+          scrollToContent.style.transition = "all 1s";
+          scrollToContent.style.visibility = "visible";
+          scrollToContent.style.position = "absolute";
+          scrollToContent.style.overflow = "hidden";
+          scrollToContent.style.height = `${contentHeight}px`;
+        }, 300);
+        ulElem.classList.add("has-activated");
+
+        const dataUrl = liElem.getAttribute("data-url");
+        updateQueryStringParameter("partner", dashCase(dataUrl));
+
+        setTab(dataUrl);
+        setPrevClickedTab({ clickedLi, clickedRow });
+        if (scrollToContent) {
+          scrollToElement(scrollToContent);
+        }
+      }
+    }, 300);
   };
 
   const handleTabClose = (e, el) => {
     e.preventDefault();
     setTab("");
+    const contentHeight = PrevHeight;
+
     const scrollToContent = teamContent.current;
-    scrollToContent.classList.remove("colio-sec-exp")
-    console.log("tab: ", tab)
+    const teamContained = teamContainer.current;
+    const teamContainerDiem = teamContained.getBoundingClientRect();
+    const bodyScrollTop = teamContainerDiem.top;
+    scrollToContent.style.transition = "all 1s";
+    const ulElem = document.querySelector(".member-list");
+    const ulDiem = ulElem.getBoundingClientRect();
+    if (ulElem.classList.contains("has-activated")) {
+      animateProperty(
+        ulElem,
+        "height",
+        ulDiem.height,
+        ulDiem.height - contentHeight,
+        600
+      );
+    }
+    ulElem.classList.remove("has-activated");
+
+    const liElem = document.querySelector(".isotope-item");
+    const liDiem = liElem.getBoundingClientRect();
+    const cols = parseInt(ulDiem.width / liDiem.width);
+    const clickedLi = prevClickedTab.clickedLi;
+    const ClickedRow = parseInt(clickedLi / cols) + 1;
+    const lastIndexInRow = ClickedRow * cols;
+
+    Array.from(ulElem.children).forEach((element, index) => {
+      const isLastElemInRow = lastIndexInRow >= index + 1;
+      var elTopValue = parseFloat(element.style.top, 10);
+      animateProperty(
+        element,
+        "top",
+        element.style.top,
+        isLastElemInRow ? element.style.top : elTopValue - contentHeight + "px",
+        600
+      );
+
+      if (index + 1 === clickedLi + 1) {
+        const elementPos = element.getBoundingClientRect();
+        const bodyTop = bodyScrollTop - elementPos.top;
+        scrollToContent.style.top =
+          Math.abs(bodyTop - elementPos.height) + "px";
+      }
+    });
+
+    scrollToContent.classList.remove("colio-sec-exp");
+    scrollToContent.style.height = "0px";
     const ListSelector = document.querySelector(`.${el}`);
     setTimeout(() => {
       ListSelector.scrollIntoView({ behavior: "smooth" });
     }, 500);
-    // scrollToElement(ListSelector);
+    setPrevClickedTab({});
   };
-
-  // useEffect(() => {
-  //   console.log("Tab: ", tab);
-  // }, [tab]);
 
   useEffect(() => {
     const fetchToken = async () => {
       try {
         const fetchedToken = await getToken();
         setToken(fetchedToken);
-      } catch (error) { }
+      } catch (error) {}
     };
 
     fetchToken();
@@ -171,14 +380,12 @@ const Identity = ({ pageContext, data }) => {
       })
         .then((response) => {
           setCareerFormFields(response.data.properties.form.fields);
-          console.log("fields: ", response.data.properties.form.fields);
         })
         .catch((error) => console.error("Error", error));
     }
   }, [token]);
 
   const careerValidate = (values) => {
-    console.log("vlas:", values);
     values["cover-letter"] = fileUrl ? short(fileUrl) : null;
     values["curriculum-vite"] = fileUrl2 ? short(fileUrl2) : null;
 
@@ -379,7 +586,6 @@ const Identity = ({ pageContext, data }) => {
   return (
     <>
       <Layout>
-
         <section className="header-image">
           {identity && (
             <div className="wrapper">
@@ -406,10 +612,10 @@ const Identity = ({ pageContext, data }) => {
                     PAGEID === 13
                       ? identity.ourStoryLayout.topText
                       : PAGEID === 15
-                        ? ourTeam.teamTopText
-                        : PAGEID === 17
-                          ? identity.careerLayout.topCareerText
-                          : "",
+                      ? ourTeam.teamTopText
+                      : PAGEID === 17
+                      ? identity.careerLayout.topCareerText
+                      : "",
                 }}
               />
             ) : (
@@ -417,8 +623,8 @@ const Identity = ({ pageContext, data }) => {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
                 enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-                reprehenderit in voluptate velit esse cillum dolore eu fugiat
+                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
                 nulla pariatur.
               </p>
             )}
@@ -447,7 +653,9 @@ const Identity = ({ pageContext, data }) => {
                       />
                       <h3>{culture.cultureTitle}</h3>
                       <span
-                        dangerouslySetInnerHTML={{ __html: culture.cultureDesc }}
+                        dangerouslySetInnerHTML={{
+                          __html: culture.cultureDesc,
+                        }}
                       />
                     </li>
                   ))}
@@ -562,8 +770,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[0].name}
                                   type={careerFormFields[0].basetype}
                                   name={careerFormFields[0].name}
-                                  placeholder={careerFormFields[0].raw_values[0]}
-                                  value={formik2.values[careerFormFields[0].name]}
+                                  placeholder={
+                                    careerFormFields[0].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[0].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -585,8 +797,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[1].name}
                                   type={careerFormFields[1].basetype}
                                   name={careerFormFields[1].name}
-                                  placeholder={careerFormFields[1].raw_values[0]}
-                                  value={formik2.values[careerFormFields[1].name]}
+                                  placeholder={
+                                    careerFormFields[1].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[1].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -608,8 +824,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[2].name}
                                   type={careerFormFields[2].basetype}
                                   name={careerFormFields[2].name}
-                                  placeholder={careerFormFields[2].raw_values[0]}
-                                  value={formik2.values[careerFormFields[2].name]}
+                                  placeholder={
+                                    careerFormFields[2].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[2].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -631,7 +851,9 @@ const Identity = ({ pageContext, data }) => {
                                   }
                                   aria-required="true"
                                   aria-invalid="false"
-                                  placeholder={careerFormFields[3].raw_values[0]}
+                                  placeholder={
+                                    careerFormFields[3].raw_values[0]
+                                  }
                                   name={careerFormFields[3].name}
                                   onChange={formik2.handleChange}
                                 ></textarea>
@@ -654,8 +876,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[4].name}
                                   type={careerFormFields[4].basetype}
                                   name={careerFormFields[4].name}
-                                  placeholder={careerFormFields[4].raw_values[0]}
-                                  value={formik2.values[careerFormFields[4].name]}
+                                  placeholder={
+                                    careerFormFields[4].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[4].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -677,7 +903,9 @@ const Identity = ({ pageContext, data }) => {
                                   }
                                   aria-required="true"
                                   aria-invalid="false"
-                                  placeholder={careerFormFields[5].raw_values[0]}
+                                  placeholder={
+                                    careerFormFields[5].raw_values[0]
+                                  }
                                   name={careerFormFields[5].name}
                                   onChange={formik2.handleChange}
                                 ></textarea>
@@ -694,7 +922,9 @@ const Identity = ({ pageContext, data }) => {
                                 <select
                                   id={careerFormFields[6].name}
                                   name={careerFormFields[6].name}
-                                  value={formik2.values[careerFormFields[6].name]}
+                                  value={
+                                    formik2.values[careerFormFields[6].name]
+                                  }
                                   onChange={formik2.handleChange}
                                   className={
                                     formik2.errors[careerFormFields[6].name]
@@ -733,8 +963,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[7].name}
                                   type={careerFormFields[7].basetype}
                                   name={careerFormFields[7].name}
-                                  placeholder={careerFormFields[7].raw_values[0]}
-                                  value={formik2.values[careerFormFields[7].name]}
+                                  placeholder={
+                                    careerFormFields[7].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[7].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -756,8 +990,12 @@ const Identity = ({ pageContext, data }) => {
                                   id={careerFormFields[8].name}
                                   type={careerFormFields[8].basetype}
                                   name={careerFormFields[8].name}
-                                  placeholder={careerFormFields[8].raw_values[0]}
-                                  value={formik2.values[careerFormFields[8].name]}
+                                  placeholder={
+                                    careerFormFields[8].raw_values[0]
+                                  }
+                                  value={
+                                    formik2.values[careerFormFields[8].name]
+                                  }
                                   onChange={formik2.handleChange}
                                 />
                               )}
@@ -792,7 +1030,9 @@ const Identity = ({ pageContext, data }) => {
                                 )}
                               </span>
                             </p>
-                            <p className={`subtext ${fileError ? "error" : ""}`}>
+                            <p
+                              className={`subtext ${fileError ? "error" : ""}`}
+                            >
                               {fileError
                                 ? fileError
                                 : "File size:5mb, Accepted file types : .doc, .docx, .pdf"}
@@ -1067,7 +1307,9 @@ const Identity = ({ pageContext, data }) => {
                                 )}
                               </span>
                             </p>
-                            <p className={`subtext ${fileError ? "error" : ""}`}>
+                            <p
+                              className={`subtext ${fileError ? "error" : ""}`}
+                            >
                               {fileError
                                 ? fileError
                                 : "File size:5mb, Accepted file types : .doc, .docx, .pdf"}
@@ -1315,7 +1557,10 @@ const Identity = ({ pageContext, data }) => {
                               </svg>
                             </span>
                           </div>
-                          <div className="captcha captcha-wrapper" key="captcha">
+                          <div
+                            className="captcha captcha-wrapper"
+                            key="captcha"
+                          >
                             <p>
                               <span className="wpcf7-form-control-wrap wpcaptcha-588"></span>
                             </p>
@@ -1612,14 +1857,19 @@ const Identity = ({ pageContext, data }) => {
             <div className="container">
               <section className=" teams-wrapper">
                 <div className="contain">
-                  <div className="team-members-list clearfix">
+                  <div
+                    className="team-members-list clearfix"
+                    ref={teamContainer}
+                  >
                     <ul className="list member-list">
                       {ourTeam.firstRowMembers.length > 0 &&
                         ourTeam.firstRowMembers.map((row, index) => (
                           <li
                             key={`fdhdf` + index}
                             className={
-                              dashCase(row.memberName) + " " +
+                              "isotope-item " +
+                              dashCase(row.memberName) +
+                              " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
                             }
@@ -1648,74 +1898,25 @@ const Identity = ({ pageContext, data }) => {
                                 {/* <img src="" alt="" /> */}
                               </div>
                             </a>
-
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id={`hacker_member`}
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                       
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 769 &&
-                        <>
-                          <li className="colio-item isotope-item"></li>
-                          <li className="colio-item isotope-item"></li>
-                          <li className="colio-item isotope-item"></li>
-                        </>}
+                      {typeof window !== "undefined" &&
+                        window.innerWidth > 769 && (
+                          <>
+                            <li className="colio-item isotope-item"></li>
+                            <li className="colio-item isotope-item"></li>
+                            <li className="colio-item isotope-item"></li>
+                          </>
+                        )}
 
                       {ourTeam.secondRowMembers.length > 0 &&
                         ourTeam.secondRowMembers.map((row, index) => (
                           <li
                             key={`dfd` + index}
                             className={
-                              dashCase(row.memberName) + " " +
+                              "isotope-item " +
+                              dashCase(row.memberName) +
+                              " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
                             }
@@ -1744,58 +1945,6 @@ const Identity = ({ pageContext, data }) => {
                                 {/* <img src="" alt="" /> */}
                               </div>
                             </a>
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id={`hacker_member`}
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content   ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                       
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
                           </li>
                         ))}
 
@@ -1804,7 +1953,9 @@ const Identity = ({ pageContext, data }) => {
                           <li
                             key={`hrbsd` + index}
                             className={
-                              dashCase(row.memberName) + " " +
+                              "isotope-item " +
+                              dashCase(row.memberName) +
+                              " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
                             }
@@ -1830,73 +1981,23 @@ const Identity = ({ pageContext, data }) => {
                                   image={getImage(row.photo)}
                                   alt={row.photo.altText}
                                 />
-
                               </div>
                             </a>
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id="hacker_member"
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                        
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 769 &&
-                        <li className="colio-item isotope-item"></li>
-                      }
+                      {typeof window !== "undefined" &&
+                        window.innerWidth > 769 && (
+                          <li className="colio-item isotope-item"></li>
+                        )}
 
                       {ourTeam.fourthRowMembers.length > 0 &&
                         ourTeam.fourthRowMembers.map((row, index) => (
                           <li
                             key={`dsdgf` + index}
                             className={
-                              dashCase(row.memberName) + " " +
+                              "isotope-item " +
+                              dashCase(row.memberName) +
+                              " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
                             }
@@ -1922,75 +2023,25 @@ const Identity = ({ pageContext, data }) => {
                                   image={getImage(row.photo)}
                                   alt={row.photo.altText}
                                 />
-
                               </div>
                             </a>
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id="hacker_member"
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                        
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
                           </li>
                         ))}
-                      {typeof window !== "undefined" && window.innerWidth > 769 &&
-                      <>
-                        <li className="colio-item isotope-item"></li>
-                        <li className="colio-item isotope-item"></li>
-                        </>
-                      }
+                      {typeof window !== "undefined" &&
+                        window.innerWidth > 769 && (
+                          <>
+                            <li className="colio-item isotope-item"></li>
+                            <li className="colio-item isotope-item"></li>
+                          </>
+                        )}
                       {ourTeam.fifthRowMembers.length > 0 &&
                         ourTeam.fifthRowMembers.map((row, index) => (
                           <li
                             key={`mnvdg` + index}
                             className={
-                              dashCase(row.memberName) + " " +
+                              "isotope-item " +
+                              dashCase(row.memberName) +
+                              " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
                             }
@@ -2019,120 +2070,58 @@ const Identity = ({ pageContext, data }) => {
                                 {/* <img src="" alt="" /> */}
                               </div>
                             </a>
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id="hacker_member"
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                        
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
                           </li>
                         ))}
                     </ul>
+                    <section className="colio-sec" ref={teamContent}>
+                      {teamData && (
+                        <div
+                          id="team-content"
+                          className={`colio-content colio-member-content`}
+                        >
+                          <div className="main" ref={teamMain}>
+                            <div className="left">
+                              <div className="img-wrap">
+                                <p className="member-info">
+                                  <span className="member-name">
+                                    {teamData.memberName}
+                                  </span>
+                                  <span className="designation">
+                                    {teamData.designation}
+                                  </span>
+                                </p>
+                                <div className="holder">
+                                  <GatsbyImage
+                                    loading={"lazy"}
+                                    image={getImage(teamData.photo)}
+                                    alt={teamData.photo.altText}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="right">
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: removeTags(teamData.description),
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <a
+                            class="colio-close"
+                            href="#"
+                            onClick={(e) =>
+                              handleTabClose(e, dashCase(teamData.memberName))
+                            }
+                          >
+                            <span>Close</span>
+                          </a>
+                        </div>
+                      )}
+                    </section>
                   </div>
                 </div>
-              </section >
-
-
-
-              {/* <div className="container"> */}
-              <section className="colio-sec" ref={teamContent}>
-                {teamData &&
-
-                  <div
-                    id="team-content"
-                    className={`colio-content colio-member-content`}
-                  >
-                    <div className="main">
-                      <div className="left">
-                        <div className="img-wrap">
-                          <p className="member-info">
-                            <span className="member-name">
-                              {teamData.memberName}
-                            </span>
-                            <span className="designation">
-                              {teamData.designation}
-                            </span>
-                          </p>
-                          <div className="holder">
-                            <GatsbyImage
-                              loading={"lazy"}
-                              image={getImage(teamData.photo)}
-                              alt={teamData.photo.altText}
-                            />
-
-                          </div>
-                        </div>
-                      </div>
-                      <div className="right">
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: removeTags(teamData.description),
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <a
-                      class="colio-close"
-                      href="#"
-                      onClick={(e) => handleTabClose(e, dashCase(teamData.memberName))}
-                    >
-                      <span>Close</span>
-                    </a>
-                  </div>
-
-                }
               </section>
-              {/* </div> */}
-
-
-
-
 
               <section className="btm-team-wrapper">
                 <ul className="list">
@@ -2161,11 +2150,7 @@ const Identity = ({ pageContext, data }) => {
 };
 
 export default Identity;
-export const Head = ({ data }) => (
 
-  <Seo seoData={data?.ourstory?.seo || []} bodyClass={`${data?.ourstory?.databaseId === 17 ? "page-template-tp-careers" : ""}`}>
-  </Seo>
-)
 export const data = graphql`
   query Mydata($pageId: Int!) {
     ourstory: wpPage(databaseId: { eq: $pageId }) {
@@ -2183,29 +2168,6 @@ export const data = graphql`
           )
         }
       }
-          seo {
-      canonical
-      opengraphDescription
-      opengraphImage {
-        altText
-        mediaItemUrl
-        height
-        width
-        mediaType
-      }
-      opengraphSiteName
-      opengraphTitle
-      metaRobotsNofollow
-      metaRobotsNoindex
-      opengraphUrl
-      opengraphModifiedTime
-      opengraphType
-      title
-      metaDesc
-      schema {
-        raw
-      }
-    }
       ourStoryLayout {
         topText
         storyImg {

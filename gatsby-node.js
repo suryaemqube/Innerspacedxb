@@ -219,17 +219,17 @@ exports.createPages = async ({ actions, graphql }) => {
   });
 };
 
-// exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
-//   if (stage === "build-html" || stage === "develop-html") {
-//     actions.setWebpackConfig({
-//       module: {
-//         rules: [
-//           {
-//             test: /isotope-layout/,
-//             use: loaders.null(),
-//           },
-//         ],
-//       },
-//     })
-//   }
-// }
+exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+  if (stage === "build-html" || stage === "develop-html") {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /isotope-layout/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    })
+  }
+}

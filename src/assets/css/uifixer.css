@@ -967,7 +967,7 @@ padding-right: 0;
   height: 0;
   clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
   padding: 40px;
-  transition: all 1s;
+  /* transition: all 1s; */
   /* transition-delay: 0.5s; */
   position: relative;
 }
@@ -1134,3 +1134,22 @@ a.colio-close span {
 .page-template-tp-lp-hulusta .gatsby-image-wrapper picture img{
   height: 100% !important;
 }
+
+/* Colio css added by mohsin Start*/
+.team-main-wrapper .team-members-list{
+  position: relative;
+}
+.colio-sec{
+  z-index: -1;
+  visibility: hidden;
+  padding: 0;
+}
+.colio-sec-exp{
+  z-index: 1; 
+  transition-delay: 0.1s;
+}
+
+.colio-content.colio-member-content{
+  padding: 40px;
+}
+/* Colio css added by mohsin End */

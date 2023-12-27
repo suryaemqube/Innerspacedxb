@@ -3,7 +3,6 @@ import { graphql, navigate } from "gatsby";
 import { useFormik, Formik } from "formik";
 import axios from "axios";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
-import Isotope from "isotope-layout";
 
 import Layout from "../components/Layout";
 import { getToken } from "../hooks/token";
@@ -15,7 +14,7 @@ import scrubber from "../assets/img/scrubber-icon-1.svg";
 
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
-const Identity = ({ pageContext, data, location }) => {
+const Identity = ({ pageContext, data }) => {
   const post = pageContext;
 
   const [isDown, setIsDown] = useState(false);
@@ -23,14 +22,9 @@ const Identity = ({ pageContext, data, location }) => {
   const [scrollLeft, setScrollLeft] = useState(null);
   const sliderRef = useRef(null);
 
-  const isotope = useRef();
-  const teamMain = useRef(null);
-  const teamContent = useRef(null);
-  const teamContainer = useRef(null);
   const [tab, setTab] = useState();
   const [teamData, setTeamData] = useState(null);
-  const [clickedTab, setClickedTab] = useState({});
-  const [teamHeight, setTeamHeight] = useState(null);
+  const teamContent = useRef(null);
 
   const [token, setToken] = useState("");
   const [careerFormFields, setCareerFormFields] = useState([]);
@@ -46,6 +40,9 @@ const Identity = ({ pageContext, data, location }) => {
 
   const identity = data?.ourstory || [];
   const ourTeam = data?.ourstory?.ourTeamLayout || [];
+
+  const seo = data?.ourstory?.seo || [];
+
 
   const PAGELINK = post.pageUri;
   const PAGEID = post.pageId;
@@ -85,256 +82,48 @@ const Identity = ({ pageContext, data, location }) => {
     const x = e.clientX - sliderRect.left;
     const walk = (x - startX) * 3; // scroll-fast
     slider.scrollLeft = scrollLeft - walk;
+    console.log(walk);
   };
-
-  useEffect(() => {
-    if (PAGEID !== 15) return;
-    if (typeof window !== undefined) {
-      isotope.current = new Isotope(".member-list", {
-        itemSelector: ".isotope-item",
-        layoutMode: "fitRows",
-      });
-    }
-    return () => isotope.current.destroy();
-  }, []);
-
-  useEffect(() => {
-    if (PAGEID !== 15) return;
-    const queryString =
-      typeof window !== "undefined" ? window.location.search : "";
-    const params = new URLSearchParams(queryString);
-    const partner = params.get("partner") || "";
-
-    if (partner) {
-      const timeoutId = setTimeout(() => {
-        var clickingElem = document.querySelector(`.${partner}`);
-        clickingElem.children[0].click();
-      }, 100);
-      return () => clearTimeout(timeoutId);
-    }
-  }, []);
 
   const scrollToElement = (element) => {
     setTimeout(() => {
-      const scrollToContent = teamContent.current;
-      scrollToContent.classList.add("colio-sec-exp");
-    }, 300);
-
-    setTimeout(() => {
       element.scrollIntoView({ behavior: "smooth" });
-    }, 800);
+    }, 200);
   };
-
-  var updateQueryStringParameter = function (key, value) {
-    var baseUrl = [
-      location.protocol,
-      "//",
-      location.host,
-      location.pathname,
-    ].join(""),
-      urlQueryString = document.location.search,
-      newParam = key + "=" + value,
-      params = "?" + newParam;
-
-    if (urlQueryString) {
-      var updateRegex = new RegExp("([?&])" + key + "[^&]*");
-      var removeRegex = new RegExp("([?&])" + key + "=[^&;]+[&;]?");
-
-      if (typeof value == "undefined" || value == null || value == "") {
-        params = urlQueryString.replace(removeRegex, "$1");
-        params = params.replace(/[&;]$/, "");
-      } else if (urlQueryString.match(updateRegex) !== null) {
-        params = urlQueryString.replace(updateRegex, "$1" + newParam);
-      } else {
-        params = urlQueryString + "&" + newParam;
-      }
-    }
-    params = params == "?" ? "" : params;
-    if (typeof window !== "undefined") {
-      window.history.replaceState({}, "", baseUrl + params);
-    }
-  };
-
-  function animateProperty(targetElement, property, startValue, targetValue, duration) {
-    var startTime = null;
-    var start = parseFloat(startValue, 10);
-    var target = parseFloat(targetValue, 10);
-    function animationStep(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = (timestamp - startTime) / duration;
-      var percentage = Math.min(progress, 1);
-      const newValue = start + (target - start) * percentage;
-      targetElement.style[property] = `${newValue}px`;
-      if (percentage < 1) requestAnimationFrame(animationStep);
-    }
-    requestAnimationFrame(animationStep);
-  }
 
   const handleTab = (e, row) => {
     e.preventDefault();
+    const ListSelector = e.target.closest("li");
+    const scrollToContent = teamContent.current;
+    scrollToContent.classList.add("colio-sec-exp")
+    const dataUrl = ListSelector.getAttribute("data-url");
+
+    setTab(dataUrl);
     setTeamData(row);
 
-    const ulElem = e.target.closest("ul");
-    const liElem = e.target.closest("li");
-    const scrollToContent = teamContent.current;
-    const teamContained = teamContainer.current;
-    scrollToContent.classList.add("colio-sec-exp");
 
-    const interval = setInterval(() => {
-      if (teamContent.current !== null && teamMain.current !== null) {
-        const ulDiem = ulElem.getBoundingClientRect();
-        var teamMainHeight = teamMain.current.getBoundingClientRect().height;
-        var contentHeight = teamMainHeight + (teamMain.current.offsetTop * 2);
-        setTeamHeight(contentHeight)
-        clearInterval(interval);
-
-        const teamContainerDiem = teamContained.getBoundingClientRect();
-        const bodyScrollTop = teamContainerDiem.top;
-
-        const liDiem = liElem.getBoundingClientRect();
-        const cols = parseInt(ulDiem.width / liDiem.width);
-
-        const clickedLi = Array.from(ulElem.children).indexOf(liElem);
-        const clickedRow = parseInt(clickedLi / cols) + 1;
-
-        const lastIndexInRow = clickedRow * cols;
-
-        scrollToContent.style.visibility = "hidden";
-        scrollToContent.style.height = "0px";
-        scrollToContent.style.top = "0px";
-        scrollToContent.style.transition = "unset";
-        scrollToContent.classList.remove("colio-sec-exp");
-
-        if (!ulElem.classList.contains("has-activated")) {
-          ulElem.style.height = ulDiem.height + contentHeight + "px";
-        }
-        else {
-          ulElem.style.height = ulDiem.height + contentHeight - teamHeight + "px";
-        }
-
-        Array.from(ulElem.children).forEach((element, index) => {
-          const isLastElemInRow = lastIndexInRow >= index + 1;
-          if (
-            !ulElem.classList.contains("has-activated") &&
-            clickedTab.clickedRow !== clickedRow
-          ) {
-            element.style.top = isLastElemInRow
-              ? element.style.top
-              : parseFloat(element.style.top, 10) + contentHeight + "px";
-          } else {
-
-            // const adjustment = clickedTab.clickedRow < clickedRow ? -(contentHeight + (contentHeight - teamHeight)) : (contentHeight - (contentHeight - teamHeight));
-            const adjustment = clickedTab.clickedRow < clickedRow ? -contentHeight : contentHeight;
-            
-            const shouldAdjust =
-              (clickedTab.clickedRow < clickedRow && index + 1 > clickedTab.clickedRow * cols && index + 1 <= lastIndexInRow) ||
-              (clickedTab.clickedRow > clickedRow && index + 1 > lastIndexInRow && index + 1 <= clickedTab.clickedRow * cols);
-
-            if (shouldAdjust) {
-              var tets = contentHeight - teamHeight;
-              const adjustmentTest = clickedTab.clickedRow < clickedRow ? -tets : tets;
-              console.log("Minus Prev: ", contentHeight - teamHeight, adjustmentTest)
-              console.log(`${element.getAttribute("data-url")}`, parseFloat(element.style.top, 10) + adjustment + (contentHeight - teamHeight))
-              element.style.top = parseFloat(element.style.top, 10) + (adjustment) + adjustmentTest+"px";
-            }
-            if (clickedTab.clickedRow === clickedRow) {
-              scrollToContent.style.transition = "all 1s";
-              scrollToContent.style.opacity = 0;
-              setTimeout(function () {
-                scrollToContent.style.opacity = 1;
-              }, 400);
-            }
-          }
-
-          if (index + 1 === clickedLi + 1) {
-            const elementPos = element.getBoundingClientRect();
-            const bodyTop = bodyScrollTop - elementPos.top;
-            scrollToContent.style.top =
-              Math.abs(bodyTop - elementPos.height) + "px";
-          }
-        });
-        setTimeout(() => {
-          scrollToContent.style.transition = "all 1s";
-          scrollToContent.style.visibility = "visible";
-          scrollToContent.style.position = "absolute";
-          scrollToContent.style.overflow = "hidden";
-          scrollToContent.style.height = `${contentHeight}px`;
-        }, 300);
-        ulElem.classList.add("has-activated");
-
-        const dataUrl = liElem.getAttribute("data-url");
-        updateQueryStringParameter("partner", dashCase(dataUrl));
-
-        setTab(dataUrl);
-        setClickedTab({ clickedLi, clickedRow });
-        if (scrollToContent) {
-          scrollToElement(scrollToContent);
-        }
-      }
-
-    }, 300);
+    if (scrollToContent) {
+      console.log("ScrollUP", scrollToContent);
+      scrollToElement(scrollToContent);
+    }
   };
 
   const handleTabClose = (e, el) => {
     e.preventDefault();
     setTab("");
-    const contentHeight = teamHeight;
-
     const scrollToContent = teamContent.current;
-    const teamContained = teamContainer.current;
-    const teamContainerDiem = teamContained.getBoundingClientRect();
-    const bodyScrollTop = teamContainerDiem.top;
-    scrollToContent.style.transition = "all 1s";
-    const ulElem = document.querySelector(".member-list");
-    const ulDiem = ulElem.getBoundingClientRect();
-    if (ulElem.classList.contains("has-activated")) {
-      animateProperty(
-        ulElem,
-        "height",
-        ulDiem.height,
-        ulDiem.height - contentHeight,
-        600
-      );
-    }
-    ulElem.classList.remove("has-activated");
-
-    const liElem = document.querySelector(".isotope-item");
-    const liDiem = liElem.getBoundingClientRect();
-    const cols = parseInt(ulDiem.width / liDiem.width);
-    const clickedLi = clickedTab.clickedLi;
-    const ClickedRow = parseInt(clickedLi / cols) + 1;
-    const lastIndexInRow = ClickedRow * cols;
-
-    Array.from(ulElem.children).forEach((element, index) => {
-      const isLastElemInRow = lastIndexInRow >= index + 1;
-      animateProperty(
-        element,
-        "top",
-        element.style.top,
-        isLastElemInRow
-          ? element.style.top
-          : parseFloat(element.style.top, 10) - contentHeight + "px",
-        600
-      );
-
-      if (index + 1 === clickedLi + 1) {
-        const elementPos = element.getBoundingClientRect();
-        const bodyTop = bodyScrollTop - elementPos.top;
-        scrollToContent.style.top =
-          Math.abs(bodyTop - elementPos.height) + "px";
-      }
-    });
-
-    scrollToContent.classList.remove("colio-sec-exp");
-    scrollToContent.style.height = "0px";
+    scrollToContent.classList.remove("colio-sec-exp")
+    console.log("tab: ", tab)
     const ListSelector = document.querySelector(`.${el}`);
     setTimeout(() => {
       ListSelector.scrollIntoView({ behavior: "smooth" });
     }, 500);
-    setClickedTab({});
+    // scrollToElement(ListSelector);
   };
 
-
+  // useEffect(() => {
+  //   console.log("Tab: ", tab);
+  // }, [tab]);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -382,12 +171,14 @@ const Identity = ({ pageContext, data, location }) => {
       })
         .then((response) => {
           setCareerFormFields(response.data.properties.form.fields);
+          console.log("fields: ", response.data.properties.form.fields);
         })
         .catch((error) => console.error("Error", error));
     }
   }, [token]);
 
   const careerValidate = (values) => {
+    console.log("vlas:", values);
     values["cover-letter"] = fileUrl ? short(fileUrl) : null;
     values["curriculum-vite"] = fileUrl2 ? short(fileUrl2) : null;
 
@@ -1821,13 +1612,13 @@ const Identity = ({ pageContext, data, location }) => {
             <div className="container">
               <section className=" teams-wrapper">
                 <div className="contain">
-                  <div className="team-members-list clearfix" ref={teamContainer}>
+                  <div className="team-members-list clearfix">
                     <ul className="list member-list">
                       {ourTeam.firstRowMembers.length > 0 &&
                         ourTeam.firstRowMembers.map((row, index) => (
                           <li
                             key={`fdhdf` + index}
-                            className={"isotope-item " +
+                            className={
                               dashCase(row.memberName) + " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
@@ -1923,7 +1714,7 @@ const Identity = ({ pageContext, data, location }) => {
                         ourTeam.secondRowMembers.map((row, index) => (
                           <li
                             key={`dfd` + index}
-                            className={"isotope-item " +
+                            className={
                               dashCase(row.memberName) + " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
@@ -2012,7 +1803,7 @@ const Identity = ({ pageContext, data, location }) => {
                         ourTeam.thirdRowMembers.map((row, index) => (
                           <li
                             key={`hrbsd` + index}
-                            className={"isotope-item " +
+                            className={
                               dashCase(row.memberName) + " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
@@ -2104,7 +1895,7 @@ const Identity = ({ pageContext, data, location }) => {
                         ourTeam.fourthRowMembers.map((row, index) => (
                           <li
                             key={`dsdgf` + index}
-                            className={"isotope-item " +
+                            className={
                               dashCase(row.memberName) + " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
@@ -2189,13 +1980,16 @@ const Identity = ({ pageContext, data, location }) => {
                           </li>
                         ))}
                       {typeof window !== "undefined" && window.innerWidth > 769 &&
+                      <>
                         <li className="colio-item isotope-item"></li>
+                        <li className="colio-item isotope-item"></li>
+                        </>
                       }
                       {ourTeam.fifthRowMembers.length > 0 &&
                         ourTeam.fifthRowMembers.map((row, index) => (
                           <li
                             key={`mnvdg` + index}
-                            className={"isotope-item " +
+                            className={
                               dashCase(row.memberName) + " " +
                               row.designation +
                               ` ${row.memberName === tab ? "active1" : ""}`
@@ -2280,55 +2074,65 @@ const Identity = ({ pageContext, data, location }) => {
                           </li>
                         ))}
                     </ul>
-                    <section className="colio-sec" ref={teamContent}>
-                      {teamData && (
-                        <div
-                          id="team-content"
-                          className={`colio-content colio-member-content`}
-                        >
-                          <div className="main" ref={teamMain}>
-                            <div className="left">
-                              <div className="img-wrap">
-                                <p className="member-info">
-                                  <span className="member-name">
-                                    {teamData.memberName}
-                                  </span>
-                                  <span className="designation">
-                                    {teamData.designation}
-                                  </span>
-                                </p>
-                                <div className="holder">
-                                  <GatsbyImage
-                                    loading={"lazy"}
-                                    image={getImage(teamData.photo)}
-                                    alt={teamData.photo.altText}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            <div className="right">
-                              <p
-                                dangerouslySetInnerHTML={{
-                                  __html: removeTags(teamData.description),
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <a
-                            class="colio-close"
-                            href="#"
-                            onClick={(e) =>
-                              handleTabClose(e, dashCase(teamData.memberName))
-                            }
-                          >
-                            <span>Close</span>
-                          </a>
-                        </div>
-                      )}
-                    </section>
                   </div>
                 </div>
               </section >
+
+
+
+              {/* <div className="container"> */}
+              <section className="colio-sec" ref={teamContent}>
+                {teamData &&
+
+                  <div
+                    id="team-content"
+                    className={`colio-content colio-member-content`}
+                  >
+                    <div className="main">
+                      <div className="left">
+                        <div className="img-wrap">
+                          <p className="member-info">
+                            <span className="member-name">
+                              {teamData.memberName}
+                            </span>
+                            <span className="designation">
+                              {teamData.designation}
+                            </span>
+                          </p>
+                          <div className="holder">
+                            <GatsbyImage
+                              loading={"lazy"}
+                              image={getImage(teamData.photo)}
+                              alt={teamData.photo.altText}
+                            />
+
+                          </div>
+                        </div>
+                      </div>
+                      <div className="right">
+                        <p
+                          dangerouslySetInnerHTML={{
+                            __html: removeTags(teamData.description),
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <a
+                      class="colio-close"
+                      href="#"
+                      onClick={(e) => handleTabClose(e, dashCase(teamData.memberName))}
+                    >
+                      <span>Close</span>
+                    </a>
+                  </div>
+
+                }
+              </section>
+              {/* </div> */}
+
+
+
+
 
               <section className="btm-team-wrapper">
                 <ul className="list">
