@@ -4,6 +4,7 @@ import { useFormik, Formik } from "formik";
 import axios from "axios";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import Isotope from "isotope-layout";
+import Seo from "../components/SeoMeta";
 
 import Layout from "../components/Layout";
 import { getToken } from "../hooks/token";
@@ -2150,7 +2151,10 @@ const Identity = ({ pageContext, data, location }) => {
 };
 
 export default Identity;
-
+export const Head = ({ data }) => (
+  <Seo seoData={data?.ourstory?.seo || []}>
+  </Seo>
+)
 export const data = graphql`
   query Mydata($pageId: Int!) {
     ourstory: wpPage(databaseId: { eq: $pageId }) {
@@ -2166,6 +2170,29 @@ export const data = graphql`
             width: 1920
             height: 733
           )
+        }
+      }
+      seo {
+        canonical
+        opengraphDescription
+        opengraphImage {
+          altText
+          mediaItemUrl
+          height
+          width
+          mediaType
+        }
+        opengraphSiteName
+        opengraphTitle
+        metaRobotsNofollow
+        metaRobotsNoindex
+        opengraphUrl
+        opengraphModifiedTime
+        opengraphType
+        title
+        metaDesc
+        schema {
+          raw
         }
       }
       ourStoryLayout {

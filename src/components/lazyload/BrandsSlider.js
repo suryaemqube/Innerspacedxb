@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import swiperNext from "../../assets/img/swiper-next.png";
+
 export default function Slider({ home, brand }) {
   gsap.registerPlugin(ScrollTrigger);
   const [swiper1, setSwiper1] = useState(null);
