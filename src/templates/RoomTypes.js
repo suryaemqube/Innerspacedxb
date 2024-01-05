@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Link, graphql } from "gatsby";
 import { GatsbyImage, getImage } from "gatsby-plugin-image";
 import SwiperCore, {
@@ -18,7 +18,6 @@ import "lightgallery/css/lightgallery.css";
 import "lightgallery/css/lg-zoom.css";
 import "lightgallery/css/lg-thumbnail.css";
 
-// import { HelmetProvider } from "react-helmet-async";
 import Layout from "../components/Layout";
 import Seo from "../components/SeoMeta";
 
@@ -27,11 +26,9 @@ import arrowLeft from "../assets/img/arrow-left-solid.svg";
 import arrowRight from "../assets/img/arrow-right-solid.svg";
 
 
-const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 const MEDIA_URL = process.env.GATSBY_MEDIA_URL;
 
-const Roomtypes = ({ pageContext, data }) => {
-  const { pageId, pageSlug, pageUrl } = pageContext;
+const Roomtypes = ({data }) => {
 
   SwiperCore.use([Pagination, Autoplay, EffectFade]);
   const [swiper1, setSwiper1] = useState(null);
@@ -49,8 +46,6 @@ const Roomtypes = ({ pageContext, data }) => {
   const brandAcf = data?.brands || [];
   const portfolio = data?.allWpPortfolio?.edges || [];
   const portfolioAcf = data?.allWpPortfolio?.portfolioGalleryLayout || [];
-  const seo = data?.wpPage?.seo || [];
-  // const tabImgCount = data?.wpPage?.tabSection?.tabSection.elementImage.length || 0;
 
   const handleProductRange = (e) => {
     e.preventDefault();
@@ -118,7 +113,7 @@ const Roomtypes = ({ pageContext, data }) => {
                 grabCursor={false}
                 slidesPerView={1}
                 spaceBetween={0}
-                class="swiper-container room-header"
+                className="swiper-container room-header"
               >
                 {roomAcf.roomSlider.map((slide, index) => (
                   <SwiperSlide class={`swiper-slide swiper-slide-${index + 1}`}>

@@ -371,6 +371,7 @@ const Contact = ({ data }) => {
                             })}
 
                             <>
+                            {formik.values['your-name'] && formik.values['your-email'] && formik.values['your-tel'] && formik.values['how-can-help']&& formik.values['brand-dropdown'] &&
                               <div
                                 className="captcha captcha-wrapper"
                                 style={{ display: "block" }}
@@ -398,6 +399,8 @@ const Contact = ({ data }) => {
                                   />
                                 </span>
                               </div>
+                            }
+
                               <div className="row">
                                 <input
                                   className="wpcf7-form-control wpcf7-submit has-spinner"
