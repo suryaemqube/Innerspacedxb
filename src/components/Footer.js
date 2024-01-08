@@ -91,96 +91,6 @@ function Footer() {
     return errors;
   };
 
-  const generateCaptcha = () => {
-    const operands = [
-      Math.floor(Math.random() * 10),
-      Math.floor(Math.random() * 10),
-    ];
-    const operator = "+";
-    const expression = `${operands[0]} ${operator} ${operands[1]}`;
-    setCaptchaExpression(expression);
-    const result = operands[0] + operands[1]; // Calculate the result
-    setCaptchaResult(result.toString());
-  };
-
-  useEffect(() => {
-    generateCaptcha();
-  }, []);
-
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     "email-741": "",
-  //     captcha: "",
-  //   },
-  //   validate,
-  //   validateOnChange: false,
-  //   validateOnBlur: false,
-  //   onSubmit: (values) => {
-  //     const data = {
-  //       email: values["email-741"],
-  //     };
-  //     generateCaptcha();
-  //     formik.values.captcha = "";
-  //     const buttonDisable = document.querySelector("footer .subscribe-wrapp .wpcf7-subscribe");
-  //     buttonDisable.setAttribute("disabled", "disabled")
-  //     buttonDisable.classList.add("button-disabled")
-
-  //     axios({
-  //       method: "GET",
-  //       url: `${WEBSITE_URL}/wp-json/email-verification/v1/check`,
-  //       params: {
-  //         email: data.email,
-  //       },
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-  //       .then((response) => {
-  //         console.log(response.data)
-  //         const responseSelect = document.querySelector(".footer-bg .subscribe-wrapp .wpcf7-response-output");
-  //         console.log("Validatiosn", responseSelect)
-  //         if (response.data.result === "Email_Exists") {
-
-  //           setFormMessage("You have already subscribed.");
-  //           responseSelect.style.display = "block";
-  //           console.log("Validation", buttonDisable)
-  //           buttonDisable.removeAttribute("disabled");
-  //           buttonDisable.classList.remove("button-disabled")
-
-  //         } else if (response.data.result === "Email_Not_Exist") {
-  //           axios({
-  //             method: "post",
-  //             url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/feedback`,
-  //             data: data,
-  //             headers: {
-  //               Authorization: `Bearer ${token}`,
-  //               "Content-Type": "multipart/form-data",
-  //             },
-  //           })
-  //             .then((response) => {
-  //               console.log("Email sent successfully:", response.data);
-  //               if (response.data.status === "validation_failed") {
-  //                 responseSelect.style.display = "block";
-  //                 setFormMessage(response.data.message);
-  //                 buttonDisable.removeAttribute("disabled");
-  //                 buttonDisable.classList.remove("button-disabled")
-  //               } else if (response.data.status === "mail_sent") {
-  //                 responseSelect.style.display = "none";
-  //                 setFormMessage("");
-  //                 buttonDisable.removeAttribute("disabled");
-  //                 buttonDisable.classList.remove("button-disabled")
-  //                 navigate("/subscription-thank-you/");
-  //               }
-  //             })
-  //             .catch((error) => console.error("Error sending email:", error));
-  //         }
-  //       })
-  //       .catch((error) => console.error("Error", error));
-
-  //   },
-  // });
 
 
   const formik = useFormik({
@@ -193,28 +103,103 @@ function Footer() {
     onSubmit: (values) => {
       const bodyFormData = new FormData();
       bodyFormData.set("email-741", values["email-741"]);
+      const buttonDisable = document.querySelector(".wpcf7-subscribe");
+      if(buttonDisable){
+      buttonDisable.setAttribute("disabled", "disabled")
+      buttonDisable.classList.add("button-disabled")
+    }
 
       axios({
-        method: "POST",
-        url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/feedback`,
-        data: bodyFormData,
+        method: "GET",
+        url: `${WEBSITE_URL}/wp-json/email-verification/v1/check`,
+        params: {
+          email: values["email-741"],
+        },
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       })
         .then((response) => {
-          console.log("Email sent successfully:", response.data);
-          if (response.data.status === "validation_failed") {
-            setFormMessage(response.data.message);
-          } else if (response.data.status === "mail_sent") {
-            setFormMessage("");
-            navigate("/subscription-thank-you/");
-          }
+          console.log(response.data)
+          console.log("test", values["email-741"])
+          const responseSelect = document.querySelector(".wpcf7-response-output");
+          if(responseSelect){
+          if (response.data.result === "Email_Exists") {
+
+            setFormMessage("You have already subscribed.");
+            responseSelect.style.display = "block";
+            console.log("Validation", buttonDisable)
+            buttonDisable.removeAttribute("disabled");
+            buttonDisable.classList.remove("button-disabled")
+
+          } else if (response.data.result === "Email_Not_Exist") {
+            axios({
+              method: "post",
+              url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/feedback`,
+              data: bodyFormData,
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            })
+              .then((response) => {
+                console.log("Email sent successfully:", response.data);
+                if (response.data.status === "validation_failed") {
+                  responseSelect.style.display = "block";
+                  setFormMessage(response.data.message);
+                  buttonDisable.removeAttribute("disabled");
+                  buttonDisable.classList.remove("button-disabled")
+                } else if (response.data.status === "mail_sent") {
+                  responseSelect.style.display = "none";
+                  setFormMessage("");
+                  buttonDisable.removeAttribute("disabled");
+                  buttonDisable.classList.remove("button-disabled")
+                  navigate("/subscription-thank-you/");
+                }
+              })
+              .catch((error) => console.error("Error sending email:", error));
+          } 
+        }
         })
-        .catch((error) => console.error("Error sending email:", error));
+        .catch((error) => console.error("Error", error));
+
     },
   });
+
+
+  // const formik = useFormik({
+  //   initialValues: {
+  //     "email-741": "",
+  //   },
+  //   validate,
+  //   validateOnChange: false,
+  //   validateOnBlur: false,
+  //   onSubmit: (values) => {
+  //     const bodyFormData = new FormData();
+  //     bodyFormData.set("email-741", values["email-741"]);
+
+  //     axios({
+  //       method: "POST",
+  //       url: `${WEBSITE_URL}/wp-json/contact-form-7/v1/contact-forms/85/feedback`,
+  //       data: bodyFormData,
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     })
+  //       .then((response) => {
+  //         console.log("Email sent successfully:", response.data);
+  //         if (response.data.status === "validation_failed") {
+  //           setFormMessage(response.data.message);
+  //         } else if (response.data.status === "mail_sent") {
+  //           setFormMessage("");
+  //           navigate("/subscription-thank-you/");
+  //         }
+  //       })
+  //       .catch((error) => console.error("Error sending email:", error));
+  //   },
+  // });
 
 
   useEffect(() => {
@@ -321,34 +306,7 @@ function Footer() {
                               className="wpcf7-submit wpcf7-subscribe"
                             ></button>
                           </div>
-                          {/* <div className="captcha"
-                              style={{ display: "block" }}
-                              key="captcha">
-
-                              <p>
-                                <span className="wpcf7-form-control-wrap wpcaptcha-588"></span>
-                              </p>
-
-                              <p className="c4wp-display-captcha-form">
-                                <label htmlFor="Solve Captcha*">
-                                  Solve Captcha* {captchaExpression}
-                                  &nbsp;&nbsp;=&nbsp;&nbsp;
-                                </label>
-                                <input
-                                  className={
-                                    formik.errors.captcha
-                                      ? "wpcf7-not-valid"
-                                      : null
-                                  }
-                                  id="captcha"
-                                  type="text"
-                                  name="captcha"
-                                  style={{ width: 45 }}
-                                  value={formik.values.captcha}
-                                  onChange={formik.handleChange}
-                                />
-                              </p>
-                            </div> */}
+                          
                         </div>
                         <div
                           className="wpcf7-response-output"

@@ -1152,4 +1152,12 @@ a.colio-close span {
 .colio-content.colio-member-content{
   padding: 40px;
 }
+
+.sub-wrap {
+  display: block !important;
+}
+.sub-wrap .captcha #captcha{
+  border-bottom-left-radius : 0px !important;
+  border-top-left-radius: 0px !important;
+}
 /* Colio css added by mohsin End */

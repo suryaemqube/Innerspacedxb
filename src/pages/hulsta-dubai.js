@@ -22,7 +22,6 @@ const Hulsta = ({ data }) => {
     const [captchaResult, setCaptchaResult] = useState("");
     const [formMessage, setFormMessage] = useState("");
 
-    const seo = data?.wpPage?.seo || [];
 
     useEffect(() => {
         const fetchToken = async () => {
@@ -551,6 +550,7 @@ const Hulsta = ({ data }) => {
                                                     )}
                                                 </span>
                                             </div>
+                                            {formik.values['how-can-help'] && formik.values['your-city'] &&formik.values['your-email'] &&formik.values['your-name'] &&formik.values['your-tel'] &&
                                             <div class="captcha">
                                                 <table class="captcha-wrapper">
                                                     <tbody><tr class="captcha_image">
@@ -577,6 +577,7 @@ const Hulsta = ({ data }) => {
                                                         </tr>
                                                     </tbody></table>
                                             </div>
+                                            }
                                             <div class="row sub-btn">
                                                 <input size={"40"} class="wpcf7-form-control wpcf7-submit has-spinner" type="submit" value="Submit" /><span className="wpcf7-spinner-career">
                                                     <svg

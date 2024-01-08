@@ -681,6 +681,7 @@ const Rolf = ({ data }) => {
                           )}
                         </span>
                       </div>
+                      {formik.values['how-can-help'] && formik.values['your-city'] &&formik.values['your-email'] &&formik.values['your-name'] && formik.values['your-tel'] &&
                       <div class="captcha">
                         <table class="captcha-wrapper">
                           <tbody><tr class="captcha_image">
@@ -690,7 +691,8 @@ const Rolf = ({ data }) => {
                             </td>
                           </tr>
                             <tr class="captcha_text">
-                              <td><span class="wpcf7-form-control-wrap" data-name="captcha-720b">
+                              <td>
+                                <span class="wpcf7-form-control-wrap" data-name="captcha-720b">
                                 <input
                                   className={
                                     formik.errors.captcha
@@ -703,10 +705,13 @@ const Rolf = ({ data }) => {
                                   placeholder="Insert Captcha Here"
                                   value={formik.values.captcha}
                                   onChange={formik.handleChange}
-                                /></span></td>
+                                />
+                                </span>
+                                </td>
                             </tr>
                           </tbody></table>
                       </div>
+                      }
                       <div class="row sub-btn">
                         <input
                           class="wpcf7-form-control wpcf7-submit has-spinner"

@@ -471,7 +471,7 @@ const Portfolio = ({ data, pageContext }) => {
                               I accept that Innerspace Trading LLC will contact me
                             </label>
                           </div>
-
+{formik.values['your-email'] && formik.values['your-message'] && formik.values['your-name'] && formik.values['your-number'] && 
                           <div class="captcha-wrap">
                             Captcha
                             <span class="wpcf7-form-control-wrap wpcaptcha-613">
@@ -493,6 +493,7 @@ const Portfolio = ({ data, pageContext }) => {
                               />
                             </span>
                           </div>
+                          }
                           {lastChanceAcf && (
                             <div class="dynamic-fields">
                               <span
