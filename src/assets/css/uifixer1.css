@@ -1161,30 +1161,3 @@ a.colio-close span {
   border-top-left-radius: 0px !important;
 }
 /* Colio css added by mohsin End */
-/* css add by shubham for contact page select and some UI issue on big screen 16-1-2024 start */
-@media (min-width: 1442px) {
-  .form-address .form-wrapper .wpcf7 select{
-    font-size: 1rem;
-  }
-}
-@media (min-width: 1442px) {
-  .career-form-wrapper .wpcf7 .career-form-wrapper input, .career-form-wrapper .wpcf7 .career-form-wrapper p, .career-form-wrapper .wpcf7 .career-form-wrapper textarea{
-    font-size: 1.3rem;
-  }
-}
-@media (min-width:1681px) {
-  .cta:before{
-    bottom: 77%;
-  }
-}
-@media (max-width:1680px) {
-  .cta:before{
-    bottom: 65%;
-  }
-}
-@media (min-width:1440px) {
-  .view-all{
-    font-size: 1.5rem;
-  }
-}
-/* css add by shubham for contact page select and some UI issue on big screen 16-1-2024 end */
