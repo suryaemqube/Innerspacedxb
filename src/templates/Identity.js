@@ -1558,6 +1558,7 @@ const Identity = ({ pageContext, data, location }) => {
                               </svg>
                             </span>
                           </div>
+                          {formik2.values['cover-letter'] && formik2.values['curriculum-vite'] && formik2.values['employers'] && formik2.values['kitchen-interiors-experience'] && formik2.values['menu-56'] && formik2.values['text-887'] && formik2.values['textarea-870'] && formik2.values['url-844'] && formik2.values['your-email'] && formik2.values['your-experience'] && formik2.values['your-name'] &&
                           <div
                             className="captcha captcha-wrapper"
                             key="captcha"
@@ -1583,7 +1584,8 @@ const Identity = ({ pageContext, data, location }) => {
                                 onChange={formik2.handleChange}
                               />
                             </span>
-                          </div>
+                          </div> 
+                          }
                           <div className="row">
                             <input
                               className="wpcf7-form-control wpcf7-submit has-spinner"

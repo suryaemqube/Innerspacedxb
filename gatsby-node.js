@@ -78,23 +78,23 @@ exports.createPages = async ({ actions, graphql }) => {
     }
   `);
 
-  const lastDetail = await graphql(`
-    query MyQuery {
-      allWpLastChance(
-        filter: {
-          lastChanceSingularPage: { lastChanceSoldOutSelect: { ne: "sold" } }
-        }
-      ) {
-        edges {
-          node {
-            id
-            uri
-            databaseId
-          }
-        }
-      }
-    }
-  `);
+  // const lastDetail = await graphql(`
+  //   query MyQuery {
+  //     allWpLastChance(
+  //       filter: {
+  //         lastChanceSingularPage: { lastChanceSoldOutSelect: { ne: "sold" } }
+  //       }
+  //     ) {
+  //       edges {
+  //         node {
+  //           id
+  //           uri
+  //           databaseId
+  //         }
+  //       }
+  //     }
+  //   }
+  // `);
 
   if (identity.errors) {
     throw new Error(identity.errors);
@@ -115,9 +115,9 @@ exports.createPages = async ({ actions, graphql }) => {
     throw new Error(BlogDetail.errors);
   }
 
-  if (lastDetail.errors) {
-    throw new Error(lastDetail.errors);
-  }
+  // if (lastDetail.errors) {
+  //   throw new Error(lastDetail.errors);
+  // }
 
   const identityNode = identity.data?.allWpPage || [];
   const brandsNode = brands.data?.allWpPage.edges || [];
@@ -125,7 +125,7 @@ exports.createPages = async ({ actions, graphql }) => {
   // const portfolioPageinfo = portfolio.data?.allWpPortfolio.pageInfo || [];
 
   const BlogDetailPage = BlogDetail.data?.allWpPost.edges || [];
-  const lastDetailPage = lastDetail.data?.allWpLastChance.edges || [];
+  // const lastDetailPage = lastDetail.data?.allWpLastChance.edges || [];
 
   identityNode.nodes.forEach(({ wpChildren }) => {
     wpChildren.nodes.forEach((child) => {
@@ -175,16 +175,16 @@ exports.createPages = async ({ actions, graphql }) => {
     });
   });
 
-  lastDetailPage.forEach(({ node }) => {
-    createPage({
-      path: node.uri,
-      component: path.resolve("./src/templates/LastChancePage.js"),
-      context: {
-        pageId: node.databaseId,
-        pageUri: node.uri,
-      },
-    });
-  });
+  // lastDetailPage.forEach(({ node }) => {
+  //   createPage({
+  //     path: node.uri,
+  //     component: path.resolve("./src/templates/LastChancePage.js"),
+  //     context: {
+  //       pageId: node.databaseId,
+  //       pageUri: node.uri,
+  //     },
+  //   });
+  // });
   // const postsPerPage = 9;
   // const numPages = Math.ceil(portfolioPageinfo.totalCount / postsPerPage);
 
