@@ -3,6 +3,20 @@ import { Slice } from "gatsby";
 import { PageStateContext } from "../components/context/PageStateContext";
 import Lenis from "@studio-freight/lenis";
 
+import "swiper/css/bundle";
+import "swiper/css/navigation";
+
+import "../assets/css/normalize.css";
+import "../assets/css/home-common-responsive.css";
+import "../assets/css/main.css";
+import "../assets/css/inside.css";
+import "../assets/css/room-type.css";
+import "../assets/css/identity.css";
+import "../assets/css/brands.css";
+import "../assets/css/last-chance-archive.css";
+
+import "../assets/css/uifixer.css";
+
 const Layout = ({ children }) => {
 
   const { pageState, setPageEntering, setPageActive, setPageExiting } =

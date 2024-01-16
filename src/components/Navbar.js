@@ -4,20 +4,6 @@ import { getPrimaryMenu, getMobileMenu } from "../hooks/menu";
 
 import defaultlogo from "../assets/img/logo-innerspace.svg";
 
-import "swiper/css/bundle";
-import "swiper/css/navigation";
-
-import "../assets/css/normalize.css";
-import "../assets/css/home-common-responsive.css";
-import "../assets/css/main.css";
-import "../assets/css/inside.css";
-import "../assets/css/room-type.css";
-import "../assets/css/identity.css";
-import "../assets/css/brands.css";
-import "../assets/css/last-chance-archive.css";
-
-import "../assets/css/uifixer.css";
-
 const Navbar = () => {
   const [headMenu, setHeadMenu] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(null);
