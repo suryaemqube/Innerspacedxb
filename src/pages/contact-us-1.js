@@ -119,6 +119,9 @@ const Contact = ({ data }) => {
       formik.setFieldValue("project-location", '');
     } else if (values["topic-sel"] === "New Kitchen Design") {
       formik.setFieldValue("which-role", '');
+    }else{
+      formik.setFieldValue("project-location", '');
+      formik.setFieldValue("which-role", '');
     }
 
     if (values["topic-sel"] === "New Kitchen Design" && values["project-location"] === "") {
