@@ -84,13 +84,13 @@ const Contact = ({ data }) => {
     } else if (values["your-city"] === "Select City") {
       errors["your-city"] = "Required";
     }
-    if (!values["brand-dropdown"]) {
-      errors["brand-dropdown"] = "Required";
-    } else if (
-      values["brand-dropdown"] === "What brand are you interested in?"
-    ) {
-      errors["brand-dropdown"] = "Required";
-    }
+    // if (!values["brand-dropdown"]) {
+    //   errors["brand-dropdown"] = "Required";
+    // } else if (
+    //   values["brand-dropdown"] === "What brand are you interested in?"
+    // ) {
+    //   errors["brand-dropdown"] = "Required";
+    // }
 
     if (values["how-can-help"] === "") {
       errors["how-can-help"] = "Required";
@@ -145,7 +145,7 @@ const Contact = ({ data }) => {
       "your-city": "",
       "your-email": "",
       "your-tel": "",
-      "brand-dropdown": "",
+      // "brand-dropdown": "",
       "topic-sel": "",
       "which-role": "",
       "project-location": "",
@@ -161,7 +161,7 @@ const Contact = ({ data }) => {
       bodyFormData.set("your-email", values["your-email"]);
       bodyFormData.set("your-tel", values["your-tel"]);
       bodyFormData.set("your-city", values["your-city"]);
-      bodyFormData.set("brand-dropdown", values["brand-dropdown"]);
+      // bodyFormData.set("brand-dropdown", values["brand-dropdown"]);
       bodyFormData.set("topic-sel", values["topic-sel"]);
       bodyFormData.set("which-role", values["which-role"]);
       bodyFormData.set("project-location", values["project-location"]);
@@ -370,6 +370,37 @@ const Contact = ({ data }) => {
                                 </div>
 
 
+                               {/* <div className="row">
+                                  <span
+                                    className="wpcf7-form-control-wrap"
+                                    data-name="menu-710"
+                                  >
+                                    <select
+                                      id={formFields[4].name}
+                                      name={formFields[4].name}
+                                      value={formik.values[formFields[4].name]}
+                                      onChange={formik.handleChange}
+                                      className={
+                                        formik.errors[formFields[4].name]
+                                          ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
+                                          : "wpcf7-form-control wpcf7-select"
+                                      }
+                                    >
+                                      {formFields[4].raw_values.map(
+                                        (option, index) => (
+                                          <option
+                                            key={`${index}${option}`}
+                                            value={option}
+                                          >
+                                            {option}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </span>
+                                </div>
+                                */}
+
                                 <div className="row">
                                   <span
                                     className="wpcf7-form-control-wrap"
@@ -400,36 +431,6 @@ const Contact = ({ data }) => {
                                   </span>
                                 </div>
 
-                                <div className="row">
-                                  <span
-                                    className="wpcf7-form-control-wrap"
-                                    data-name="menu-710"
-                                  >
-                                    <select
-                                      id={formFields[5].name}
-                                      name={formFields[5].name}
-                                      value={formik.values[formFields[5].name]}
-                                      onChange={formik.handleChange}
-                                      className={
-                                        formik.errors[formFields[5].name]
-                                          ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
-                                          : "wpcf7-form-control wpcf7-select"
-                                      }
-                                    >
-                                      {formFields[5].raw_values.map(
-                                        (option, index) => (
-                                          <option
-                                            key={`${index}${option}`}
-                                            value={option}
-                                          >
-                                            {option}
-                                          </option>
-                                        )
-                                      )}
-                                    </select>
-                                  </span>
-                                </div>
-
                                 {formik.values['topic-sel'] === "Job Application" &&
                                   <div className="row">
                                     <span
@@ -437,17 +438,17 @@ const Contact = ({ data }) => {
                                       data-name="menu-710"
                                     >
                                       <select
-                                        id={formFields[6].name}
-                                        name={formFields[6].name}
-                                        value={formik.values[formFields[6].name]}
+                                        id={formFields[5].name}
+                                        name={formFields[5].name}
+                                        value={formik.values[formFields[5].name]}
                                         onChange={formik.handleChange}
                                         className={
-                                          formik.errors[formFields[6].name]
+                                          formik.errors[formFields[5].name]
                                             ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
                                             : "wpcf7-form-control wpcf7-select"
                                         }
                                       >
-                                        {formFields[6].raw_values.map(
+                                        {formFields[5].raw_values.map(
                                           (option, index) => (
                                             <option
                                               key={`${index}${option}`}
@@ -470,15 +471,15 @@ const Contact = ({ data }) => {
                                   <span className="wpcf7-form-control-wrap">
                                     <input
                                       className={
-                                        formik.errors[formFields[7].name]
+                                        formik.errors[formFields[6].name]
                                           ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
                                           : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
                                       }
-                                      id={formFields[7].name}
-                                      type={formFields[7].basetype}
-                                      name={formFields[7].name}
-                                      placeholder={formFields[7].raw_values[0]}
-                                      value={formik.values[formFields[7].name]}
+                                      id={formFields[6].name}
+                                      type={formFields[6].basetype}
+                                      name={formFields[6].name}
+                                      placeholder={formFields[6].raw_values[0]}
+                                      value={formik.values[formFields[6].name]}
                                       onChange={formik.handleChange}
                                     />
                                   </span>
@@ -493,14 +494,14 @@ const Contact = ({ data }) => {
                                     data-name="worktogether"
                                   >
                                     <textarea
-                                      id={formFields[8].name}
-                                      name={formFields[8].name}
-                                      placeholder={formFields[8].raw_values[0]}
+                                      id={formFields[7].name}
+                                      name={formFields[7].name}
+                                      placeholder={formFields[7].raw_values[0]}
                                       cols="40"
                                       rows="10"
-                                      value={formik.values[formFields[8].name]}
+                                      value={formik.values[formFields[7].name]}
                                       className={
-                                        formik.errors[formFields[1].name]
+                                        formik.errors[formFields[7].name]
                                           ? "wpcf7-form-control wpcf7-select wpcf7-not-valid"
                                           : "wpcf7-form-control wpcf7-text wpcf7-validates-as-required"
                                       }
@@ -511,7 +512,7 @@ const Contact = ({ data }) => {
                               </>
                             }
 
-                            {formik.values['your-name'] && formik.values['your-email'] && formik.values['your-tel'] && formik.values['how-can-help'] && formik.values['brand-dropdown'] && formik.values['topic-sel'] &&
+                            {formik.values['your-name'] && formik.values['your-email'] && formik.values['your-tel'] && formik.values['how-can-help'] &&  formik.values['topic-sel'] &&
                               <div
                                 className="captcha captcha-wrapper"
                                 style={{ display: "block" }}
