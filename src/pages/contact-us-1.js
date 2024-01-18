@@ -488,7 +488,7 @@ const Contact = ({ data }) => {
 
 
                                 <div className="row">
-                                  <p>How can we help you?</p>
+                                  {/* <p>How can we help you?</p> */}
                                   <span
                                     className="wpcf7-form-control-wrap"
                                     data-name="worktogether"

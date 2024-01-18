@@ -9,6 +9,17 @@ const Seo = ({ bodyClass, title, description, pageUrl, seoData, children }) => {
   //   image: image,
   //   url: siteUrl,
   // }
+  const shortUrl = (fullUrl) => {
+    var url = fullUrl;
+    try {
+      const urlObject = new URL(url);
+      url = urlObject.pathname ? urlObject.pathname : url;
+    } catch (error) {
+      url = fullUrl;
+    }
+    return url;
+  };
+  
   return (
     <>
       <html lang="en" />
@@ -21,12 +32,12 @@ const Seo = ({ bodyClass, title, description, pageUrl, seoData, children }) => {
       <meta name="description" content={seoData && seoData.metaDesc ? seoData.metaDesc : description} />
       <meta name="robots" content={`${seoData && seoData.metaRobotsNoindex ? seoData.metaRobotsNoindex : "index"}, ${seoData && seoData.metaRobotsNofollow ? seoData.metaRobotsNofollow : "follow"}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
 
-      <link rel="canonical" href={seoData && seoData.canonical ? "https://innerspacedxb.com" + seoData.canonical : "https://innerspacedxb.com"+pageUrl}></link>
+      <link rel="canonical" href={seoData && seoData.canonical ? "https://innerspacedxb.com" + shortUrl(seoData.canonical) : "https://innerspacedxb.com"+pageUrl}></link>
       <meta property="og:locale" content={"en_US"} />
       <meta property="og:type" content={"Website"} />
       <meta property="og:title" content={seoData && seoData.title ? seoData.title : title} />
       <meta property="og:description" content={seoData && seoData.metaDesc ? seoData.metaDesc : description} />
-      <meta property="og:url" content={seoData && seoData.opengraphUrl ? "https://innerspacedxb.com" + seoData.opengraphUrl : "https://innerspacedxb.com"+pageUrl} />
+      <meta property="og:url" content={seoData && seoData.opengraphUrl ? "https://innerspacedxb.com" + shortUrl(seoData.opengraphUrl) : "https://innerspacedxb.com"+pageUrl} />
       <meta property="og:site_name" content={seoData && seoData.opengraphSiteName ? seoData.opengraphSiteName : "Achievers"} />
 
       <meta property="og:image" content={seoData && seoData.opengraphImage ? seoData.opengraphImage.mediaItemUrl : "https://app.innerspacedxb.com/wp-content/uploads/2022/11/logo-innerspace-black.png"} />
