@@ -3431,10 +3431,11 @@ footer .container .col2 .footer-bottom-wrapper ul li h5,footer .container .basel
 }
 /* css added by pradnya - starts - 01-11-2022 */
 .form-address .form-wrapper .wpcf7 select{
-  background-image: url(https://www.innerspacedxb.com/wp-content/themes/Innerspacechild/img/select-dropdown.svg);
+  /* background-image: url(https://www.innerspacedxb.com/wp-content/themes/Innerspacechild/img/select-dropdown.svg); */
+  background-image: url(https://app.innerspacedxb.com/wp-content/themes/Innerspacechild/img/select-dropdown.svg);
   background-repeat: no-repeat;
   background-position: 98% center;
-  /* appearance: none; */
+  appearance: none;
 }
 .page-template-tp-careers .our-story .about-innerspace{
   padding-bottom: 40px;
