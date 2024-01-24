@@ -451,7 +451,7 @@ const Contact = ({ data }) => {
 
 export default Contact;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []}>
+  <Seo seoData={data?.wpPage?.seo || []} visibility={false}>
   </Seo>
 )
 export const data = graphql`

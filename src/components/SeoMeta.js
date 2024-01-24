@@ -1,7 +1,7 @@
 import React from "react";
 // import { useSiteMetadata } from "../hooks/use-site-metadata"
 
-const Seo = ({ bodyClass, title, description, pageUrl, seoData, children }) => {
+const Seo = ({ bodyClass, title, description, pageUrl, seoData, children, visibility = true }) => {
   // const { title: defaultTitle, description: defaultDescription, image, siteUrl } = useSiteMetadata()
   // const seo = {
   //   title: title || defaultTitle,
@@ -30,7 +30,14 @@ const Seo = ({ bodyClass, title, description, pageUrl, seoData, children }) => {
 
       <title>{seoData && seoData.title ? seoData.title : title}</title>
       <meta name="description" content={seoData && seoData.metaDesc ? seoData.metaDesc : description} />
-      <meta name="robots" content={`${seoData && seoData.metaRobotsNoindex ? seoData.metaRobotsNoindex : "index"}, ${seoData && seoData.metaRobotsNofollow ? seoData.metaRobotsNofollow : "follow"}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
+
+      {/* <meta name="robots" content={`${seoData && seoData.metaRobotsNoindex ? seoData.metaRobotsNoindex : "index"}, ${seoData && seoData.metaRobotsNofollow ? seoData.metaRobotsNofollow : "follow"}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} /> */}
+
+      {visibility ? (
+        <meta name="robots" content={`${seoData && seoData.metaRobotsNoindex ? seoData.metaRobotsNoindex : "index"}, ${seoData && seoData.metaRobotsNofollow ? seoData.metaRobotsNofollow : "follow"}, max-image-preview:large, max-snippet:-1, max-video-preview:-1`} />
+      ) : (
+        <meta name="robots" content="noindex,nofollow" />
+      )}
 
       <link rel="canonical" href={seoData && seoData.canonical ? "https://innerspacedxb.com" + shortUrl(seoData.canonical) : "https://innerspacedxb.com"+pageUrl}></link>
       <meta property="og:locale" content={"en_US"} />
