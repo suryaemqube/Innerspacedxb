@@ -104,16 +104,18 @@ const Contact = ({ data }) => {
       errors["your-email"] = "Invalid email address";
     }
 
-    if (!values["topic-sel"] === "") {
+    if (values["topic-sel"] === "") {
       errors["topic-sel"] = "Required";
-    } else if (values["topic-sel"] === "Select Topic") {
+    } else if (values["topic-sel"] === "What is the topic of your enquiry?") {
       errors["topic-sel"] = "Required";
     }
 
-    if (values["topic-sel"] === "Job Application" && !values["which-role"] === "") {
+    if (values["topic-sel"] === "Job Application" && values["which-role"] === "") {
+      console.log("Empty")
       errors["which-role"] = "Required";
-    } else if (values["which-role"] === "Why kind of role would you like to apply for?") {
+    } else if (values["which-role"] === "What kind of role would you like to apply for?") {
       errors["which-role"] = "Required";
+      console.log("Select other option")
     }
     if (values["topic-sel"] === "Job Application") {
       formik.setFieldValue("project-location", '');
@@ -404,7 +406,7 @@ const Contact = ({ data }) => {
                                 <div className="row">
                                   <span
                                     className="wpcf7-form-control-wrap"
-                                    data-name="menu-710"
+                                    data-name="menu-7101"
                                   >
                                     <select
                                       id={formFields[4].name}
