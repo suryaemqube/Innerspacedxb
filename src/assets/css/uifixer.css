@@ -1188,3 +1188,26 @@ a.colio-close span {
   }
 }
 /* css add by shubham for contact page select and some UI issue on big screen 16-1-2024 end */
+/* css added by shubham for mobile device footer menu 29-1-2024 start */
+@media (max-width:415px) {
+  footer .container .col2 .footer-top-wrapper ul li a{
+    font-size: .9rem;
+  }
+  footer .container .col2 .footer-top-wrapper ul li:after{
+    padding: 0 15px!important;
+  }
+}
+@media (max-width:360px) {
+  footer .container .col2 .footer-top-wrapper ul li a{
+    font-size: .8rem;
+  }
+}
+@media (max-width:320px) {
+  footer .container .col2 .footer-top-wrapper ul li a{
+    font-size: .7rem;
+  }
+  footer .container .col2 .footer-top-wrapper ul li:after{
+    padding: 0 10px!important;
+  }
+}
+/* css added by shubham for mobile device footer menu 29-1-2024 end */
