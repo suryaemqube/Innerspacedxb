@@ -245,7 +245,7 @@ const Contact = ({ data }) => {
             </p>
           )}
         </div>
-
+        <section className="innerspace-google-map" id="visit-showroom">
         {!isLoaded && <div>Loading...</div>}
         <LazyLoad offset={100} onContentVisible={() => setIsLoaded(true)}>
           <Suspense
@@ -256,6 +256,7 @@ const Contact = ({ data }) => {
             <Map pageAcf={pageAcf} />
           </Suspense>
         </LazyLoad>
+        </section>
 
         <section className="form-address">
           <div className="container">

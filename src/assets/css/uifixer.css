@@ -1211,3 +1211,7 @@ a.colio-close span {
   }
 }
 /* css added by shubham for mobile device footer menu 29-1-2024 end */
+
+.contact-us .innerspace-google-map .is-visible{
+  height: 100%;
+}
