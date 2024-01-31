@@ -19,13 +19,14 @@ const Navbar = () => {
   }, []);
 
   const shortUrl = (fullUrl) => {
-    const url = fullUrl;
-    var desiredPart = "#";
-    if (url) {
+    var url = fullUrl;
+    try {
       const urlObject = new URL(url);
-      desiredPart = urlObject.pathname;
+      url = urlObject.pathname ? urlObject.pathname : url;
+    } catch (error) {
+      url = fullUrl;
     }
-    return desiredPart;
+    return url;
   };
 
   const MenuItem = ({ item }) => (
