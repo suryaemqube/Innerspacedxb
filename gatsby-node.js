@@ -1,4 +1,5 @@
 const path = require("path");
+const redirects = require("./redirects.json");
 
 exports.createPages = async ({ actions, graphql }) => {
   const { createPage, createRedirect, createSlice } = actions;
@@ -217,6 +218,17 @@ exports.createPages = async ({ actions, graphql }) => {
     id: `footer`,
     component: require.resolve(`./src/components/Footer.js`),
   });
+
+  redirects.forEach((redirect) =>
+    createRedirect({
+      fromPath: redirect.fromPath,
+      toPath: redirect.toPath,
+      isPermanent: true,
+      redirectInBrowser: true,
+    })
+  );
+
+
 };
 
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
