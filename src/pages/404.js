@@ -18,6 +18,6 @@ const Error = () => {
 
 export default Error;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"error404"} title={"Page not found - Innerspacedxb"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"error404"} title={"Page not found - Innerspacedxb"} visibility={false}> 
   </Seo>
 )
