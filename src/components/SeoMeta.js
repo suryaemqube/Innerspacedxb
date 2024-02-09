@@ -63,7 +63,9 @@ import React from "react";
         name="google-site-verification"
         content="4KgWrYQfz8sTPAgJGMlDVKzR-OLGh6yRTd5kmLV1Xlw"
       /> */}
-      <script type="application/ld+json">{JSON.stringify(seoData && seoData.schema ? seoData.schema : "{}")}</script>
+
+<script type="application/ld+json">{seoData.schema ? seoData.schema.raw : "{}"}</script>
+      {/* <script type="application/ld+json">{JSON.stringify(seoData && seoData.schema ? seoData.schema : "{}")}</script> */}
       {children}
     </>
   );
