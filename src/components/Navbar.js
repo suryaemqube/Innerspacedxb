@@ -23,7 +23,7 @@ const Navbar = ({ sliceContext }) => {
     const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
     const toggleSubMenu = (event) => {
-      if (window != "undefined" && window.innerWidth < 821) {
+      if (typeof window !== "undefined" && window.innerWidth < 821) {
         event.preventDefault()
         setIsSubMenuOpen(!isSubMenuOpen);
       }
@@ -37,7 +37,7 @@ const Navbar = ({ sliceContext }) => {
           } ${Array.isArray(item.children) && item.children.length ? 'menu-item-has-children' : ''}`}
       >
         <Link
-          to={item.children && item.children.length > 0 && window != "undefined" && window.innerWidth < 821 ? "/":item.path}
+          to={item.children && item.children.length > 0 && typeof window  !== "undefined" && window.innerWidth < 821 ? "/":item.path}
           dangerouslySetInnerHTML={{ __html: item.label }}
           onClick={toggleSubMenu}
           activeClassName="current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor"
