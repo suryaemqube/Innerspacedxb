@@ -1049,7 +1049,7 @@ const Rolf = ({ data }) => {
 
 export default Rolf;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp"} pageUrl={"/rolf-benz-dubai/"}>
   </Seo>
 )
 export const data = graphql`

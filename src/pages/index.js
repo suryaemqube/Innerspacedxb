@@ -378,13 +378,14 @@ export default function Home({ data }) {
 }
 
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"home"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"home"} pageUrl={data?.wpPage?.uri}>
   </Seo>
 )
 export const data = graphql`
   query MyQuery {
     wpPage(databaseId: { eq: 7 }) {
       title
+      uri
           seo {
       canonical
       opengraphDescription

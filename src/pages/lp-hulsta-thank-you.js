@@ -80,7 +80,7 @@ const HuslstaThankyou = ({ data }) => {
     );
 };
 export const Head = ({ data }) => (
-    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp-rolf-thankyou"}>
+    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp-rolf-thankyou"} pageUrl={"/lp-hulsta-thank-you/"}>
     </Seo>
 )
 export const data = graphql`

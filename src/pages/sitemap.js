@@ -99,6 +99,6 @@ const Sitemap = () => {
 
 export default Sitemap;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"} title={"Sitemap - Innerspacedxb"} description={"Sitemap - Innerspacecdxb"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"} title={"Sitemap - Innerspacedxb"} description={"Sitemap - Innerspacecdxb"} pageUrl={"/sitemap/"}>
   </Seo>
 )

@@ -28,7 +28,8 @@ const PrivacyPolicy = ({ data }) => {
 
 export default PrivacyPolicy;
 export const Head = ({ data }) => (
-    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"privacy-policy"}>
+    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"privacy-policy"} pageUrl=
+    {data?.wpPage?.uri}>
     </Seo>
 )
 export const data = graphql`
@@ -37,6 +38,7 @@ query MyQuery {
     id
     title
     content
+    uri
     privacyPolicy{
         topText
     }

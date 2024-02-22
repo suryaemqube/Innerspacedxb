@@ -338,7 +338,7 @@ const Portfolio = ({ data }) => {
   );
 };
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"portfolio"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"portfolio"} pageUrl={data?.wpPage?.uri}>
   </Seo>
 )
 export const data = graphql`
@@ -365,6 +365,7 @@ export const data = graphql`
     wpPage(databaseId: { eq: 77 }) {
       id
       title
+      uri
       featuredImage {
         node {
           mediaItemUrl

@@ -110,7 +110,7 @@ const Blog = ({ data }) => {
 };
 
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []}>
+  <Seo seoData={data?.wpPage?.seo || []} pageUrl={data?.wpPage?.uri}>
   </Seo>
 )
 
@@ -119,6 +119,7 @@ export const query = graphql`
     wpPage(databaseId: { eq: 79 }) {
       id
       title
+      uri
       featuredImage {
         node {
           mediaItemUrl

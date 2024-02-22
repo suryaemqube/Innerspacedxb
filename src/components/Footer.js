@@ -14,31 +14,17 @@ import iconYoutube from "../assets/img/icon-youtube.svg";
 import iconLinkedin from "../assets/img/icon-linkedin.svg";
 const WEBSITE_URL = process.env.GATSBY_BASE_URL;
 
-function Footer() {
-  const [footerMenu, setFooterMenu] = useState(null);
-  const [options, setOptions] = useState(null);
+function Footer({sliceContext}) {
+  const footerMenu = sliceContext?.footerData
+  const options = sliceContext?.options
+  console.log(options)
+
   const [token, setToken] = useState("");
   const [formMessage, setFormMessage] = useState("");
   const [formFields, setFormFields] = useState([]);
   const [captchaExpression, setCaptchaExpression] = useState("");
   const [captchaResult, setCaptchaResult] = useState("");
 
-  const shortUrl = (fullUrl) => {
-    const url = fullUrl;
-    const urlObject = new URL(url);
-    const desiredPart = urlObject.pathname;
-    return desiredPart;
-  };
-
-  useEffect(() => {
-    getSecondaryMenu()
-      .then((menuData) => setFooterMenu(menuData))
-      .catch((error) => console.error("Error fetching footer menu:", error));
-
-    getOptionData()
-      .then((optionData) => setOptions(optionData))
-      .catch((error) => console.error("Error fetching Option menu:", error));
-  }, []);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -267,19 +253,19 @@ function Footer() {
         <div className="container">
           <div className="col1">
             <div className="footer-logo-wrapper">
-              {options && options.main_logo && (
+              {options && options.mainLogo && (
                 <a href="/" className="footer-logo">
                   <img
                     width="201"
                     height="99"
-                    src={options.main_logo.url}
+                    src={options.mainLogo.mediaItemUrl}
                     alt="Innserspace"
                   />
                 </a>
               )}
 
               <p className="baseline">
-                {options && options.german_kitchen_text}
+                {options && options.germanKitchenText}
               </p>
             </div>
             <div className="subscribe-wrapper">
@@ -367,12 +353,12 @@ function Footer() {
             <div className="footer-top-wrapper">
               <ul>
                 {footerMenu &&
-                  footerMenu.items.map((menuItem, index) => (
+                  footerMenu.map((menuItem, index) => (
                     <li
                       key={`${index}footermenu`}
                       className="menu-item menu-item-type-post_type menu-item-object-page"
                     >
-                      <Link to={shortUrl(menuItem.url)}>{menuItem.title}</Link>
+                      <Link to={menuItem.path}>{menuItem.label}</Link>
                     </li>
                   ))}
               </ul>
@@ -385,7 +371,7 @@ function Footer() {
                   {options && (
                     <p
                       dangerouslySetInnerHTML={{
-                        __html: options.visit_our_showroom,
+                        __html: options.visitOurShowroom,
                       }}
                     />
                   )}
@@ -404,7 +390,7 @@ function Footer() {
                   {options && (
                     <p
                       dangerouslySetInnerHTML={{
-                        __html: options.opening_times,
+                        __html: options.openingTimes,
                       }}
                     />
                   )}
@@ -428,7 +414,7 @@ function Footer() {
                       className="tel footer"
                       href={`tel:${options && options.phone_number}`}
                     >
-                      {options && options.phone_number}
+                      {options && options.phoneNumber}
                     </a>
                   </p>
                   <div className="social-links">

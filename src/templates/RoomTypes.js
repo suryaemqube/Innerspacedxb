@@ -697,7 +697,8 @@ const Roomtypes = ({data }) => {
 };
 export default Roomtypes;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={`roomtypes ${data?.wpPage?.slug}`}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={`roomtypes ${data?.wpPage?.slug}`} pageUrl=
+  {data?.wpPage?.uri}>
   </Seo>
 )
 export const data = graphql`
@@ -706,6 +707,7 @@ export const data = graphql`
       id
       title
       slug
+      uri
       featuredImage {
         node {
           altText

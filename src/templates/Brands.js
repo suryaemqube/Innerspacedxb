@@ -501,7 +501,7 @@ const Brands = ({ pageContext, data }) => {
 };
 export default Brands;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []}>
+  <Seo seoData={data?.wpPage?.seo || []} pageUrl={data?.wpPage?.uri}>
   </Seo>
 )
 

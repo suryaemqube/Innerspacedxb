@@ -1,22 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "gatsby";
-import { getPrimaryMenu, getMobileMenu } from "../hooks/menu";
 
 import defaultlogo from "../assets/img/logo-innerspace.svg";
 
-const Navbar = () => {
-  const [headMenu, setHeadMenu] = useState(null);
-  const [mobileMenu, setMobileMenu] = useState(null);
+const Navbar = ({ sliceContext }) => {
+  const headMenu = sliceContext?.priMenuData || [];
+  const mobileMenu = sliceContext?.mobMenuData || [];
 
-  useEffect(() => {
-    getPrimaryMenu()
-      .then((menuData) => setHeadMenu(menuData))
-      .catch((error) => console.error("Error fetching primary menu:", error));
-
-    getMobileMenu()
-      .then((menuData) => setMobileMenu(menuData))
-      .catch((error) => console.error("Error fetching Mobile menu:", error));
-  }, []);
 
   const shortUrl = (fullUrl) => {
     var url = fullUrl;
@@ -29,48 +19,69 @@ const Navbar = () => {
     return url;
   };
 
-  const MenuItem = ({ item }) => (
-    <li
-      className={`menu-item menu-item-type-post_type menu-item-object-page ${item.classes.join(
-        " "
-      )} ${item.child_items ? "menu-item-has-children" : ""}
-        }`}
-    >
-      <Link
-        to={shortUrl(item.url)}
-        dangerouslySetInnerHTML={{ __html: item.title }}
-        onClick={(e) => selectParentClass(e)}
-        activeClassName="current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor"
-      />
-      {item.child_items && item.child_items.length > 0 && (
-        <SubMenu items={item.child_items} />
-      )}
-    </li>
-  );
+  const MenuItem = ({ item, level }) => {
+    const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
-  const SubMenu = ({ items }) => (
-    <ul className="sub-menu">
-      {items.map((item, index) => (
-        <MenuItem item={item} key={`${index}submenu2`} />
-      ))}
-    </ul>
-  );
+    const toggleSubMenu = (event) => {
+      if (window != "undefined" && window.innerWidth < 821) {
+        event.preventDefault()
+        setIsSubMenuOpen(!isSubMenuOpen);
+      }
+    };
 
-  function selectParentClass(event) {
-    var grandParent = event.target.closest(".menu-toggle");
-    console.log(event.target.closest(".menu-toggle"));
-    var parentSelector = event.target.parentNode;
-    if (
-      grandParent &&
-      grandParent.classList.contains("menu-toggle") &&
-      parentSelector.classList.contains("menu-item-has-children")
-    ) {
-      event.preventDefault();
+    return (
+      <li
+        className={`menu-item menu-item-type-post_type menu-item-object-page ${Array.isArray(item.cssClasses) && item.cssClasses.length
+            ? item.cssClasses.join(' ')
+            : ''
+          } ${Array.isArray(item.children) && item.children.length ? 'menu-item-has-children' : ''}`}
+      >
+        <Link
+          to={item.children && item.children.length > 0 && window != "undefined" && window.innerWidth < 821 ? "/":item.path}
+          dangerouslySetInnerHTML={{ __html: item.label }}
+          onClick={toggleSubMenu}
+          activeClassName="current-page-ancestor current-menu-ancestor current-menu-parent current-page-parent current_page_parent current_page_ancestor"
+        />
+        {item.children && item.children.length > 0 && (
+          <SubMenu items={item.children} level={level + 1} isOpen={isSubMenuOpen} />
+        )}
+      </li>
+    );
+  };
 
-      var subMenu = parentSelector.querySelector(".sub-menu");
-      subMenu.classList.toggle("show");
-    }
-  }
+  const SubMenu = ({ items, level, isOpen }) => {
+    return (
+      <ul className={`sub-menu ${isOpen ? 'show' : ''} level-${level}`}>
+        {items.map((item, index) => (
+          <MenuItem item={item} key={`${index}submenu2`} level={level + 1} />
+        ))}
+      </ul>
+    );
+  };
+
+  // function selectParentClass(event, elem) {
+
+  //   var grandParent = event.target.closest(".menu-toggle");
+
+  //   var parentSelector = event.target.parentNode;
+  //   if (
+  //     grandParent &&
+  //     grandParent.classList.contains("menu-toggle") &&
+  //     parentSelector.classList.contains("menu-item-has-children")
+  //   ) {
+  //     event.preventDefault();
+
+  //     var subMenu = parentSelector.querySelector(".sub-menu");
+  //     console.log("subMenu", subMenu.classList.contains('level-2'));
+  //     if (elem.classList.contains('level-2') && !subMenu.classList.contains('show')) {
+  //       setMenuClass('show')
+  //     } else if (subMenu.classList.contains('level-4') && !subMenu.classList.contains('show')) {
+  //       setMenuClass('show')
+  //     } else {
+  //       setMenuClass('')
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
     let menuBtn = document.querySelector(".nav-toggle");
@@ -89,7 +100,7 @@ const Navbar = () => {
         menuBtn.removeEventListener("click", handleMenuClick);
       }
     };
-  }, [headMenu]);
+  }, []);
 
   return (
     <>
@@ -118,9 +129,9 @@ const Navbar = () => {
             <img width="150" height="74" src={defaultlogo} alt="Innerspace" />
           </Link>
           <nav>
-            {headMenu && headMenu.items.length > 0 && (
+            {headMenu && headMenu.length > 0 && (
               <ul>
-                {headMenu.items.map((item, index) => (
+                {headMenu.map((item, index) => (
                   <MenuItem item={item} key={`${index}menu2`} />
                 ))}
               </ul>
@@ -132,10 +143,10 @@ const Navbar = () => {
 
       {/* <!-- MOBILE Nav --> */}
       <nav className="menu-toggle">
-        {mobileMenu && mobileMenu.items.length > 0 && (
+        {mobileMenu && mobileMenu.length > 0 && (
           <ul>
-            {mobileMenu.items.map((item, index) => (
-              <MenuItem item={item} key={`${index}menu2`} />
+            {mobileMenu.map((item, index) => (
+              <MenuItem item={item} key={`${index}menu2`} level={1} />
             ))}
           </ul>
         )}

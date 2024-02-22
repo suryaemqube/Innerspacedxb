@@ -79,6 +79,80 @@ exports.createPages = async ({ actions, graphql }) => {
     }
   `);
 
+  const mobileMenu = await graphql(`
+    query MyQuery {
+      wpMenu(name: {eq: "Mobile-menu"}) {
+        id
+        menuItems {
+          nodes {
+            id
+            label
+            path
+            parentId
+            cssClasses
+          }
+        }
+      }
+    }
+  `);
+
+  const primary  = await graphql(`
+    query MyQuery {
+      wpMenu(name: {eq: "primary"}) {
+        id
+        menuItems {
+          nodes {
+            id
+            label
+            path
+            parentId
+            cssClasses
+          }
+        }
+      }
+    }
+  `);
+
+  const footer = await graphql(`
+    query MyQuery {
+      wpMenu(name: {eq: "footer"}) {
+        id
+        menuItems {
+          nodes {
+            id
+            label
+            path
+            parentId
+            cssClasses
+          }
+        }
+      }
+    }
+  `);
+
+  const options = await graphql(`
+  query MyQuery {
+    wp {
+      acfOptions {
+        footerContent {
+          email
+          germanKitchenText
+          openingTimes
+          phoneNumber
+          visitOurShowroom
+          mainLogo {
+            altText
+            mediaItemUrl
+          }
+        }
+      }
+    }    
+  }
+`);
+
+
+
+
   // const lastDetail = await graphql(`
   //   query MyQuery {
   //     allWpLastChance(
@@ -116,6 +190,21 @@ exports.createPages = async ({ actions, graphql }) => {
     throw new Error(BlogDetail.errors);
   }
 
+  if (primary.errors) {
+    throw new Error(primary.errors);
+  }
+
+  if (footer.errors) {
+    throw new Error(footer.errors);
+  }
+  if (mobileMenu.errors) {
+    throw new Error(mobileMenu.errors);
+  }
+  
+  if (options.errors) {
+    throw new Error(options.errors);
+  }
+  
   // if (lastDetail.errors) {
   //   throw new Error(lastDetail.errors);
   // }
@@ -127,6 +216,12 @@ exports.createPages = async ({ actions, graphql }) => {
 
   const BlogDetailPage = BlogDetail.data?.allWpPost.edges || [];
   // const lastDetailPage = lastDetail.data?.allWpLastChance.edges || [];
+
+  const primaryNode = primary.data?.wpMenu?.menuItems?.nodes || [];
+  const mobileMenuNode = mobileMenu.data?.wpMenu?.menuItems?.nodes || [];
+  const footerNode = footer.data?.wpMenu?.menuItems?.nodes || [];
+  
+  const optionsNode = options.data?.wp?.acfOptions?.footerContent || [];  
 
   identityNode.nodes.forEach(({ wpChildren }) => {
     wpChildren.nodes.forEach((child) => {
@@ -176,6 +271,27 @@ exports.createPages = async ({ actions, graphql }) => {
     });
   });
 
+  const flatListToHierarchical = (
+    data = [],
+    { idKey = "id", parentKey = "parentId", childrenKey = "children" } = {}
+  ) => {
+    const tree = []
+    const childrenOf = {}
+    data.forEach(item => {
+      const newItem = { ...item }
+      const { [idKey]: id, [parentKey]: parentId = 0 } = newItem
+      childrenOf[id] = childrenOf[id] || []
+      newItem[childrenKey] = childrenOf[id]
+      parentId
+        ? (childrenOf[parentId] = childrenOf[parentId] || []).push(newItem)
+        : tree.push(newItem)
+    })
+    return tree
+  }
+
+  $privHrhl = flatListToHierarchical(primaryNode);
+  $MobtHrhl = flatListToHierarchical(mobileMenuNode);
+  $footHrhl = flatListToHierarchical(footerNode);
   // lastDetailPage.forEach(({ node }) => {
   //   createPage({
   //     path: node.uri,
@@ -212,11 +328,13 @@ exports.createPages = async ({ actions, graphql }) => {
   createSlice({
     id: `navigation-bar`,
     component: require.resolve(`./src/components/Navbar.js`),
+    context:{priMenuData:$privHrhl, mobMenuData:$MobtHrhl}
   });
 
   createSlice({
     id: `footer`,
     component: require.resolve(`./src/components/Footer.js`),
+    context:{footerData:$footHrhl, options:optionsNode}
   });
 
   redirects.forEach((redirect) =>

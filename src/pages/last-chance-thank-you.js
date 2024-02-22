@@ -41,7 +41,7 @@ const LastThankyou = ({ data }) => {
   );
 };
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"last-chance-ty"}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"last-chance-ty"} pageUrl={"/last-chance-thank-you/"}>
   </Seo>
 )
 export const data = graphql`

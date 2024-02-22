@@ -887,7 +887,7 @@ const Hulsta = ({ data }) => {
 };
 export default Hulsta;
 export const Head = ({ data }) => (
-    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp-hulusta"}>
+    <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-lp-hulusta"} pageUrl={"/hulsta-dubai/"}>
     </Seo>
 )
 export const data = graphql`

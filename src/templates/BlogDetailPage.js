@@ -52,7 +52,7 @@ const BlogDetail = ({ data, pageContext }) => {
 };
 
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPost?.seo || []}>
+  <Seo seoData={data?.wpPost?.seo || []} pageUrl={data?.wpPost?.uri}>
   </Seo>
 )
 

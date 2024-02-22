@@ -20,7 +20,7 @@ const CareerThankyou = ({ data }) => {
   );
 };
 export const Head = ({ data }) => (
-  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"} visibility={false}>
+  <Seo seoData={data?.wpPage?.seo || []} bodyClass={"page-template-tp-thankyou"} visibility={false} pageUrl={"/career-thank-you/"}>
   </Seo>
 )
 export const data = graphql`

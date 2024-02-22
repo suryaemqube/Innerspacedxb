@@ -2154,7 +2154,7 @@ const Identity = ({ pageContext, data, location }) => {
 
 export default Identity;
 export const Head = ({ data }) => (
-  <Seo seoData={data?.ourstory?.seo || []}>
+  <Seo seoData={data?.ourstory?.seo || []} pageUrl={data?.ourstory?.uri}>
   </Seo>
 )
 export const data = graphql`
@@ -2162,6 +2162,7 @@ export const data = graphql`
     ourstory: wpPage(databaseId: { eq: $pageId }) {
       id
       title
+      uri
       databaseId
       featuredImage {
         node {
