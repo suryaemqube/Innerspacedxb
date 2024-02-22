@@ -23,8 +23,17 @@ const Navbar = ({ sliceContext }) => {
     const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
     const toggleSubMenu = (event) => {
+      var grandParent = event.target.closest(".menu-toggle");
+
+    var parentSelector = event.target.parentNode;
       if (typeof window !== "undefined" && window.innerWidth < 821) {
+        if (
+              grandParent &&
+              grandParent.classList.contains("menu-toggle") &&
+              parentSelector.classList.contains("menu-item-has-children")
+            ) {
         event.preventDefault()
+      }
         setIsSubMenuOpen(!isSubMenuOpen);
       }
     };
