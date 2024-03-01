@@ -21,6 +21,29 @@ import React from "react";
     return url;
   };
 
+
+  function replaceSlashWithUrl(obj) {
+    for (var key in obj) {
+      if (typeof obj[key] === 'string') {
+
+        if (obj[key].startsWith('/')) {
+          obj[key] = "https://kaiser.ae" + obj[key];
+        }
+      } else if (typeof obj[key] === 'object') {
+        replaceSlashWithUrl(obj[key]);
+      }
+    }
+    return obj
+
+  }
+
+  var jsonSchema = seoData && seoData.schema ? seoData.schema.raw : "{}";
+  var jsonObject = JSON.parse(jsonSchema);
+  if (jsonObject && Object.keys(jsonObject).length !== 0) {
+    jsonObject = replaceSlashWithUrl(jsonObject);
+  }
+
+
   return (
     <>
       <html lang="en" />
@@ -67,8 +90,7 @@ import React from "react";
         content="4KgWrYQfz8sTPAgJGMlDVKzR-OLGh6yRTd5kmLV1Xlw"
       /> */}
 
-<script type="application/ld+json">{seoData.schema ? seoData.schema.raw : "{}"}</script>
-      {/* <script type="application/ld+json">{JSON.stringify(seoData && seoData.schema ? seoData.schema : "{}")}</script> */}
+<script type="application/ld+json">{Object.keys(jsonObject).length !== 0 ? JSON.stringify(jsonObject, null, 2) : "{}"}</script>
       {children}
     </>
   );
