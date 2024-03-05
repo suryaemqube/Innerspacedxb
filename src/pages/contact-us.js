@@ -152,12 +152,14 @@ const Contact = ({ data }) => {
       "which-role": "",
       "project-location": "",
       "how-can-help": "",
+      "your-subject" : "",
       captcha: "",
     },
     validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: (values) => {
+      var subject = values['topic-sel'] === "Job Application" ? `New inquiry:  ${values['topic-sel']} - ${values['which-role']}` :`New inquiry:  ${values['topic-sel']}`
       const bodyFormData = new FormData();
       bodyFormData.set("your-name", values["your-name"]);
       bodyFormData.set("your-email", values["your-email"]);
@@ -168,7 +170,7 @@ const Contact = ({ data }) => {
       bodyFormData.set("which-role", values["which-role"]);
       bodyFormData.set("project-location", values["project-location"]);
       bodyFormData.set("how-can-help", values["how-can-help"]);
-      // bodyFormData.set("your-subject", "Enquiry Form");
+      bodyFormData.set("your-subject", subject);
 
       axios({
         method: "post",
