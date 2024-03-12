@@ -27,7 +27,7 @@ import React from "react";
       if (typeof obj[key] === 'string') {
 
         if (obj[key].startsWith('/')) {
-          obj[key] = "https://kaiser.ae" + obj[key];
+          obj[key] = "https://innerspacedxb.com/" + obj[key];
         }
       } else if (typeof obj[key] === 'object') {
         replaceSlashWithUrl(obj[key]);
