@@ -1904,7 +1904,7 @@ const Identity = ({ pageContext, data, location }) => {
                           </li>
                         ))}
                       {typeof window !== "undefined" &&
-                        window.innerWidth > 769 && (
+                        window.innerWidth > 821 && (
                           <>
                             <li className="colio-item isotope-item"></li>
                             <li className="colio-item isotope-item"></li>
@@ -1989,7 +1989,7 @@ const Identity = ({ pageContext, data, location }) => {
                           </li>
                         ))}
                       {typeof window !== "undefined" &&
-                        window.innerWidth > 769 && (
+                        window.innerWidth > 821 && (
                           <li className="colio-item isotope-item"></li>
                         )}
 
@@ -2031,10 +2031,10 @@ const Identity = ({ pageContext, data, location }) => {
                           </li>
                         ))}
                       {typeof window !== "undefined" &&
-                        window.innerWidth > 769 && (
+                        window.innerWidth > 821 && (
                           <>
                             <li className="colio-item isotope-item"></li>
-                            <li className="colio-item isotope-item"></li>
+                            
                           </>
                         )}
                       {ourTeam.fifthRowMembers.length > 0 &&
