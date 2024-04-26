@@ -2130,14 +2130,14 @@ const Identity = ({ pageContext, data, location }) => {
                 <ul className="list">
                   <li>
                     <img
-                      src="https://app.innerspacedxb.com/wp-content/uploads/2022/08/warehouse-team.jpg"
+                      src="https://app.innerspacedxb.com/wp-content/uploads/2024/04/warehouse-team-v1.webp"
                       alt="Warehouse team"
                     />
                     <p>Logistics Team</p>
                   </li>
                   <li>
                     <img
-                      src="https://app.innerspacedxb.com/wp-content/uploads/2022/08/innerspace-installation-team.jpg"
+                      src="https://app.innerspacedxb.com/wp-content/uploads/2024/04/installation-team-v1.webp"
                       alt="Installation team"
                     />
                     <p>Installation Team</p>
