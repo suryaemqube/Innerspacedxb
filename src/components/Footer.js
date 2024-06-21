@@ -412,7 +412,7 @@ function Footer({sliceContext}) {
                     </a>
                     <a
                       className="tel footer"
-                      href={`tel:${options && options.phone_number}`}
+                      href={`tel:${options && options.phoneNumber}`}
                     >
                       {options && options.phoneNumber}
                     </a>
