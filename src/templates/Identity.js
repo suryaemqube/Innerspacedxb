@@ -1988,10 +1988,7 @@ const Identity = ({ pageContext, data, location }) => {
                             </a>
                           </li>
                         ))}
-                      {typeof window !== "undefined" &&
-                        window.innerWidth > 821 && (
-                          <li className="colio-item isotope-item"></li>
-                        )}
+                     
 
                       {ourTeam.fourthRowMembers.length > 0 &&
                         ourTeam.fourthRowMembers.map((row, index) => (
@@ -2037,44 +2034,7 @@ const Identity = ({ pageContext, data, location }) => {
                             
                           </>
                         )}
-                      {/* {ourTeam.fifthRowMembers.length > 0 &&
-                        ourTeam.fifthRowMembers.map((row, index) => (
-                          <li
-                            key={`mnvdg` + index}
-                            className={
-                              "isotope-item " +
-                              dashCase(row.memberName) +
-                              " " +
-                              row.designation +
-                              ` ${row.memberName === tab ? "active1" : ""}`
-                            }
-                            data-url={row.memberName}
-                            data-content={`#colio_c${index}`}
-                          >
-                            <a
-                              className="colio-link"
-                              href="#"
-                              onClick={(e) => handleTab(e, row)}
-                            >
-                              <p className="member-info">
-                                <span className="member-name">
-                                  {row.memberName}
-                                </span>
-                                <span className="designation">
-                                  {row.designation}
-                                </span>
-                              </p>
-                              <div className="holder">
-                                <GatsbyImage
-                                  loading={"lazy"}
-                                  image={getImage(row.photo)}
-                                  alt={row.photo.altText}
-                                />
-                               
-                              </div>
-                            </a>
-                          </li>
-                        ))} */}
+                    
                     </ul>
                     <section className="colio-sec" ref={teamContent}>
                       {teamData && (
