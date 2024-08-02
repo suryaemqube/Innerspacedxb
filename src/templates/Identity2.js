@@ -1985,7 +1985,7 @@ const Identity = ({ pageContext, data }) => {
                         <li className="colio-item isotope-item"></li>
                         </>
                       }
-                      {ourTeam.fifthRowMembers.length > 0 &&
+                      {/* {ourTeam.fifthRowMembers.length > 0 &&
                         ourTeam.fifthRowMembers.map((row, index) => (
                           <li
                             key={`mnvdg` + index}
@@ -2016,63 +2016,12 @@ const Identity = ({ pageContext, data }) => {
                                   image={getImage(row.photo)}
                                   alt={row.photo.altText}
                                 />
-                                {/* <img src="" alt="" /> */}
+                             
                               </div>
                             </a>
-                            {/* <div
-                            class={`colio ${row.memberName === tab ? "colio-expanded" : ""
-                              } `}
-                            id="hacker_member"
-                          >
-                            <div class="colio-container">
-                              <div
-                                id={`#colio_c${index}`}
-                                className={`colio-content colio-member-content ${row.memberName === tab
-                                  ? "tabOpen"
-                                  : "tabClose"
-                                  }`}
-                              >
-                                <div className="main">
-                                  <div className="left">
-                                    <div className="img-wrap">
-                                      <p className="member-info">
-                                        <span className="member-name">
-                                          {row.memberName}
-                                        </span>
-                                        <span className="designation">
-                                          {row.designation}
-                                        </span>
-                                      </p>
-                                      <div className="holder">
-                                        <GatsbyImage
-                                          loading={"lazy"}
-                                          image={getImage(row.photo)}
-                                          alt={row.photo.altText}
-                                        />
-                                        
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="right">
-                                    <p
-                                      dangerouslySetInnerHTML={{
-                                        __html: removeTags(row.description),
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                                <a
-                                  class="colio-close"
-                                  href="#"
-                                  onClick={handleTabClose}
-                                >
-                                  <span>Close</span>
-                                </a>
-                              </div>
-                            </div>
-                          </div> */}
+                           
                           </li>
-                        ))}
+                        ))} */}
                     </ul>
                   </div>
                 </div>
@@ -2295,21 +2244,7 @@ export const data = graphql`
             mediaItemUrl
           }
         }
-        fifthRowMembers {
-          memberName
-          designation
-          description
-          photo {
-            gatsbyImage(
-              layout: FIXED
-              placeholder: BLURRED
-              width: 788
-              height: 788
-            )
-            altText
-            mediaItemUrl
-          }
-        }
+       
       }
       careerLayout {
         topCareerText

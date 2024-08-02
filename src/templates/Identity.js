@@ -2287,21 +2287,7 @@ export const data = graphql`
             mediaItemUrl
           }
         }
-        fifthRowMembers {
-          memberName
-          designation
-          description
-          photo {
-            gatsbyImage(
-              layout: FIXED
-              placeholder: BLURRED
-              width: 788
-              height: 788
-            )
-            altText
-            mediaItemUrl
-          }
-        }
+       
       }
       careerLayout {
         topCareerText
